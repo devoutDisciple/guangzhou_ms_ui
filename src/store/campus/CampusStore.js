@@ -27,6 +27,7 @@ class CampusStore {
 				data.map(item => {
 					item.key = item.id;
 				});
+				console.log(data, 1222);
 				this.setCampus(data || []);
 	 		});
 	 	} catch (error) {

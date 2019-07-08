@@ -43,7 +43,8 @@ export default class Swiper extends React.Component{
 
 	// 确认删除
 	async onConfirmDelete(record) {
-		let result = await Request.post('/position/delete', {id: record.id});
+		console.log(record, 789);
+		let result = await Request.post('/swiper/delete', {id: record.id});
 		console.log(result);
 		if(result.data == 'success') {
 			message.success('删除成功');
@@ -70,6 +71,12 @@ export default class Swiper extends React.Component{
 			{addDialogVisible, editorDialogVisible, editData} = this.state,
 			columns = [
 				{
+					title: 'id',
+					dataIndex: 'id',
+					key: 'id',
+					align: 'center'
+				},
+				{
 					title: '校区',
 					dataIndex: 'campus',
 					key: 'campus',
@@ -83,7 +90,6 @@ export default class Swiper extends React.Component{
 					render:(text, record) => {
 						return <img className='swiper_table_img' src={record.url}/>;
 					}
-
 				},
 				{
 					title: '关联店铺',

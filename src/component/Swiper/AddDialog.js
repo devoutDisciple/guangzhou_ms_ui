@@ -1,42 +1,53 @@
 import React from 'react';
 import {
-	Form, Input, Modal, Row, Col, Icon, message
+	Form, Input, Modal, Row, Col, message, Select
 } from 'antd';
-import Request from '../../request/AxiosRequest';
 import {inject, observer} from 'mobx-react';
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
 const FormItem = Form.Item;
+const { Option } = Select;
 
-@inject('CampusStore')
+@inject('SwiperStore')
 @observer
 class AddDialog extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.campusStore = props.CampusStore;
+		this.swiperStore = props.SwiperStore;
 	}
 
 	state = {
+
 	};
 
-	componentDidMount() {
+	async componentDidMount() {
+		await this.swiperStore.getAllShop();
 	}
 
-	handleOk()  {
+	async handleOk()  {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
-				let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
-				let newNodes = this.getNodes(nodes, []);
-				console.log(newNodes, 222);
-				console.log(values, 111);
-				let params = Object.assign(values, {floor: newNodes});
-				let result = await Request.post('/position/add', params);
-				console.log(result,3333);
-				if(result.data == 'success') {
-					message.success('新增成功');
-					this.props.onSearch();
-					return this.props.controllerAddDialog();
-				}
+				if(!(values.sort > 0)) return message.warning('权重请输入数字');
+				if(!this.cropper) return message.warning('请上传图片');
+				console.log(values);
+				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
+					console.log(blob);
+					let campus = localStorage.getItem('campus') || '';
+					const formData = new FormData();
+					formData.append('campus', campus);
+					formData.append('file', blob);
+					formData.append('shop', values.shop);
+					formData.append('sort', Number(values.sort) || 1);
+					let res = await this.swiperStore.addSwiper(formData);
+					console.log(res, 111);
+					if(res.data == 'success') {
+						this.props.controllerAddDialog();
+						this.props.onSearch();
+						return message.success('新增成功');
+					}
+				});
 			} catch (error) {
 				console.log(error);
 			}
@@ -47,12 +58,39 @@ class AddDialog extends React.Component {
 		this.props.controllerAddDialog();
 	}
 
+	fileChange() {
+		let self = this;
+		let file = document.getElementById('swiper_dialog_img').files[0];
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onprogress = function(e) {
+			if (e.lengthComputable) {
+				// 简单把进度信息打印到控制台吧
+				console.log(e.loaded / e.total + '%');
+			}
+		};
+		reader.onload = function(e) {
+			var image = new Image();
+			image.src = e.target.result;
+			let dom = document.querySelector('.swiper_dialog_preview');
+			dom.innerHTML = '';
+			dom.appendChild(image);
+			self.cropper = new Cropper(image, {
+				aspectRatio: 4 / 4,
+			});
+		};
+		reader.onerror = function() {
+			message.warning('服务端错误, 请稍后重试');
+		};
+	}
+
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
+		let {allShopDetail} = this.swiperStore;
 		return (
 			<div>
 				<Modal
@@ -63,14 +101,22 @@ class AddDialog extends React.Component {
 					onCancel={this.handleCancel.bind(this)}>
 					<Form className="book_search_form" {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="校区名称">
-							{getFieldDecorator('name', {
+							label="关联店铺">
+							{getFieldDecorator('shop', {
 								rules: [{
 									required: true,
 									message: '请输入',
 								}],
 							})(
-								<Input placeholder="请输入校区名称" />
+								<Select placeholder="请选择">
+									{
+										allShopDetail && allShopDetail.length != 0 ?
+											allShopDetail.map(item => {
+												return <Option key={item.id} value={item.id}>{item.name}</Option>;
+											})
+											: null
+									}
+								</Select>
 							)}
 						</FormItem>
 						<FormItem
@@ -85,13 +131,18 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<Row className='campus_container'>
-							<Col span={4} className='campus_container_label'>楼号录入：</Col>
+							<Col span={4} className='campus_container_label'>图片录入：</Col>
 							<Col span={20}>
-								<Col span={20} id="campus_tree" className="ztree"></Col>
-								<Col span={2} className="campus_tree_icon">
-									<Icon onClick={this.addCampus.bind(this)} type="plus-circle" />
-									{/* <Button type='primary' onClick={this.addCampus.bind(this)}>添加楼号</Button> */}
-								</Col>
+								<input
+									type="file"
+									id='swiper_dialog_img'
+									accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+									onChange={this.fileChange.bind(this)}/>
+							</Col>
+						</Row>
+						<Row className='campus_container'>
+							<Col span={4} className='campus_container_label'></Col>
+							<Col span={20} className='swiper_dialog_preview'>
 							</Col>
 						</Row>
 					</Form>

@@ -7,17 +7,28 @@ import request from '../../request/AxiosRequest';
 
 class SwiperStore {
 
-    // 校区list
+    // 轮播图list
     @observable
 	swiperList = [];
 
-	// 设置校区
-	@action
-    setSwiperList(data) {
-    	this.swiperList = data;
-    }
 
-	//  获取校区
+	// 所有店铺信息
+	@observable
+	allShopDetail = [];
+
+	// 设置轮播图
+	@action
+	setSwiperList(data) {
+    	this.swiperList = data;
+	}
+
+	// 设置店铺
+	@action
+	setAllShopDetail(data) {
+		this.allShopDetail = data;
+	}
+
+	//  获取所有轮播图
 	@action
 	 async getSwiper() {
 	 	try {
@@ -28,6 +39,49 @@ class SwiperStore {
 					item.key = index;
 				});
 				this.setSwiperList(data || []);
+	 		});
+	 	} catch (error) {
+	 		console.log(error);
+	 	}
+	 }
+
+	 //  新增轮播图
+	@action
+	async addSwiper(formData) {
+		try {
+			console.log(formData);
+			let res = await request.post('/swiper/add', formData);
+			console.log(res);
+			return res;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	 //  新增轮播图
+	 @action
+	 async updateSwiper(formData) {
+		 try {
+			 console.log(formData);
+			 let res = await request.post('/swiper/update', formData);
+			 console.log(res);
+			 return res;
+		 } catch (error) {
+			 console.log(error);
+		 }
+	 }
+
+	// 获取所有店铺信息
+	@action
+	 async getAllShop() {
+	 	try {
+	 		let res = await request.get('/shop/all');
+	 		runInAction(() => {
+	 			let data = res.data || [];
+	 			data.map((item, index) => {
+	 				item.key = index;
+	 			});
+	 			this.setAllShopDetail(data || []);
 	 		});
 	 	} catch (error) {
 	 		console.log(error);
