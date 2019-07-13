@@ -49,9 +49,7 @@ class SwiperStore {
 	@action
 	async addSwiper(formData) {
 		try {
-			console.log(formData);
 			let res = await request.post('/swiper/add', formData);
-			console.log(res);
 			return res;
 		} catch (error) {
 			console.log(error);
@@ -62,9 +60,7 @@ class SwiperStore {
 	 @action
 	 async updateSwiper(formData) {
 		 try {
-			 console.log(formData);
 			 let res = await request.post('/swiper/update', formData);
-			 console.log(res);
 			 return res;
 		 } catch (error) {
 			 console.log(error);

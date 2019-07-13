@@ -176,11 +176,8 @@ class AddDialog extends React.Component {
 				if (err) return;
 				let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
 				let newNodes = this.getNodes(nodes, []);
-				console.log(newNodes, 222);
-				console.log(values, 111);
 				let params = Object.assign(values, {floor: newNodes});
 				let result = await Request.post('/position/add', params);
-				console.log(result,3333);
 				if(result.data == 'success') {
 					message.success('新增成功');
 					this.props.onSearch();

@@ -45,7 +45,6 @@ class Campus extends React.Component{
 	// 确认删除
 	async onConfirmDelete(record) {
 		let result = await Request.post('/position/delete', {id: record.id});
-		console.log(result);
 		if(result.data == 'success') {
 			message.success('删除成功');
 			return this.onSearch();
@@ -103,7 +102,6 @@ class Campus extends React.Component{
 				}
 			}
 		];
-		console.log(campusList, 234)
 		return (
 			<div className='common'>
 				<div className='common_search'>

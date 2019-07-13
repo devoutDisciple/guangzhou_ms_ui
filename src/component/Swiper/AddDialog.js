@@ -31,9 +31,7 @@ class AddDialog extends React.Component {
 				if (err) return;
 				if(!(values.sort > 0)) return message.warning('权重请输入数字');
 				if(!this.cropper) return message.warning('请上传图片');
-				console.log(values);
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
-					console.log(blob);
 					let campus = localStorage.getItem('campus') || '';
 					const formData = new FormData();
 					formData.append('campus', campus);
@@ -41,7 +39,6 @@ class AddDialog extends React.Component {
 					formData.append('shop', values.shop);
 					formData.append('sort', Number(values.sort) || 1);
 					let res = await this.swiperStore.addSwiper(formData);
-					console.log(res, 111);
 					if(res.data == 'success') {
 						this.props.controllerAddDialog();
 						this.props.onSearch();

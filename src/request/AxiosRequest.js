@@ -38,7 +38,6 @@ Axios.defaults = _.assign(Axios.defaults, {
 
 // 添加响应拦截器
 Axios.interceptors.response.use(function (res) {
-	console.log(res, 11);
 	if(res.status != 200) return Promise.reject('系统错误');
 	let data = JSON.parse(res.data);
 	let hash = location.hash;
@@ -78,7 +77,6 @@ export default {
 				url: url,
 				params: params
 			}).then((res) => {
-				console.log(res, 'res');
 				if(res.code == 200) resolve(res);
 				else reject(res);
 			}).catch((err) => {
@@ -88,7 +86,6 @@ export default {
 		});
 	},
 	post: (url = '', params = {}) => {
-		console.log(params);
 		let campus = localStorage.getItem('campus') || '';
 		params.position = campus;
 		return new Promise((resolve, reject) => {
@@ -97,7 +94,6 @@ export default {
 				url: url,
 				data: params
 			}).then((res) => {
-				console.log(res, 'res');
 				if(res.code == 200) resolve(res);
 				else reject(res);
 			}).catch((err) => {

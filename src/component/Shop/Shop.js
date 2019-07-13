@@ -5,6 +5,7 @@ import {
 	Button, Table, Popconfirm, message, Tooltip
 } from 'antd';
 import AddDialog from './AddDialog';
+import EditorDialog from './EditorDialog';
 import './index.less';
 import Request from '../../request/AxiosRequest';
 
@@ -19,6 +20,8 @@ export default class Swiper extends React.Component{
 
 	state = {
 		addDialogVisible: false,
+		editorDialogVisible: false,
+		editData: {}
 	}
 
 	componentDidMount() {
@@ -41,7 +44,6 @@ export default class Swiper extends React.Component{
 	// 确认删除
 	async onConfirmDelete(record) {
 		let result = await Request.post('/shop/delete', {id: record.id});
-		console.log(result);
 		if(result.data == 'success') {
 			message.success('删除成功');
 			return this.onSearch();
@@ -61,6 +63,17 @@ export default class Swiper extends React.Component{
 	onSearch() {
 		this.shopStore.getAll();
 	}
+
+	// 确认关店或者开店
+	async onConfirmCloseOrOpen(record, status) {
+		let res = await this.shopStore.closeOrOpen({id: record.id, status});
+		if(res.data == 'success') {
+			if(status == 1) message.success('开启成功');
+			else message.success('关店成功');
+			this.onSearch();
+		}
+	}
+
 
 	render() {
 		const columns = [
@@ -118,6 +131,15 @@ export default class Swiper extends React.Component{
 				}
 			},
 			{
+				title: '营收情况',
+				dataIndex: 'win',
+				key: 'win',
+				align: 'center',
+				render:() => {
+					return <span>hello</span>;
+				}
+			},
+			{
 				title: '店铺状态',
 				dataIndex: 'status',
 				key: 'status',
@@ -141,7 +163,17 @@ export default class Swiper extends React.Component{
 				render:(text, record) => {
 					return <span className="common_table_span">
 						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>修改</a>
-						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>关店</a>
+						{
+							record.status == 1 ?
+								<Popconfirm placement="top" title="是否确认关店" onConfirm={this.onConfirmCloseOrOpen.bind(this, record, 2)} okText="确认" cancelText="取消">
+									<a href="javascript:;" >关店</a>
+     							</Popconfirm>
+						 :
+						 		<Popconfirm placement="top" title="是否确认开店" onConfirm={this.onConfirmCloseOrOpen.bind(this, record, 1)} okText="确认" cancelText="取消">
+									<a href="javascript:;" >开店</a>
+     							</Popconfirm>
+						}
+
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
@@ -149,7 +181,7 @@ export default class Swiper extends React.Component{
 				}
 			}
 		];
-		let {list} = this.shopStore, {addDialogVisible} = this.state;
+		let {list} = this.shopStore, {addDialogVisible, editorDialogVisible, editData} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
@@ -172,6 +204,14 @@ export default class Swiper extends React.Component{
 						<AddDialog
 							onSearch={this.onSearch.bind(this)}
 							controllerAddDialog={this.controllerAddDialog.bind(this)}/>
+						: null
+				}
+				{
+					editorDialogVisible ?
+						<EditorDialog
+							editData={editData}
+							onSearch={this.onSearch.bind(this)}
+							controllerEditorDialog={this.controllerEditorDialog.bind(this)}/>
 						: null
 				}
 			</div>

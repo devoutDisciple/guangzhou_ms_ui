@@ -55,7 +55,6 @@ class GlobalStore {
     	try {
     		let user = await request.get('/account/isLogin');
     		runInAction(() => {
-				console.log(user, 222);
 				this.setUserinfo({
 					username: user.data.username,
 					role: user.data.role
@@ -83,7 +82,6 @@ class GlobalStore {
 				 this.setLogin(true);
 			 });
 		 } catch (error) {
-			 console.log(444);
 			 this.setLogin(false);
 			 console.log(error);
 		 }

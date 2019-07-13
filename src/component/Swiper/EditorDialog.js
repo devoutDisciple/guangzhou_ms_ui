@@ -24,7 +24,6 @@ class EditorDialog extends React.Component {
 	async componentDidMount() {
 		await this.swiperStore.getAllShop();
 		let editData = this.props.editData;
-		console.log(editData, 333);
 		setTimeout(() => {
 			this.props.form.setFieldsValue({
 				shop: editData.shopid,
@@ -50,7 +49,6 @@ class EditorDialog extends React.Component {
 						return message.success('编辑成功');
 					}
 				}
-				console.log(values);
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					const formData = new FormData();
 					formData.append('id', this.props.editData.id);

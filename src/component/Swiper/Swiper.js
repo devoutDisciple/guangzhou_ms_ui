@@ -43,9 +43,7 @@ export default class Swiper extends React.Component{
 
 	// 确认删除
 	async onConfirmDelete(record) {
-		console.log(record, 789);
 		let result = await Request.post('/swiper/delete', {id: record.id});
-		console.log(result);
 		if(result.data == 'success') {
 			message.success('删除成功');
 			return this.onSearch();

@@ -54,7 +54,26 @@ class ShopStore {
 		}
 	}
 
+	// 修改店铺
+	@action
+	async updateShop(data) {
+		try {
+			let shop = await request.post('/shop/update', data);
+			return shop;
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
+	// 开店或者关店
+	async closeOrOpen(data) {
+		try {
+			let shop = await request.post('/shop/closeOrOpen', data);
+			return shop;
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	  //  获取校区
 	  @action

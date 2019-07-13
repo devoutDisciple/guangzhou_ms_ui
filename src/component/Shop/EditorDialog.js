@@ -4,7 +4,6 @@ import {
 } from 'antd';
 import {inject, observer} from 'mobx-react';
 import moment from 'moment';
-
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -23,28 +22,33 @@ class AddDialog extends React.Component {
 
 	async componentDidMount() {
 		await this.shopStore.getCampus();
+		let data = this.props.editData;
+		console.log(data, 222);
 		this.props.form.setFieldsValue({
-			campus: 'hello',
-			name: 'name',
-			address: '地址',
-			// start_time: 'hello',
-			package_cost: 10,
-			send_price: 30,
-			start_price: 38,
-			sort: 38,
-			desc: 38,
+			campus: data.campus,
+			name: data.name,
+			address: data.address,
+			start_time: moment(data.start_time, 'HH:mm'),
+			end_time: moment(data.end_time, 'HH:mm'),
+			package_cost: Number(data.package_cost),
+			send_price: Number(data.send_price),
+			start_price: Number(data.start_price),
+			sort: Number(data.sort),
+			desc: data.desc,
 		});
 	}
 
 	async handleOk()  {
+		let {editData} = this.props;
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
 				values.start_time = moment(values.start_time).format('HH:mm');
 				values.end_time = moment(values.end_time).format('HH:mm');
-				let res = await this.shopStore.addShop(values);
+				values.id = editData.id;
+				let res = await this.shopStore.updateShop(values);
 				if(res.data == 'success') {
-					this.props.controllerAddDialog();
+					this.props.controllerEditorDialog();
 					this.props.onSearch();
 				}
 			} catch (error) {
@@ -54,7 +58,7 @@ class AddDialog extends React.Component {
 	}
 
 	handleCancel() {
-		this.props.controllerAddDialog();
+		this.props.controllerEditorDialog();
 	}
 
 	render() {
@@ -68,7 +72,7 @@ class AddDialog extends React.Component {
 			<div>
 				<Modal
 					className='common_dialog common_max_dialog'
-					title="新增商店"
+					title="修改店铺"
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
@@ -171,7 +175,7 @@ class AddDialog extends React.Component {
 								<Input type="number" placeholder="请输入" />
 							)}
 						</FormItem>
-						<FormItem
+						{/* <FormItem
 							label="用户名">
 							{getFieldDecorator('username', {
 								rules: [{
@@ -192,7 +196,7 @@ class AddDialog extends React.Component {
 							})(
 								<Input placeholder="请输入(商家登录该系统的密码)" />
 							)}
-						</FormItem>
+						</FormItem> */}
 						<FormItem
 							label="权重">
 							{getFieldDecorator('sort', {
