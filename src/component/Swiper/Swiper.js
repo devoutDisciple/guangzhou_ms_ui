@@ -1,6 +1,5 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
-import './index.less';
 import {
 	Button, Table, Popconfirm, message
 } from 'antd';
@@ -80,7 +79,7 @@ export default class Swiper extends React.Component{
 					key: 'url',
 					align: 'center',
 					render:(text, record) => {
-						return <img className='swiper_table_img' src={record.url}/>;
+						return <img className='common_table_img' src={record.url}/>;
 					}
 				},
 				{

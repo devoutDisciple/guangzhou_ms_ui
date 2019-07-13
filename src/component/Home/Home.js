@@ -9,6 +9,7 @@ import {inject, observer} from 'mobx-react';
 import Swiper from '../Swiper/Swiper';
 import Campus from '../Campus/Campus';
 import Shop from '../Shop/Shop';
+import Goods from '../Goods/Goods';
 
 @inject('GlobalStore')
 @observer
@@ -40,6 +41,7 @@ export default class MyLayout extends React.Component{
 								<Route path="/home/swiper" component={Swiper} />
 								<Route path="/home/campus" component={Campus} />
 								<Route path="/home/shop" component={Shop} />
+								<Route path="/home/goods" component={Goods} />
 							</Switch>
 						</div>
 					</Content>

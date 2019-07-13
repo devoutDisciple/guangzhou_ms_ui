@@ -23,6 +23,17 @@ class AddDialog extends React.Component {
 
 	async componentDidMount() {
 		await this.shopStore.getCampus();
+		this.props.form.setFieldsValue({
+			campus: 'hello',
+			name: 'name',
+			address: '地址',
+			// start_time: 'hello',
+			package_cost: 10,
+			send_price: 30,
+			start_price: 38,
+			sort: 38,
+			desc: 38,
+		});
 	}
 
 	async handleOk()  {

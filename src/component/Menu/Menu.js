@@ -4,19 +4,41 @@ const { SubMenu }  = Menu;
 
 export default class MyMenu extends React.Component {
 
-	onClickMenu({key}) {
-		location.hash = key;
+	constructor(props) {
+		super(props);
 	}
 
+	state = {
+		selectedKeys: '/home/campus'
+	}
 
+	componentDidMount() {
+		let hash = location.hash;
+		let selectedKeys = '';
+		if(hash.startsWith('#')) {
+			selectedKeys = hash.split('#')[1];
+			this.setState({
+				selectedKeys: selectedKeys
+			});
+		}
+	}
+
+	onSelect(data) {
+		console.log(data);
+		let key = data.key;
+		location.hash = '#' + key;
+		this.setState({
+			selectedKeys: key
+		});
+	}
 
 	render() {
 		return (
 			<Menu
 				mode="inline"
 				theme="dark"
-				onClick={this.onClickMenu.bind(this)}
-				defaultSelectedKeys={['/home/campus']}
+				onSelect={this.onSelect.bind(this)}
+				selectedKeys={[this.state.selectedKeys]}
 				inlineCollapsed={false}>
 				<Menu.Item key="/home/campus">
 					<Icon type="inbox" />
@@ -30,9 +52,9 @@ export default class MyMenu extends React.Component {
 					<Icon type="pie-chart" />
 					<span>商店管理</span>
 				</Menu.Item>
-				<Menu.Item key="4">
+				<Menu.Item key="/home/goods">
 					<Icon type="inbox" />
-					<span>菜品录入</span>
+					<span>菜品管理</span>
 				</Menu.Item>
 				<Menu.Item key="5">
 					<Icon type="inbox" />

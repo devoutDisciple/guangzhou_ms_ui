@@ -11,7 +11,7 @@ import Request from '../../request/AxiosRequest';
 
 @inject('ShopStore')
 @observer
-export default class Swiper extends React.Component{
+export default class Shop extends React.Component{
 
 	constructor(props) {
 		super(props);
@@ -72,6 +72,11 @@ export default class Swiper extends React.Component{
 			else message.success('关店成功');
 			this.onSearch();
 		}
+	}
+
+	// 查看更多
+	getMore() {
+
 	}
 
 
@@ -177,6 +182,7 @@ export default class Swiper extends React.Component{
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
+						 <a href="javascript:;" onClick={this.getMore.bind(this)}>更多</a>
 					</span>;
 				}
 			}

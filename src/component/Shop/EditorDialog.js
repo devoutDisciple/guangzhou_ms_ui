@@ -76,7 +76,7 @@ class AddDialog extends React.Component {
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
-					<Form className="book_search_form" {...formItemLayout} onSubmit={this.handleSubmit}>
+					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
 							label="所属校区">
 							{getFieldDecorator('campus', {
