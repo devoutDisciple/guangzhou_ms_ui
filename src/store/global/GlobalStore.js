@@ -79,7 +79,7 @@ class GlobalStore {
 					 username: user.data.username,
 					 role: user.data.role
 				 });
-				 location.href = '/home';
+				 location.hash = '#/home';
 				 this.setLogin(true);
 			 });
 		 } catch (error) {
@@ -99,14 +99,14 @@ class GlobalStore {
 	 				username: '',
 	 				role: ''
 	 			});
-	 			location.href = '/login';
+	 			location.hash = '#/login';
 	 		});
 	 	} catch (error) {
 	 		this.setUserinfo({
 	 			username: '',
 	 			role: ''
 	 		});
-	 		location.href = '/login';
+	 		location.hash = '#/login';
 	 		console.log(error);
 	 	}
 	 }

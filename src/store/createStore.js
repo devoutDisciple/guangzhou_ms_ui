@@ -2,6 +2,7 @@ import TestStore from './test/TestStore';
 import GlobalStore from './global/GlobalStore';
 import CampusStore from './campus/CampusStore';
 import SwiperStore from './swiper/SwiperStore';
+import ShopStore from './shop/ShopStore';
 
 export const createStore = () => {
 	return {
@@ -9,5 +10,6 @@ export const createStore = () => {
 		GlobalStore,
 		CampusStore,
 		SwiperStore,
+		ShopStore
 	};
 };

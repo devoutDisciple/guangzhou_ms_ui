@@ -8,6 +8,7 @@ import { Route, Switch } from 'react-router-dom';
 import {inject, observer} from 'mobx-react';
 import Swiper from '../Swiper/Swiper';
 import Campus from '../Campus/Campus';
+import Shop from '../Shop/Shop';
 
 @inject('GlobalStore')
 @observer
@@ -35,9 +36,10 @@ export default class MyLayout extends React.Component{
 						<MyHeader />
 						<div className='content'>
 							<Switch>
-								<Route exact path="/" component={Campus} />
+								<Route exact path="/home" component={Campus} />
 								<Route path="/home/swiper" component={Swiper} />
 								<Route path="/home/campus" component={Campus} />
+								<Route path="/home/shop" component={Shop} />
 							</Switch>
 						</div>
 					</Content>

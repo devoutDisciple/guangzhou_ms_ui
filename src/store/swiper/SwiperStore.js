@@ -75,7 +75,7 @@ class SwiperStore {
 	@action
 	 async getAllShop() {
 	 	try {
-	 		let res = await request.get('/shop/all');
+	 		let res = await request.get('/shop/getAllForSelect');
 	 		runInAction(() => {
 	 			let data = res.data || [];
 	 			data.map((item, index) => {

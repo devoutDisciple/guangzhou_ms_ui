@@ -26,17 +26,37 @@ export default class MyMenu extends React.Component {
 					<Icon type="pie-chart" />
 					<span>首页轮播图</span>
 				</Menu.Item>
-				<Menu.Item key="3">
-					<Icon type="desktop" />
-					<span>用户管理</span>
+				<Menu.Item key="/home/shop">
+					<Icon type="pie-chart" />
+					<span>商店管理</span>
 				</Menu.Item>
 				<Menu.Item key="4">
 					<Icon type="inbox" />
-					<span>订单管理</span>
+					<span>菜品录入</span>
 				</Menu.Item>
 				<Menu.Item key="5">
 					<Icon type="inbox" />
-					<span>配送管理</span>
+					<span>今日推荐</span>
+				</Menu.Item>
+				<Menu.Item key="6">
+					<Icon type="inbox" />
+					<span>综合排序</span>
+				</Menu.Item>
+				<Menu.Item key="7">
+					<Icon type="inbox" />
+					<span>提现管理</span>
+				</Menu.Item>
+				<Menu.Item key="8">
+					<Icon type="inbox" />
+					<span>营收报表</span>
+				</Menu.Item>
+				<Menu.Item key="9">
+					<Icon type="inbox" />
+					<span>会员管理</span>
+				</Menu.Item>
+				<Menu.Item key="10">
+					<Icon type="inbox" />
+					<span>意见反馈</span>
 				</Menu.Item>
 				<SubMenu
 					key="sub1"

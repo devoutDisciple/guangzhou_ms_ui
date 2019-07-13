@@ -71,12 +71,6 @@ export default class Swiper extends React.Component{
 			{addDialogVisible, editorDialogVisible, editData} = this.state,
 			columns = [
 				{
-					title: 'id',
-					dataIndex: 'id',
-					key: 'id',
-					align: 'center'
-				},
-				{
 					title: '校区',
 					dataIndex: 'campus',
 					key: 'campus',

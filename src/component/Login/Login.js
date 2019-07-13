@@ -48,6 +48,7 @@ class Login extends React.Component{
     								rules: [{ required: true, message: '请输入密码!' }],
     							})(
     								<Input
+    									onPressEnter={this.btnClick.bind(this)}
     									prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
     									type="password"
     									placeholder="Password"/>,
@@ -56,7 +57,6 @@ class Login extends React.Component{
     						<Form.Item className="login_content_content_row">
     							<Button onClick={this.btnClick.bind(this)} type="primary">登录</Button>
     						</Form.Item>
-
     					</Form>
     				</Row>
     			</div>
