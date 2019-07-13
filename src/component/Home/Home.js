@@ -1,11 +1,11 @@
 import React from 'react';
 import { Layout } from 'antd';
 const { Sider, Content, Footer } = Layout;
-import './index.less';
 import Menu from '../Menu/Menu';
 import MyHeader from './Header';
 import { Route, Switch } from 'react-router-dom';
 import {inject, observer} from 'mobx-react';
+import './index.less';
 import Swiper from '../Swiper/Swiper';
 import Campus from '../Campus/Campus';
 import Shop from '../Shop/Shop';

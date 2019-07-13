@@ -1,6 +1,5 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
-import './index.less';
 import {
 	Form, Input, Col, Button, Table, Popconfirm, message
 } from 'antd';

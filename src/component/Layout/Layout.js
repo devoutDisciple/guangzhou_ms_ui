@@ -2,7 +2,6 @@ import React from 'react';
 import Login from '../Login/Login';
 import Home from '../Home/Home';
 import {inject, observer} from 'mobx-react';
-import './layout.less';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Loading from '../Loading/Loading';
 

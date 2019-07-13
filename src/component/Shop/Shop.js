@@ -1,12 +1,10 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
-import './index.less';
 import {
 	Button, Table, Popconfirm, message, Tooltip
 } from 'antd';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
-import './index.less';
 import Request from '../../request/AxiosRequest';
 
 @inject('ShopStore')
