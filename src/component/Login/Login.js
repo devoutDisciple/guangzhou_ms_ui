@@ -31,7 +31,7 @@ class Login extends React.Component{
     	return (
     		<div className="login">
     			<div className="login_content">
-    				<Row className='login_content_title'>雀送管理后台</Row>
+    				<Row className='login_content_title'>贝沃思管理后台</Row>
     				<Row className='login_content_content'>
     					<Form>
     						<Form.Item className="login_content_content_row">

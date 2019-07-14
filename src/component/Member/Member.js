@@ -5,6 +5,8 @@ import {
 import request from '../../request/AxiosRequest';
 import moment from 'moment';
 import AddressDialog from './AddressDialog';
+import OrderDialog from './OrderDialog';
+import EvaluateDialog from './EvaluateDialog';
 
 export default class Member extends React.Component{
 
@@ -15,7 +17,11 @@ export default class Member extends React.Component{
 	state = {
 		userList: [], // 用户列表
 		addressDialogVisible: false,// 地址弹框
+		orderDialogVisible: false, // 全部订单弹框
+		evaluateDialogVisible: false, // 评价信息
 		addressData: [], // 地址信息
+		orderList: [], // 订单信息
+		evaluateList: [], // 评价列表
 	}
 
 	async componentDidMount() {
@@ -34,8 +40,14 @@ export default class Member extends React.Component{
 	}
 
 	// 查看用户所有订单
-	onSearchOrder() {
-
+	async onSearchOrder(record) {
+		let res = await request.get('/order/getListByOpenid', {openid: record.openid});
+		console.log(res, 9999);
+		this.setState({
+			orderList: res.data || []
+		}, () => {
+			this.onControllerOrderDialog();
+		});
 	}
 
 	// 点击查看地址
@@ -47,6 +59,23 @@ export default class Member extends React.Component{
 		});
 	}
 
+	// 查看所有评价
+	async onSearchEvaluate(record) {
+		let res = await request.get('/evaluate/getEvaluateByOpenid', {openid: record.openid});
+		this.setState({
+			evaluateList: res.data || []
+		}, () => {
+			this.onControllerEvaluateDialog();
+		});
+	}
+
+	// 评价弹框的开关
+	onControllerEvaluateDialog() {
+		this.setState({
+			evaluateDialogVisible: !this.state.evaluateDialogVisible
+		});
+	}
+
 	// 收货地址弹框关闭与打开
 	onControllerAddressDialog() {
 		this.setState({
@@ -54,12 +83,14 @@ export default class Member extends React.Component{
 		});
 	}
 
-	onConfirmDelete() {
-
+	// 订单信息弹框的打开关闭
+	onControllerOrderDialog() {
+		this.setState({
+			orderDialogVisible: !this.state.orderDialogVisible
+		});
 	}
 
 	render() {
-		let { addressDialogVisible, addressData } = this.state;
 		const columns = [
 			{
 				title: '用户名称',
@@ -126,7 +157,7 @@ export default class Member extends React.Component{
 				key: 'evaluate',
 				align: 'center',
 				render:(text, record) => {
-					return <a href="javascript:;" onClick={this.onSearchOrder.bind(this, record)}>查看</a>;
+					return <a href="javascript:;" onClick={this.onSearchEvaluate.bind(this, record)}>查看</a>;
 				}
 			},
 			{
@@ -137,22 +168,17 @@ export default class Member extends React.Component{
 				render:(text, record) => {
 					return <span>{moment(record.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
 				}
-			},
-			// {
-			// 	title: '操作',
-			// 	dataIndex: 'operation',
-			// 	key: 'operation',
-			// 	align: 'center',
-			// 	render:(text, record) => {
-			// 		return <span className="common_table_span">
-			// 			<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
-			// 				<a href="javascript:;" >删除</a>
-     		// 			</Popconfirm>
-			// 		</span>;
-			// 	}
-			// }
+			}
 		];
-		let {userList} = this.state;
+		let {
+			addressDialogVisible,
+			addressData,
+			userList,
+			orderDialogVisible,
+			orderList,
+			evaluateDialogVisible,
+			evaluateList
+		} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_content'>
@@ -172,6 +198,20 @@ export default class Member extends React.Component{
 						<AddressDialog
 							data={addressData}
 							onControllerAddressDialog={this.onControllerAddressDialog.bind(this)}/>
+						: null
+				}
+				{
+					orderDialogVisible ?
+						<OrderDialog
+							data={orderList}
+							onControllerOrderDialog={this.onControllerOrderDialog.bind(this)}/>
+						: null
+				}
+				{
+					evaluateDialogVisible ?
+						<EvaluateDialog
+							data={evaluateList}
+							onControllerEvaluateDialog={this.onControllerEvaluateDialog.bind(this)}/>
 						: null
 				}
 			</div>

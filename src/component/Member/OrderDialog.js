@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-	Modal, Table, Tooltip
+	Modal, Table
 } from 'antd';
+import moment from 'moment';
+import FilterStatus from '../../util/FilterOrderStatus';
 
 
-export default class AddressDialog extends React.Component {
+export default class OrderDialog extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -12,64 +14,75 @@ export default class AddressDialog extends React.Component {
 	}
 
 	state = {
-		data: []
+		data: [],
 	};
 
 	async componentDidMount() {
 		let data = this.props.data;
-		try {
-			data = JSON.parse(data.address);
-			console.log(data, 444);
-			data.map((item, index) => {
-				item.key = index;
-				if(item.floor == '暂无全餐点') item.floor = '';
-				item.address = `${item.campus} ${item.floor}`;
-			});
-			this.setState({data});
-		} catch (error) {
-			console.log(error);
-			this.setState({data: []});
-		}
+		data.map((item, index) => {
+			item.key = index;
+			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
+		});
+		this.setState({data});
 	}
 
 
 	handleCancel() {
-		this.props.onControllerAddressDialog();
+		this.props.onControllerOrderDialog();
+	}
+
+	expandedRowRender(record) {
+		let order_list = JSON.parse(record.order_list || []);
+		order_list.map((item,index) => {
+			item.key = index;
+		});
+		const columns = [
+			{ title: '商品名称', dataIndex: 'name', key: 'name' },
+			{ title: '数量', dataIndex: 'num', key: 'num' },
+			{ title: '单价', dataIndex: 'price', key: 'price' },
+			{ title: '总价', dataIndex: 'total', key: 'total', render: (text, record) => {
+				return <span>{Number(record.num) * Number(record.price)}</span>;
+			}},
+		];
+		return <Table columns={columns} dataSource={order_list} pagination={false} />;
 	}
 
 	render() {
 		const columns = [
 			{
-				title: '姓名',
-				dataIndex: 'username',
-				key: 'username',
+				title: '订单编号',
+				dataIndex: 'id',
+				key: 'id',
 				align: 'center'
 			},
 			{
-				title: '电话',
-				dataIndex: 'phone',
-				key: 'phone',
+				title: '折扣价',
+				dataIndex: 'discount_price',
+				key: 'discount_price',
+				align: 'center'
+			},
+			{
+				title: '订单总价',
+				dataIndex: 'total_price',
+				key: 'total_price',
 				align: 'center',
 			},
 			{
-				title: '取餐地址',
-				dataIndex: 'address',
-				key: 'address',
+				title: '订单时间',
+				dataIndex: 'order_time',
+				key: 'order_time',
 				align: 'center',
 				render:(text, record) => {
-					return <Tooltip placement="top" title={record.address}>
-						<span className='common_table_ellipse'>{record.address}</span>
-					   </Tooltip>;
+					return <span>{record.order_time}</span>;
 				}
 			},
 			{
-				title: '默认地址',
-				dataIndex: 'default',
-				key: 'default',
+				title: '订单状态',
+				dataIndex: 'status',
+				key: 'status',
 				align: 'center',
-				render:(text, record) => {
-					if(record.default == true) return <span>是</span>;
-					return <span>否</span>;
+				render: (text, record) => {
+					return <span>{FilterStatus.filterOrderStatus(record.status)}</span>;
 				}
 			},
 		];
@@ -78,12 +91,13 @@ export default class AddressDialog extends React.Component {
 			<div>
 				<Modal
 					className='common_dialog common_max_dialog'
-					title="收货地址"
+					title="消费记录"
 					visible={true}
 					footer={null}
 					onCancel={this.handleCancel.bind(this)}>
 					<Table
 						bordered
+						expandedRowRender={this.expandedRowRender.bind(this)}
 						dataSource={data}
 						columns={columns}
 						pagination={

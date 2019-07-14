@@ -139,7 +139,7 @@ export default class Shop extends React.Component{
 				key: 'win',
 				align: 'center',
 				render:() => {
-					return <span>hello</span>;
+					return <span>暂无</span>;
 				}
 			},
 			{
