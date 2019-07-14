@@ -10,6 +10,7 @@ import Swiper from '../Swiper/Swiper';
 import Campus from '../Campus/Campus';
 import Shop from '../Shop/Shop';
 import Goods from '../Goods/Goods';
+import Member from '../Member/Member';
 
 @inject('GlobalStore')
 @observer
@@ -42,6 +43,7 @@ export default class MyLayout extends React.Component{
 								<Route path="/home/campus" component={Campus} />
 								<Route path="/home/shop" component={Shop} />
 								<Route path="/home/goods" component={Goods} />
+								<Route path="/home/member" component={Member} />
 							</Switch>
 						</div>
 					</Content>

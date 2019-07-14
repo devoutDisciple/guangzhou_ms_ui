@@ -168,17 +168,6 @@ class Goods extends React.Component{
 				render:(text, record) => {
 					return <span className="common_table_span">
 						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>修改</a>
-						{
-							record.status == 1 ?
-								<Popconfirm placement="top" title="是否确认关店" onConfirm={this.onConfirmCloseOrOpen.bind(this, record, 2)} okText="确认" cancelText="取消">
-									<a href="javascript:;" >关店</a>
-     							</Popconfirm>
-						 :
-						 		<Popconfirm placement="top" title="是否确认开店" onConfirm={this.onConfirmCloseOrOpen.bind(this, record, 1)} okText="确认" cancelText="取消">
-									<a href="javascript:;" >开店</a>
-     							</Popconfirm>
-						}
-
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
