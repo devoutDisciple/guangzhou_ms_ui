@@ -5,6 +5,9 @@ import {
 } from 'antd';
 const FormItem = Form.Item;
 const { Option } = Select;
+import Request from '../../request/AxiosRequest';
+import AddDialog from './AddDialog';
+import './index.less';
 
 @inject('GoodsStore')
 @observer
@@ -41,19 +44,14 @@ class Goods extends React.Component{
 						shop: id,
 					});
 				}, 100);
-				await this.onSearchGoods(id);
+				await this.onSearchGoods();
 			});
 		}
 	}
 
 	// 查询菜品
-	async onSearchGoods(id) {
-		await this.goodsStore.getAllGoods(id);
-	}
-
-	// 查询商店所属菜品
-	async onSearhcGoods() {
-
+	async onSearchGoods() {
+		await this.goodsStore.getAllGoods(this.state.shopid);
 	}
 
 	// 新增编辑框的显示
@@ -62,6 +60,7 @@ class Goods extends React.Component{
 			addDialogVisible: !this.state.addDialogVisible
 		});
 	}
+
 	// 编辑框的显示
 	controllerEditorDialog() {
 		this.setState({
@@ -87,14 +86,23 @@ class Goods extends React.Component{
 		});
 	}
 
-	// 确认关店或者开店
-	async onConfirmCloseOrOpen(record, status) {
-		let res = await this.goodsStore.closeOrOpen({id: record.id, status});
-		if(res.data == 'success') {
-			if(status == 1) message.success('开启成功');
-			else message.success('关店成功');
-			this.onSearch();
+
+	// 修改今日推荐
+	async onRecommend(data, type) {
+		let result = await Request.get('/goods/updateToday', {id: data.id, type});
+		if(result.data == 'success') {
+			message.success('修改成功');
+			return this.onSearchGoods();
 		}
+	}
+
+	// 商店选择的时候
+	selectChange(id) {
+		this.setState({
+			shopid: id
+		}, async () => {
+			await this.onSearchGoods();
+		});
 	}
 
 	render() {
@@ -155,6 +163,16 @@ class Goods extends React.Component{
 				align: 'center'
 			},
 			{
+				title: '今日推荐',
+				dataIndex: 'today',
+				key: 'today',
+				align: 'center',
+				render:(text, record) => {
+					if(record.today == 1) return <span className='common_cell_green'>是</span>;
+					return <span className='common_cell_red'>否</span>;
+				}
+			},
+			{
 				title: '权重',
 				dataIndex: 'sort',
 				key: 'sort',
@@ -168,6 +186,13 @@ class Goods extends React.Component{
 				render:(text, record) => {
 					return <span className="common_table_span">
 						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>修改</a>
+						{
+							record.today == 2 ?
+								<a href="javascript:;" onClick={this.onRecommend.bind(this, record, 1)}>今日推荐</a>
+								:
+								<a href="javascript:;" onClick={this.onRecommend.bind(this, record, 2)}>取消推荐</a>
+						}
+
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
@@ -181,6 +206,7 @@ class Goods extends React.Component{
 			wrapperCol: { span: 20 },
 		};
 		let {shopList, goodsList} = this.goodsStore;
+		let {addDialogVisible} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
@@ -194,7 +220,7 @@ class Goods extends React.Component{
 										message: '请选择',
 									}],
 								})(
-									<Select placeholder="请选择">
+									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
 										{
 											shopList && shopList.length != 0 ?
 												shopList.map(item => {
@@ -207,7 +233,6 @@ class Goods extends React.Component{
 							</FormItem>
 						</Col>
 						<Col span={6} offset={1}>
-							<Button className='goods_search_btn' type='primary' onClick={this.controllerAddDialog.bind(this)}>查询</Button>
 							<Button className='goods_search_btn' type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
 						</Col>
 					</Form>
@@ -224,6 +249,13 @@ class Goods extends React.Component{
 							}
 						}/>
 				</div>
+				{
+					addDialogVisible ?
+						<AddDialog
+							onSearch={this.onSearchGoods.bind(this)}
+							controllerAddDialog={this.controllerAddDialog.bind(this)}/>
+						: null
+				}
 			</div>
 		);
 	}
@@ -231,4 +263,3 @@ class Goods extends React.Component{
 
 const GoodsForm = Form.create()(Goods);
 export default GoodsForm;
-

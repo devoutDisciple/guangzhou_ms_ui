@@ -52,7 +52,6 @@ class GoodsStore {
 			let res = await request.get('/goods/getByShopId', {id});
 			runInAction(() => {
 				let data = res.data || [];
-				console.log(data, 111);
 				data.map(item => {
 					item.key = item.id;
 				});

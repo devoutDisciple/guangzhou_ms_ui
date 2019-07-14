@@ -128,28 +128,6 @@ class AddDialog extends React.Component {
 							</FormItem>
 						</FormItem>
 						<FormItem
-							label="餐盒费">
-							{getFieldDecorator('package_cost', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
-							label="配送费">
-							{getFieldDecorator('send_price', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
 							label="起送费">
 							{getFieldDecorator('start_price', {
 								rules: [{

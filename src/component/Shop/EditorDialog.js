@@ -23,14 +23,12 @@ class AddDialog extends React.Component {
 	async componentDidMount() {
 		await this.shopStore.getCampus();
 		let data = this.props.editData;
-		console.log(data, 222);
 		this.props.form.setFieldsValue({
 			campus: data.campus,
 			name: data.name,
 			address: data.address,
 			start_time: moment(data.start_time, 'HH:mm'),
 			end_time: moment(data.end_time, 'HH:mm'),
-			package_cost: Number(data.package_cost),
 			send_price: Number(data.send_price),
 			start_price: Number(data.start_price),
 			sort: Number(data.sort),
@@ -141,17 +139,6 @@ class AddDialog extends React.Component {
 									<TimePicker format={format}/>
 								)}
 							</FormItem>
-						</FormItem>
-						<FormItem
-							label="餐盒费">
-							{getFieldDecorator('package_cost', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入" />
-							)}
 						</FormItem>
 						<FormItem
 							label="配送费">

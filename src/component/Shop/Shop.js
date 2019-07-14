@@ -105,12 +105,6 @@ export default class Shop extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '餐盒费',
-				dataIndex: 'package_cost',
-				key: 'package_cost',
-				align: 'center'
-			},
-			{
 				title: '开店时间',
 				dataIndex: 'start_time',
 				key: 'start_time',

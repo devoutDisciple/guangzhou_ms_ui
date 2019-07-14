@@ -1,15 +1,13 @@
 import React from 'react';
 import {
-	Form, Input, Modal, Select, TimePicker
+	Form, Input, Modal, Radio, Row, Col, message
 } from 'antd';
-import {inject, observer} from 'mobx-react';
-import moment from 'moment';
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
 
 const FormItem = Form.Item;
-const { Option } = Select;
+// const { Option } = Select;
 
-@inject('ShopStore')
-@observer
 class AddDialog extends React.Component {
 
 	constructor(props) {
@@ -22,31 +20,79 @@ class AddDialog extends React.Component {
 	};
 
 	async componentDidMount() {
-		await this.shopStore.getCampus();
 		this.props.form.setFieldsValue({
-			campus: 'hello',
-			name: 'name',
-			address: '地址',
-			// start_time: 'hello',
-			package_cost: 10,
-			send_price: 30,
-			start_price: 38,
-			sort: 38,
-			desc: 38,
+			send_price: '2'
 		});
+	}
+
+	fileChange() {
+		let self = this;
+		let file = document.getElementById('goods_main_img').files[0];
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onprogress = function(e) {
+			if (e.lengthComputable) {
+				// 简单把进度信息打印到控制台吧
+				console.log(e.loaded / e.total + '%');
+			}
+		};
+		reader.onload = function(e) {
+			var image = new Image();
+			image.src = e.target.result;
+			let dom = document.querySelector('.goods_main_preview');
+			dom.innerHTML = '';
+			dom.appendChild(image);
+			self.cropper = new Cropper(image, {
+				aspectRatio: 4 / 4,
+				zoomable: false
+			});
+		};
+		reader.onerror = function() {
+			message.warning('服务端错误, 请稍后重试');
+		};
+	}
+
+	descChange() {
+		let files = document.getElementById('goods_desc_img').files;
+		console.log(files);
+		let dom = document.querySelector('.goods_desc_preview');
+		for(let i = 0; i < files.length; i++) {
+			var reader = new FileReader();
+			reader.readAsDataURL(files[i]);
+			reader.onload = function(e) {
+				var image = new Image();
+				image.src = e.target.result;
+				dom.appendChild(image);
+			};
+			reader.onerror = function() {
+				message.warning('服务端错误, 请稍后重试');
+			};
+		}
 	}
 
 	async handleOk()  {
 		this.props.form.validateFields(async (err, values) => {
+			let descFiles = document.getElementById('goods_desc_img').files;
+			console.log(descFiles);
 			try {
 				if (err) return;
-				values.start_time = moment(values.start_time).format('HH:mm');
-				values.end_time = moment(values.end_time).format('HH:mm');
-				let res = await this.shopStore.addShop(values);
-				if(res.data == 'success') {
-					this.props.controllerAddDialog();
-					this.props.onSearch();
-				}
+				if(!this.cropper) return message.warning('请上传主图');
+
+				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
+					let campus = localStorage.getItem('campus') || '';
+					// const formData = new FormData();
+					// formData.append('campus', campus);
+					// formData.append('file', blob);
+					// formData.append('shop', values.shop);
+					// formData.append('sort', Number(values.sort) || 1);
+					// let res = await this.swiperStore.addSwiper(formData);
+					// if(res.data == 'success') {
+					// 	this.props.controllerAddDialog();
+					// 	this.props.onSearch();
+					// 	return message.success('新增成功');
+					// }
+				});
+				console.log(values);
 			} catch (error) {
 				console.log(error);
 			}
@@ -63,37 +109,17 @@ class AddDialog extends React.Component {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		let {campus} = this.shopStore, format = 'HH:mm';
 		return (
 			<div>
 				<Modal
 					className='common_dialog common_max_dialog'
-					title="新增商店"
+					title="新增商品"
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="所属校区">
-							{getFieldDecorator('campus', {
-								rules: [{
-									required: true,
-									message: '请选择',
-								}],
-							})(
-								<Select placeholder="请选择">
-									{
-										campus && campus.length != 0 ?
-											campus.map(item => {
-												return <Option key={item.id} value={item.name}>{item.name}</Option>;
-											})
-											: null
-									}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							label="店铺名称">
+							label="商品名称">
 							{getFieldDecorator('name', {
 								rules: [{
 									required: true,
@@ -104,39 +130,15 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="店铺地址">
-							{getFieldDecorator('address', {
+							label="价格">
+							{getFieldDecorator('price', {
 								rules: [{
 									required: true,
 									message: '请输入',
 								}],
 							})(
-								<Input placeholder="请输入" />
+								<Input type="number" placeholder="请输入" />
 							)}
-						</FormItem>
-						<FormItem label="营业时间" style={{ marginBottom: 0 }} className='common_dialog_time'>
-							<FormItem
-								style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-								{getFieldDecorator('start_time', {
-									rules: [{
-										required: true,
-										message: '请选择',
-									}],
-								})(
-									<TimePicker format={format}/>
-								)}
-							</FormItem>
-							<span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-							<FormItem style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-								{getFieldDecorator('end_time', {
-									rules: [{
-										required: true,
-										message: '请选择',
-									}],
-								})(
-									<TimePicker format={format}/>
-								)}
-							</FormItem>
 						</FormItem>
 						<FormItem
 							label="餐盒费">
@@ -150,47 +152,17 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="配送费">
+							label="今日推荐">
 							{getFieldDecorator('send_price', {
 								rules: [{
 									required: true,
-									message: '请输入',
+									message: '请选择',
 								}],
 							})(
-								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
-							label="起送费">
-							{getFieldDecorator('start_price', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
-							label="用户名">
-							{getFieldDecorator('username', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input placeholder="请输入(商家登录该系统的用户名)" />
-							)}
-						</FormItem>
-						<FormItem
-							label="密码">
-							{getFieldDecorator('password', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input placeholder="请输入(商家登录该系统的密码)" />
+								<Radio.Group>
+									<Radio value="1">是</Radio>
+									<Radio value="2">否</Radio>
+								</Radio.Group>
 							)}
 						</FormItem>
 						<FormItem
@@ -207,9 +179,40 @@ class AddDialog extends React.Component {
 						<FormItem
 							label="描述">
 							{getFieldDecorator('desc')(
-								<Input placeholder="请输入店铺地址" />
+								<Input placeholder="请输入(8个字以内)" />
 							)}
 						</FormItem>
+						<Row className='campus_container'>
+							<Col span={4} className='campus_container_label'>主图录入：</Col>
+							<Col span={20}>
+								<input
+									type="file"
+									id='goods_main_img'
+									accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+									onChange={this.fileChange.bind(this)}/>
+							</Col>
+						</Row>
+						<Row className='campus_container'>
+							<Col span={4} className='campus_container_label'></Col>
+							<Col span={20} className='goods_main_preview'>
+							</Col>
+						</Row>
+						<Row className='campus_container goods_container'>
+							<Col span={4} className='campus_container_label'>描述图片：</Col>
+							<Col span={20}>
+								<input
+									type="file"
+									id='goods_desc_img'
+									multiple
+									accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+									onChange={this.descChange.bind(this)}/>
+							</Col>
+						</Row>
+						<Row className='campus_container'>
+							<Col span={4} className='campus_container_label'></Col>
+							<Col span={20} className='goods_desc_preview'>
+							</Col>
+						</Row>
 					</Form>
 				</Modal>
 			</div>
