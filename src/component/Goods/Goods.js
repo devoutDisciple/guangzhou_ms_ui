@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 import Request from '../../request/AxiosRequest';
 import AddDialog from './AddDialog';
+import EditorDialog from './EditorDialog';
 import './index.less';
 
 @inject('GoodsStore')
@@ -26,6 +27,9 @@ class Goods extends React.Component{
 	}
 
 	async componentDidMount() {
+		// new Audio(
+		// 	'http://tts.baidu.com/text2audio?cuid=baiduid&lan=zh&ctp=1&pdt=311&tex=您有新的订单啦~'
+		//   ).play();
 		// 查询商店
 		await this.onSearchShop();
 	}
@@ -70,10 +74,10 @@ class Goods extends React.Component{
 
 	// 确认删除
 	async onConfirmDelete(record) {
-		let result = await Request.post('/shop/delete', {id: record.id});
+		let result = await Request.post('/goods/delete', {id: record.id});
 		if(result.data == 'success') {
 			message.success('删除成功');
-			return this.onSearch();
+			return this.onSearchGoods();
 		}
 	}
 
@@ -151,12 +155,6 @@ class Goods extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '原价(元)',
-				dataIndex: 'discount',
-				key: 'discount',
-				align: 'center'
-			},
-			{
 				title: '餐盒费',
 				dataIndex: 'package_cost',
 				key: 'package_cost',
@@ -206,7 +204,7 @@ class Goods extends React.Component{
 			wrapperCol: { span: 20 },
 		};
 		let {shopList, goodsList} = this.goodsStore;
-		let {addDialogVisible} = this.state;
+		let {addDialogVisible, shopid, editorDialogVisible, editData} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
@@ -252,8 +250,18 @@ class Goods extends React.Component{
 				{
 					addDialogVisible ?
 						<AddDialog
+							shopid={shopid}
 							onSearch={this.onSearchGoods.bind(this)}
 							controllerAddDialog={this.controllerAddDialog.bind(this)}/>
+						: null
+				}
+				{
+					editorDialogVisible ?
+						<EditorDialog
+							shopid={shopid}
+							data={editData}
+							onSearch={this.onSearchGoods.bind(this)}
+							controllerEditorDialog={this.controllerEditorDialog.bind(this)}/>
 						: null
 				}
 			</div>
