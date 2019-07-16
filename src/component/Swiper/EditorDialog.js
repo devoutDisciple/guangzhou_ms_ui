@@ -37,11 +37,11 @@ class EditorDialog extends React.Component {
 			try {
 				if (err) return;
 				if(!(values.sort > 0)) return message.warning('权重请输入数字');
+				const formData = new FormData();
+				formData.append('id', this.props.editData.id);
+				formData.append('shopid', values.shop);
+				formData.append('sort', Number(values.sort) || 1);
 				if(!this.cropper) {
-					const formData = new FormData();
-					formData.append('id', this.props.editData.id);
-					formData.append('shopid', values.shop);
-					formData.append('sort', Number(values.sort) || 1);
 					let res = await this.swiperStore.updateSwiper(formData);
 					if(res.data == 'success') {
 						this.props.controllerEditorDialog();
@@ -50,11 +50,7 @@ class EditorDialog extends React.Component {
 					}
 				}
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
-					const formData = new FormData();
-					formData.append('id', this.props.editData.id);
 					formData.append('file', blob);
-					formData.append('shopid', values.shop);
-					formData.append('sort', Number(values.sort) || 1);
 					let res = await this.swiperStore.updateSwiper(formData);
 					if(res.data == 'success') {
 						this.props.controllerEditorDialog();

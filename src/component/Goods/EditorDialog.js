@@ -105,23 +105,21 @@ class EditorDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
+				let formData = new FormData(), {fileList} = this.state, desc = [];
+				fileList.map(item => {
+					desc.push(item.response ? item.response.data : item.url);
+				});
+				desc =  JSON.stringify(desc);
+				formData.append('desc', desc);
+				formData.append('id', this.props.data.id);
+				formData.append('name', values.name);
+				formData.append('title', values.title);
+				formData.append('price', values.price);
+				formData.append('package_cost', values.package_cost);
+				formData.append('today', values.today);
+				formData.append('sort', values.sort);
+				formData.append('shopid', this.props.shopid);
 				if(!this.cropper) {
-					let {fileList} = this.state;
-					let desc = [];
-					fileList.map(item => {
-						desc.push(item.response ? item.response.data : item.url);
-					});
-					desc =  JSON.stringify(desc);
-					const formData = new FormData();
-					formData.append('id', this.props.data.id);
-					formData.append('name', values.name);
-					formData.append('title', values.title);
-					formData.append('desc', desc);
-					formData.append('price', values.price);
-					formData.append('package_cost', values.package_cost);
-					formData.append('today', values.today);
-					formData.append('sort', values.sort);
-					formData.append('shopid', this.props.shopid);
 					let res = await request.post('/goods/update', formData);
 					if(res.data == 'success') {
 						message.success('修改成功');
@@ -131,23 +129,7 @@ class EditorDialog extends React.Component {
 					return;
 				}
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
-					let {fileList} = this.state;
-					let desc = [];
-					fileList.map(item => {
-						desc.push(item.response ? item.response.data : item.url);
-					});
-					desc =  JSON.stringify(desc);
-					const formData = new FormData();
-					formData.append('id', this.props.data.id);
-					formData.append('name', values.name);
-					formData.append('title', values.title);
-					formData.append('desc', desc);
-					formData.append('price', values.price);
-					formData.append('package_cost', values.package_cost);
-					formData.append('today', values.today);
-					formData.append('sort', values.sort);
 					formData.append('file', blob);
-					formData.append('shopid', this.props.shopid);
 					let res = await request.post('/goods/update', formData);
 					if(res.data == 'success') {
 						message.success('修改成功');
