@@ -1,6 +1,5 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
-const { SubMenu }  = Menu;
 
 export default class MyMenu extends React.Component {
 
@@ -40,6 +39,7 @@ export default class MyMenu extends React.Component {
 				onSelect={this.onSelect.bind(this)}
 				selectedKeys={[this.state.selectedKeys]}
 				inlineCollapsed={false}>
+
 				<Menu.Item key="/home/campus">
 					<Icon type="inbox" />
 					<span>校区管理</span>
@@ -60,40 +60,30 @@ export default class MyMenu extends React.Component {
 					<Icon type="inbox" />
 					<span>菜品管理</span>
 				</Menu.Item>
-				<Menu.Item key="5">
+				<Menu.Item key="/home/today">
 					<Icon type="inbox" />
 					<span>今日推荐</span>
 				</Menu.Item>
-				<Menu.Item key="6">
+				{/* <Menu.Item key="/home/">
 					<Icon type="inbox" />
-					<span>综合排序</span>
+					<span>意见反馈</span>
+				</Menu.Item> */}
+				<Menu.Item key="/home/order">
+					<Icon type="inbox" />
+					<span>订单管理</span>
 				</Menu.Item>
-				<Menu.Item key="7">
+				<Menu.Item key="/home/money">
 					<Icon type="inbox" />
 					<span>提现管理</span>
 				</Menu.Item>
-				<Menu.Item key="8">
+				<Menu.Item key="/home/evaluate">
 					<Icon type="inbox" />
-					<span>营收报表</span>
+					<span>用户评价</span>
 				</Menu.Item>
-
-				<Menu.Item key="10">
+				<Menu.Item key="/home/data">
 					<Icon type="inbox" />
-					<span>意见反馈</span>
+					<span>数据汇总</span>
 				</Menu.Item>
-				<SubMenu
-					key="sub1"
-					title={
-						<span>
-							<Icon type="mail" />
-							<span>Navigation One</span>
-						</span>
-					}>
-					<Menu.Item key="9">Option 5</Menu.Item>
-					<Menu.Item key="6">Option 6</Menu.Item>
-					<Menu.Item key="7">Option 7</Menu.Item>
-					<Menu.Item key="8">Option 8</Menu.Item>
-				</SubMenu>
 			</Menu>
 		);
 	}

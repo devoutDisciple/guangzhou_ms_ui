@@ -11,6 +11,11 @@ import Campus from '../Campus/Campus';
 import Shop from '../Shop/Shop';
 import Goods from '../Goods/Goods';
 import Member from '../Member/Member';
+import Today from '../Today/Today';
+import Order from '../Order/Order';
+import Money from '../Money/Money';
+import Evaluate from '../Evaluate/Evaluate';
+import Data from '../Data/Data';
 
 @inject('GlobalStore')
 @observer
@@ -44,6 +49,11 @@ export default class MyLayout extends React.Component{
 								<Route path="/home/shop" component={Shop} />
 								<Route path="/home/goods" component={Goods} />
 								<Route path="/home/member" component={Member} />
+								<Route path="/home/today" component={Today} />
+								<Route path="/home/order" component={Order} />
+								<Route path="/home/money" component={Money} />
+								<Route path="/home/evaluate" component={Evaluate} />
+								<Route path="/home/data" component={Data} />
 							</Switch>
 						</div>
 					</Content>
