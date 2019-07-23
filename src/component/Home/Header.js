@@ -40,6 +40,7 @@ export default class MyHeader extends React.Component{
 			selectedKeys: [key]
 		}, () => {
 			localStorage.setItem('campus', key);
+			location.reload();
 		});
 	}
 
@@ -60,7 +61,7 @@ export default class MyHeader extends React.Component{
 		);
 		return (
 			<Header className="root_layout_content_header">
-				<span className="root_layout_content_header_span">校区切换：</span>
+				<span className="root_layout_content_header_span">区域切换：</span>
 				<Dropdown overlay={menu} trigger={['click']}>
 					<a className="ant-dropdown-link" href="#">
 						{selectedKeys && selectedKeys.length != 0 ? selectedKeys[0] : ''} <Icon type="down" />

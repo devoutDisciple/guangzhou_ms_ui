@@ -42,7 +42,7 @@ export default class MyMenu extends React.Component {
 
 				<Menu.Item key="/home/campus">
 					<Icon type="inbox" />
-					<span>校区管理</span>
+					<span>区域管理</span>
 				</Menu.Item>
 				<Menu.Item key="/home/member">
 					<Icon type="inbox" />

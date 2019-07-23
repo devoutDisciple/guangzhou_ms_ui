@@ -25,8 +25,7 @@ let plugins = [
 		cache: false,
 		uglifyOptions: {
 			compress: {
-				drop_console: true,
-				warnings: false
+				drop_console: true
 			},
 			output: {
 				comments: false,        //去掉注释

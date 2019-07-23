@@ -9,7 +9,7 @@ module.exports = {
 		ONLINE_SERVER: 'http://localhost:3001/'
 	},
 	prod: {
-		publicPath: '../dist/',
+		publicPath: './',
 		API_SERVER: 'http://100.81.3.1:8888/'
 	}
 };

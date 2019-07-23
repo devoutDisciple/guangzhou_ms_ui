@@ -74,7 +74,7 @@ class Campus extends React.Component{
 			{ getFieldDecorator } = this.props.form,
 			columns = [
 				{
-					title: '学校',
+					title: '区域',
 					dataIndex: 'name',
 					key: 'name',
 					align: 'center'
@@ -107,9 +107,9 @@ class Campus extends React.Component{
 					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="校园名称">
+								label="区域名称">
 								{getFieldDecorator('name')(
-									<Input placeholder="请输入校园名称" />
+									<Input placeholder="请输入区域名称" />
 								)}
 							</FormItem>
 						</Col>
