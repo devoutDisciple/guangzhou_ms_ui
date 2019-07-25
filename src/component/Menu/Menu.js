@@ -37,7 +37,6 @@ export default class MyMenu extends React.Component {
 
 	render() {
 		let role = this.globalStore.userinfo.role;
-		console.log(role, 333);
 		// 超级管理员
 		if(role == 1) {
 			return (
@@ -108,7 +107,7 @@ export default class MyMenu extends React.Component {
 				</Menu.Item>
 				<Menu.Item key="/home/shop/data">
 					<Icon type="inbox" />
-					<span>营收数据</span>
+					<span>订单管理</span>
 				</Menu.Item>
 				<Menu.Item key="/home/shop/money">
 					<Icon type="inbox" />

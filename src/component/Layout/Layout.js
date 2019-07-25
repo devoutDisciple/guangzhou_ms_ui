@@ -14,8 +14,8 @@ export default class MyLayout extends React.Component{
 		this.globalStore = props.GlobalStore;
 	}
 
-	componentDidMount() {
-		this.globalStore.getLogin();
+	async componentDidMount() {
+		await this.globalStore.getLogin();
 	}
 
 	render() {

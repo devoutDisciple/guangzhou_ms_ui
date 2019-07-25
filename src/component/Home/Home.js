@@ -22,7 +22,6 @@ import Data from '../admin/Data/Data';
 // 商店
 import MyShop from '../shop/MyShop/MyShop';
 
-
 @inject('GlobalStore')
 @observer
 export default class MyLayout extends React.Component{
@@ -36,7 +35,7 @@ export default class MyLayout extends React.Component{
 	}
 
 	render() {
-		let role = this.globalStore.userinfo;
+		let {role} = this.globalStore.userinfo;
 		return (
 			<React.Fragment>
 				<Layout>

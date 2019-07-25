@@ -29,7 +29,8 @@ class GlobalStore {
 
 	@action
     setUserinfo(data) {
-    	this.userinfo = data;
+    	let userinfo = this.userinfo;
+    	this.userinfo = Object.assign(userinfo, data);
     }
 
     // loading的动画效果
@@ -90,7 +91,7 @@ class GlobalStore {
 					 username: user.data.username,
 					 role: user.data.role
 				 });
-				 location.hash = user.data.role == 2 ? '#/home/my' : '#/home/campus';
+				 location.hash = user.data.role == 2 ? '#/home/shop/my' : '#/home/campus';
 				 this.setLogin(true);
 			 });
 		 } catch (error) {
