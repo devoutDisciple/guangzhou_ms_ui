@@ -6,7 +6,7 @@ import {
 const FormItem = Form.Item;
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 
 @inject('CampusStore')
 @observer

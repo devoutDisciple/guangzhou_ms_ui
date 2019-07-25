@@ -18,7 +18,9 @@ class GlobalStore {
 	// 用户信息
 	@observable
 	userinfo = {
-
+		shopid: '',
+		username: '',
+		role: 2
 	}
 
     // 校区list
@@ -55,6 +57,11 @@ class GlobalStore {
     	try {
     		let user = await request.get('/account/isLogin');
     		runInAction(() => {
+				if(user.data.role == 2) {
+					this.setUserinfo({
+						shopid: user.data.shopid
+					});
+				}
 				this.setUserinfo({
 					username: user.data.username,
 					role: user.data.role
@@ -74,11 +81,16 @@ class GlobalStore {
 		 try {
 			 let user = await request.post('/account/login', values);
 			 runInAction(() => {
+    			if(user.data.role == 2) {
+    				this.setUserinfo({
+    					shopid: user.data.shopid
+    				});
+    			}
 				 this.setUserinfo({
 					 username: user.data.username,
 					 role: user.data.role
 				 });
-				 location.hash = '#/home';
+				 location.hash = user.data.role == 2 ? '#/home/my' : '#/home/campus';
 				 this.setLogin(true);
 			 });
 		 } catch (error) {

@@ -5,7 +5,7 @@ import {
 } from 'antd';
 const FormItem = Form.Item;
 const { Option } = Select;
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
 import './index.less';

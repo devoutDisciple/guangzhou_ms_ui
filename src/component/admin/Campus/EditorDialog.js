@@ -7,7 +7,7 @@ import './zTree/zTreeStyle.css';
 import './zTree/jquery.ztree.core.min';
 import './zTree/jquery.ztree.excheck.min';
 import './zTree/jquery.ztree.exedit.min';
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 import {inject, observer} from 'mobx-react';
 const FormItem = Form.Item;
 let newCount = 1;
@@ -34,8 +34,34 @@ class AddDialog extends React.Component {
 
 	componentDidMount() {
 		this.initZtree();
+		let editData = this.props.editData;
+		let floor = JSON.parse(editData.floor) || [];
+		let zNodes = this.modifyFloor(floor, []);
+		this.setState({
+			zNodes: zNodes
+		}, () => this.initZtree());
+		this.props.form.setFieldsValue({
+			name: editData.name,
+			sort: Number(editData.sort)
+		});
 	}
 
+	// 整理ztree数据格式
+	modifyFloor(data, arr) {
+		data.map(item => {
+			arr.push({
+				id: item.id,
+				pId: item.pId,
+				name: item.name
+			});
+			if(item.children && item.children.length != 0) {
+				this.modifyFloor(item.children, arr);
+			}
+		});
+		return arr;
+	}
+
+	// 初始化树形结构
 	initZtree() {
 		const setting = {
 			view: {
@@ -64,21 +90,6 @@ class AddDialog extends React.Component {
 				onRename: this.onRename
 			}
 		};
-
-		// var zNodes =[
-		// 	{ id:1, pId:0, name:'父节点 1', open:true},
-		// 	{ id:11, pId:1, name:'叶子节点 1-1'},
-		// 	{ id:12, pId:1, name:'叶子节点 1-2'},
-		// 	{ id:13, pId:1, name:'叶子节点 1-3'},
-		// 	{ id:2, pId:0, name:'父节点 2', open:true},
-		// 	{ id:21, pId:2, name:'叶子节点 2-1'},
-		// 	{ id:22, pId:2, name:'叶子节点 2-2'},
-		// 	{ id:23, pId:2, name:'叶子节点 2-3'},
-		// 	{ id:3, pId:0, name:'父节点 3', open:true},
-		// 	{ id:31, pId:3, name:'叶子节点 3-1'},
-		// 	{ id:32, pId:3, name:'叶子节点 3-2'},
-		// 	{ id:33, pId:3, name:'叶子节点 3-3'}
-		// ];
 		setTimeout(() => {
 			$.fn.zTree.init($('#campus_tree'), setting, this.state.zNodes);
 		}, 0);
@@ -176,12 +187,12 @@ class AddDialog extends React.Component {
 				if (err) return;
 				let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
 				let newNodes = this.getNodes(nodes, []);
-				let params = Object.assign(values, {floor: newNodes});
-				let result = await Request.post('/position/add', params);
+				let params = Object.assign(values, {floor: newNodes, id: this.props.editData.id});
+				let result = await Request.post('/position/update', params);
 				if(result.data == 'success') {
-					message.success('新增成功');
+					message.success('编辑成功');
 					this.props.onSearch();
-					return this.props.controllerAddDialog();
+					return this.props.controllerEditorDialog();
 				}
 			} catch (error) {
 				console.log(error);
@@ -190,7 +201,7 @@ class AddDialog extends React.Component {
 	}
 
 	handleCancel() {
-		this.props.controllerAddDialog();
+		this.props.controllerEditorDialog();
 	}
 
 	render() {
@@ -203,11 +214,11 @@ class AddDialog extends React.Component {
 			<div>
 				<Modal
 					className='common_dialog'
-					title="新增校区"
+					title="编辑校区"
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
-					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
+					<Form {...formItemLayout}>
 						<FormItem
 							label="校区名称">
 							{getFieldDecorator('name', {

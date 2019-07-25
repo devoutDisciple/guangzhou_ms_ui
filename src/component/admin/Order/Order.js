@@ -3,9 +3,9 @@ import {
 	Table
 } from 'antd';
 // const { Option } = Select;
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
-import FilterOrderStatus from '../../util/FilterOrderStatus';
+import FilterOrderStatus from '../../../util/FilterOrderStatus';
 
 export default class Order extends React.Component{
 

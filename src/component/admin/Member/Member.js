@@ -2,7 +2,7 @@ import React from 'react';
 import {
 	Table, Tooltip, message
 } from 'antd';
-import request from '../../request/AxiosRequest';
+import request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import AddressDialog from './AddressDialog';
 import OrderDialog from './OrderDialog';

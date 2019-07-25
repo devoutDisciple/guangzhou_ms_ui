@@ -1,10 +1,14 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
+import {inject, observer} from 'mobx-react';
 
+@inject('GlobalStore')
+@observer
 export default class MyMenu extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.globalStore = props.GlobalStore;
 	}
 
 	state = {
@@ -32,6 +36,61 @@ export default class MyMenu extends React.Component {
 	}
 
 	render() {
+		let role = this.globalStore.userinfo.role;
+		console.log(role, 333);
+		// 超级管理员
+		if(role == 1) {
+			return (
+				<Menu
+					mode="inline"
+					theme="dark"
+					onSelect={this.onSelect.bind(this)}
+					selectedKeys={[this.state.selectedKeys]}
+					inlineCollapsed={false}>
+					<Menu.Item key="/home/campus">
+						<Icon type="inbox" />
+						<span>区域管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/member">
+						<Icon type="inbox" />
+						<span>会员管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/swiper">
+						<Icon type="pie-chart" />
+						<span>首页轮播图</span>
+					</Menu.Item>
+					<Menu.Item key="/home/shop">
+						<Icon type="pie-chart" />
+						<span>商店管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/goods">
+						<Icon type="inbox" />
+						<span>菜品管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/today">
+						<Icon type="inbox" />
+						<span>今日推荐</span>
+					</Menu.Item>
+					<Menu.Item key="/home/order">
+						<Icon type="inbox" />
+						<span>订单管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/money">
+						<Icon type="inbox" />
+						<span>提现管理</span>
+					</Menu.Item>
+					<Menu.Item key="/home/evaluate">
+						<Icon type="inbox" />
+						<span>用户评价</span>
+					</Menu.Item>
+					<Menu.Item key="/home/data">
+						<Icon type="inbox" />
+						<span>数据汇总</span>
+					</Menu.Item>
+				</Menu>
+			);
+		}
+
 		return (
 			<Menu
 				mode="inline"
@@ -39,50 +98,21 @@ export default class MyMenu extends React.Component {
 				onSelect={this.onSelect.bind(this)}
 				selectedKeys={[this.state.selectedKeys]}
 				inlineCollapsed={false}>
-
-				<Menu.Item key="/home/campus">
+				<Menu.Item key="/home/shop/my">
 					<Icon type="inbox" />
-					<span>区域管理</span>
+					<span>我的店铺</span>
 				</Menu.Item>
-				<Menu.Item key="/home/member">
-					<Icon type="inbox" />
-					<span>会员管理</span>
-				</Menu.Item>
-				<Menu.Item key="/home/swiper">
-					<Icon type="pie-chart" />
-					<span>首页轮播图</span>
-				</Menu.Item>
-				<Menu.Item key="/home/shop">
-					<Icon type="pie-chart" />
-					<span>商店管理</span>
-				</Menu.Item>
-				<Menu.Item key="/home/goods">
+				<Menu.Item key="/home/shop/goods">
 					<Icon type="inbox" />
 					<span>菜品管理</span>
 				</Menu.Item>
-				<Menu.Item key="/home/today">
+				<Menu.Item key="/home/shop/data">
 					<Icon type="inbox" />
-					<span>今日推荐</span>
+					<span>营收数据</span>
 				</Menu.Item>
-				{/* <Menu.Item key="/home/">
-					<Icon type="inbox" />
-					<span>意见反馈</span>
-				</Menu.Item> */}
-				<Menu.Item key="/home/order">
-					<Icon type="inbox" />
-					<span>订单管理</span>
-				</Menu.Item>
-				<Menu.Item key="/home/money">
+				<Menu.Item key="/home/shop/money">
 					<Icon type="inbox" />
 					<span>提现管理</span>
-				</Menu.Item>
-				<Menu.Item key="/home/evaluate">
-					<Icon type="inbox" />
-					<span>用户评价</span>
-				</Menu.Item>
-				<Menu.Item key="/home/data">
-					<Icon type="inbox" />
-					<span>数据汇总</span>
 				</Menu.Item>
 			</Menu>
 		);

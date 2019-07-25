@@ -3,7 +3,7 @@ import {
 	Table, message, Tooltip
 } from 'antd';
 // const { Option } = Select;
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 
 export default class Today extends React.Component{
 

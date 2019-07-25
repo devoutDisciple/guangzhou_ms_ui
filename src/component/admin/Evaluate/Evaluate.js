@@ -3,7 +3,7 @@ import {
 	Table, Tooltip
 } from 'antd';
 // // const { Option } = Select;
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 
 export default class Evaluate extends React.Component{

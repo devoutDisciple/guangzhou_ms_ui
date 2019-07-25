@@ -3,7 +3,7 @@ import {
 	Modal, Table
 } from 'antd';
 import moment from 'moment';
-import FilterStatus from '../../util/FilterOrderStatus';
+import FilterStatus from '../../../util/FilterOrderStatus';
 
 
 export default class OrderDialog extends React.Component {

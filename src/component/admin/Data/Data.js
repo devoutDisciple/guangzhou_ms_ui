@@ -1,7 +1,7 @@
 import React from 'react';
 // // const { Card } = Select;
 import {Card, Row, Button} from 'antd';
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 import './index.less';
 import echarts from 'echarts';
 

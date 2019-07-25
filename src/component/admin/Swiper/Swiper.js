@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
-import Request from '../../request/AxiosRequest';
+import Request from '../../../request/AxiosRequest';
 
 @inject('SwiperStore')
 @observer

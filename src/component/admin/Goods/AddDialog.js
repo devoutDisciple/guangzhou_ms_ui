@@ -4,8 +4,8 @@ import {
 } from 'antd';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
-import config from '../../../config/config';
-import request from '../../request/AxiosRequest';
+import config from '../../../../config/config';
+import request from '../../../request/AxiosRequest';
 
 const FormItem = Form.Item;
 // const { Option } = Select;
