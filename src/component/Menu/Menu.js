@@ -109,7 +109,7 @@ export default class MyMenu extends React.Component {
 					<Icon type="inbox" />
 					<span>订单管理</span>
 				</Menu.Item>
-				<Menu.Item key="/home/shop/money">
+				<Menu.Item key="/home/shop/bill">
 					<Icon type="inbox" />
 					<span>提现管理</span>
 				</Menu.Item>
