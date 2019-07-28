@@ -14,7 +14,6 @@ class AddDialog extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.shopStore = props.ShopStore;
 	}
 
 	state = {

@@ -8,7 +8,6 @@ import config from '../../../../config/config';
 import request from '../../../request/AxiosRequest';
 
 const FormItem = Form.Item;
-// const { Option } = Select;
 
 class EditorDialog extends React.Component {
 

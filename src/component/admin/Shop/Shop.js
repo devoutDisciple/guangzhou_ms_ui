@@ -32,6 +32,7 @@ export default class Shop extends React.Component{
 			addDialogVisible: !this.state.addDialogVisible
 		});
 	}
+
 	// 编辑框的显示
 	controllerEditorDialog() {
 		this.setState({

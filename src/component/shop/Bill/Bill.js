@@ -1,7 +1,10 @@
 import React from 'react';
 // const { Option } = Select;
-import {Col, Button, Table} from 'antd';
+import {Table, Popconfirm, message} from 'antd';
 import {inject, observer} from 'mobx-react';
+import Request from '../../../request/AxiosRequest';
+import moment from 'moment';
+import Filter from '../../../util/FilterOrderStatus';
 
 @inject('GlobalStore')
 @observer
@@ -17,6 +20,29 @@ export default class Order extends React.Component{
 	}
 
 	async componentDidMount() {
+		await this.onSearchBill();
+	}
+
+	async onSearchBill() {
+		let shopid = this.globalStore.userinfo.shopid;
+		let res = await Request.get('/bill/getAllByShopid', {shop_id: shopid});
+		let data = res.data || [];
+		data.map(item => {
+			item.key = item.id;
+			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+			item.modify_time = moment(item.modify_time).format('YYYY-MM-DD HH:mm:ss');
+		});
+		this.setState({list: res.data || []});
+	}
+
+	// 撤销申请
+	async onCancelBill(data) {
+		let res = await Request.post('/bill/modifyBillById', {id: data.id, status: 4});
+		console.log(res);
+		if(res.data == 'success') {
+			message.success('撤销成功');
+			this.onSearchBill();
+		}
 	}
 
 
@@ -24,22 +50,19 @@ export default class Order extends React.Component{
 		let {list} = this.state;
 		const columns = [
 			{
-				title: '编号',
-				dataIndex: 'id',
-				key: 'id',
+				title: '审批编号',
+				dataIndex: 'code',
+				key: 'code',
 				align: 'center'
 			},
 			{
-				title: '商店名称',
-				dataIndex: 'shopid',
-				key: 'shopid',
-				align: 'center'
-			},
-			{
-				title: 'type',
-				dataIndex: '支付方式',
-				key: '支付方式',
-				align: 'center'
+				title: '支付方式',
+				dataIndex: 'type',
+				key: 'type',
+				align: 'center',
+				render: (text, record) => {
+					return <span>{Filter.filterBillType(record.type)}</span>;
+				}
 			},
 			{
 				title: '商家账号',
@@ -53,15 +76,7 @@ export default class Order extends React.Component{
 				key: 'money',
 				align: 'center'
 			},
-			{
-				title: '状态',
-				dataIndex: 'status',
-				key: 'status',
-				align: 'center',
-				// render: (text, record) => {
-				// 	return <span>{FilterOrderStatus.filterOrderStatus(record.status)}</span>;
-				// }
-			},
+
 			{
 				title: '申请时间',
 				dataIndex: 'create_time',
@@ -75,22 +90,35 @@ export default class Order extends React.Component{
 				align: 'center',
 			},
 			{
+				title: '状态',
+				dataIndex: 'status',
+				key: 'status',
+				align: 'center',
+				render: (text, record) => {
+					let status = record.status;
+					if(status == 1) return <span style={{color: '#15863d'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 2) return <span style={{color: 'red'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 3) return <span style={{color: '#008dff'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 4) return <span style={{color: 'red'}}>{Filter.filterBillStatus(record.status)}</span>;
+				}
+			},
+			{
 				title: '操作',
 				dataIndex: 'operation',
 				key: 'operation',
 				align: 'center',
-				render: () => {
-					return <span>hello</span>;
+				render: (text, record) => {
+					let status = record.status;
+					if(status == 1) {
+						return <Popconfirm placement="top" title="是否确认撤销" onConfirm={this.onCancelBill.bind(this, record)} okText="确认" cancelText="取消">
+							<a href="javascript:;">撤销</a>
+			 			</Popconfirm>;
+					}
 				}
 			},
 		];
 		return (
 			<div className='common'>
-				<div className='common_search'>
-					<Col span={6} offset={1}>
-						<Button className='goods_search_btn' type='primary'>新增</Button>
-					</Col>
-				</div>
 				<div className='common_content'>
 					<Table
 						bordered

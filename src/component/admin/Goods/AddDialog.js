@@ -8,7 +8,6 @@ import config from '../../../../config/config';
 import request from '../../../request/AxiosRequest';
 
 const FormItem = Form.Item;
-// const { Option } = Select;
 
 class AddDialog extends React.Component {
 
@@ -59,7 +58,6 @@ class AddDialog extends React.Component {
 
 	descChange() {
 		let files = document.getElementById('goods_desc_img').files;
-		console.log(files);
 		let dom = document.querySelector('.goods_desc_preview');
 		for(let i = 0; i < files.length; i++) {
 			var reader = new FileReader();
@@ -79,7 +77,7 @@ class AddDialog extends React.Component {
 	async handleOk()  {
 		this.props.form.validateFields(async (err, values) => {
 			try {
-				if (err) return;
+				if(err) return;
 				if(!this.cropper) return message.warning('请上传主图');
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					let {fileList} = this.state;

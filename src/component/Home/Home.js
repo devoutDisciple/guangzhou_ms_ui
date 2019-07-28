@@ -24,6 +24,7 @@ import MyShop from '../shop/MyShop/MyShop';
 import ShopGoods from '../shop/Goods/Goods';
 import ShopOrder from '../shop/Order/Order';
 import ShopBill from '../shop/Bill/Bill';
+import ShopData from '../shop/Data/Data';
 
 @inject('GlobalStore')
 @observer
@@ -68,6 +69,7 @@ export default class MyLayout extends React.Component{
 									</Switch>
 									:
 									<Switch>
+										<Route exact path="/home/shop/data" component={ShopData} />
 										<Route exact path="/home/shop/my" component={MyShop} />
 										<Route exact path="/home/shop/goods" component={ShopGoods} />
 										<Route exact path="/home/shop/order" component={ShopOrder} />

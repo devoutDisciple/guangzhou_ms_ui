@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-	Table
+	Table, message
 } from 'antd';
-// const { Option } = Select;
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
@@ -38,9 +37,13 @@ export default class Order extends React.Component{
 		this.setState({oderList: res.data || []});
 	}
 
-	// 查看订单详情
-	async onSearchOrderDetail() {
-
+	// 改变订单状态
+	async onChangeOrderStatus(record, status) {
+		let res = await Request.post('/order/updateStatus', {id: record.id, status});
+		if(res.data == 'success') {
+			message.success('更改成功');
+			return this.onSearchOrder();
+		}
 	}
 
 
@@ -63,6 +66,12 @@ export default class Order extends React.Component{
 				title: '联系方式',
 				dataIndex: 'phone',
 				key: 'phone',
+				align: 'center'
+			},
+			{
+				title: '用户地址',
+				dataIndex: 'userAddress',
+				key: 'userAddress',
 				align: 'center'
 			},
 			{
@@ -92,8 +101,28 @@ export default class Order extends React.Component{
 				key: 'operation',
 				align: 'center',
 				render:(text, record) => {
+					let status = record.status;
 					return <span className="common_table_span">
-						<a href="javascript:;" onClick={this.onSearchOrderDetail.bind(this, record)}>订单详情</a>
+						{
+							status == 1 ?
+								<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 2)}>接单</a>
+								: <a href="javascript:;" disabled>接单</a>
+						}
+						{
+							status == 2 ?
+								<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 3)}>派送中</a>
+								: <a href="javascript:;" disabled>派送中</a>
+						}
+						{
+							status == 3 ?
+								<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 4)}>订单完成</a>
+								: <a href="javascript:;" disabled>订单完成</a>
+						}
+						{
+							status != 4 && status != 5 && status != 6 ?
+								<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 5)}>取消该订单</a>
+								: <a href="javascript:;" disabled>取消该订单</a>
+						}
 					</span>;
 				}
 			}
