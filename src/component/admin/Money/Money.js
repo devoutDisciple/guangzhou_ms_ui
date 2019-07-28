@@ -1,89 +1,140 @@
 import React from 'react';
-import {
-	Table
-} from 'antd';
-// // const { Option } = Select;
-// import Request from '../../../request/AxiosRequest';
-// import moment from 'moment';
+// const { Option } = Select;
+import {Table, Popconfirm, message} from 'antd';
+import Request from '../../../request/AxiosRequest';
+import moment from 'moment';
+import Filter from '../../../util/FilterOrderStatus';
 
 export default class Order extends React.Component{
 
 	constructor(props) {
 		super(props);
+		this.globalStore = this.props.GlobalStore;
 	}
 
 	state = {
-		oderList: []
+		list: []
 	}
 
 	async componentDidMount() {
-
+		await this.onSearchBill();
 	}
 
+	async onSearchBill() {
+		let res = await Request.get('/bill/getAllBill');
+		let data = res.data || [];
+		data.map(item => {
+			item.key = item.id;
+			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+			item.modify_time = moment(item.modify_time).format('YYYY-MM-DD HH:mm:ss');
+		});
+		this.setState({list: res.data || []});
+	}
 
-
-	// 查看订单详情
-	async onSearchOrderDetail() {
-
+	// 撤销申请
+	async onChangeBillStatus(data, status) {
+		let res = await Request.post('/bill/modifyBillById', {id: data.id, status: status});
+		if(res.data == 'success') {
+			message.success('操作成功');
+			this.onSearchBill();
+		}
 	}
 
 
 	render() {
-		let {oderList} = this.state;
+		let {list} = this.state;
 		const columns = [
 			{
-				title: '商店名称',
-				dataIndex: 'name',
-				key: 'name',
+				title: '审批编号',
+				dataIndex: 'code',
+				key: 'code',
 				align: 'center'
 			},
 			{
-				title: '账户类型',
+				title: '商家名称',
+				dataIndex: 'shopName',
+				key: 'shopName',
+				align: 'center'
+			},
+			{
+				title: '支付方式',
 				dataIndex: 'type',
 				key: 'type',
-				align: 'center'
+				align: 'center',
+				render: (text, record) => {
+					return <span>{Filter.filterBillType(record.type)}</span>;
+				}
 			},
 			{
-				title: '账户',
+				title: '商家收款账号',
 				dataIndex: 'account',
 				key: 'account',
 				align: 'center'
 			},
 			{
-				title: '提现金额',
+				title: '提现金额(元)',
 				dataIndex: 'money',
 				key: 'money',
 				align: 'center'
 			},
-			{
-				title: '发起时间',
-				dataIndex: 'time',
-				key: 'time',
-				align: 'center'
-			},
 
+			{
+				title: '申请时间',
+				dataIndex: 'create_time',
+				key: 'create_time',
+				align: 'center',
+			},
+			{
+				title: '处理时间',
+				dataIndex: 'modify_time',
+				key: 'modify_time',
+				align: 'center',
+			},
+			{
+				title: '状态',
+				dataIndex: 'status',
+				key: 'status',
+				align: 'center',
+				render: (text, record) => {
+					let status = record.status;
+					if(status == 1) return <span style={{color: '#15863d'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 2) return <span style={{color: 'red'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 3) return <span style={{color: '#008dff'}}>{Filter.filterBillStatus(record.status)}</span>;
+					if(status == 4) return <span style={{color: 'red'}}>{Filter.filterBillStatus(record.status)}</span>;
+				}
+			},
 			{
 				title: '操作',
 				dataIndex: 'operation',
 				key: 'operation',
 				align: 'center',
-				render:(text, record) => {
-					return <span className="common_table_span">
-						<a href="javascript:;" onClick={this.onSearchOrderDetail.bind(this, record)}>订单详情</a>
-					</span>;
+				render: (text, record) => {
+					let status = record.status;
+					if(status == 1) {
+						return (
+							<span className="common_table_span">
+								<Popconfirm placement="top" title="是否确认拒绝" onConfirm={this.onChangeBillStatus.bind(this, record, 2)} okText="确认" cancelText="取消">
+									<a href="javascript:;">拒绝</a>
+								</Popconfirm>
+								<Popconfirm placement="top" title="是否确认完成支付" onConfirm={this.onChangeBillStatus.bind(this, record, 3)} okText="确认" cancelText="取消">
+									<a href="javascript:;">已支付</a>
+								</Popconfirm>
+							</span>
+						);
+					}
 				}
-			}
+			},
 		];
 		return (
 			<div className='common'>
 				<div className='common_content'>
 					<Table
 						bordered
-						dataSource={oderList}
+						dataSource={list}
 						columns={columns}
 						pagination={
 							{
-								total: oderList.length,
+								total: list.length || 0,
 								showTotal: (total) => `共 ${total} 条`
 							}
 						}/>

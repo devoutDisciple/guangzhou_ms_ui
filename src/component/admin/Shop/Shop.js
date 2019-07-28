@@ -6,6 +6,7 @@ import {
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
 import Request from '../../../request/AxiosRequest';
+import DataDialog from './DataDialog';
 
 @inject('ShopStore')
 @observer
@@ -19,7 +20,9 @@ export default class Shop extends React.Component{
 	state = {
 		addDialogVisible: false,
 		editorDialogVisible: false,
-		editData: {}
+		editData: {},
+		dataDialogVisible: false,
+		shopid: '',
 	}
 
 	componentDidMount() {
@@ -73,9 +76,19 @@ export default class Shop extends React.Component{
 		}
 	}
 
-	// 查看更多
-	getMore() {
+	getMore(record) {
+		this.setState({
+			shopid: record.id
+		}, () => {
+			this.onControllerDataVisible();
+		});
+	}
 
+	// 查看更多 查看商店报表数据
+	onControllerDataVisible() {
+		this.setState({
+			dataDialogVisible: !this.state.dataDialogVisible
+		});
 	}
 
 
@@ -175,12 +188,13 @@ export default class Shop extends React.Component{
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
-						 <a href="javascript:;" onClick={this.getMore.bind(this)}>更多</a>
+						 <a href="javascript:;" onClick={this.getMore.bind(this, record)}>更多</a>
 					</span>;
 				}
 			}
 		];
-		let {list} = this.shopStore, {addDialogVisible, editorDialogVisible, editData} = this.state;
+		let {list} = this.shopStore,
+			{addDialogVisible, editorDialogVisible, editData, shopid, dataDialogVisible} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
@@ -211,6 +225,13 @@ export default class Shop extends React.Component{
 							editData={editData}
 							onSearch={this.onSearch.bind(this)}
 							controllerEditorDialog={this.controllerEditorDialog.bind(this)}/>
+						: null
+				}
+				{
+					dataDialogVisible ?
+						<DataDialog
+							shopid={shopid}
+							onControllerDataVisible={this.onControllerDataVisible.bind(this)}/>
 						: null
 				}
 			</div>

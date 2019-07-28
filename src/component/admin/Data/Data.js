@@ -1,118 +1,219 @@
 import React from 'react';
 import {Card, Row, Button} from 'antd';
-import Request from '../../../request/AxiosRequest';
 import './index.less';
+import request from '../../../request/AxiosRequest';
+import {inject, observer} from 'mobx-react';
 import echarts from 'echarts';
 
-export default class data extends React.Component{
+@inject('GlobalStore')
+@observer
+export default class Order extends React.Component{
 
 	constructor(props) {
 		super(props);
+		this.globalStore = this.props.GlobalStore;
 	}
 
 	state = {
-		totalData: {
-			userNum: 0,
-			orders: 0,
-			orderMoney: 0,
-			shops: 0
-		},
+		orderNum: 0,
+		orderPrice: 0,
+		todayNum: 0,
+		todayMoney: 0,
+		salesType: 1,
+		moneyType: 1,
+		alreadyMoney: 0, //已经提现金额
+		resMoney: 0, // 可提现金额
 	}
 
 	async componentDidMount() {
-		// /count/num
-		let res = await Request.get('/count/num');
+		setTimeout(() => {
+			// 获取商店数据汇总
+			this.getData();
+			// 获取销售量的数据汇总
+			this.getSales(1);
+			// 获取销售额的数据汇总
+			this.getSalesMoney(1);
+		}, 100);
+		this.getMoneyBillAlready();
+	}
+
+
+
+	// 获取已提现金额和可提现金额
+	async getMoneyBillAlready() {
+		let res = await request.get('/bill/getBillMoneyReady');
 		let data = res.data;
 		this.setState({
-			totalData: data || {
-				userNum: 0,
-				orders: 0,
-				orderMoney: 0,
-				shops: 0
-			}
+			alreadyMoney: data.alreadyMoney || 0, //已经提现金额
+			resMoney: data.resMoney || 0, // 可提现金额
 		});
-		this.initMember();
-		this.onsearchUsers();
 	}
 
-	async onsearchUsers() {
-		// /count/num
-		let res = await Request.get('/count/users');
-		console.log(res.data, 789);
+
+	// 点击销售量按钮
+	async onClickSalesBtn(type) {
+		this.setState({
+			salesType: type
+		}, () => this.getSales(type));
 	}
 
-	initMember() {
-		// 基于准备好的dom，初始化echarts实例
-		var myChart = echarts.init(document.getElementById('data_member'));
-		let options = {
-			color: ['#3398DB'],
-			tooltip : {
-				trigger: 'axis',
-				axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-					type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-				}
-			},
+	// 点击销售量按钮
+	async onClickMoneyBtn(type) {
+		this.setState({
+			moneyType: type
+		}, () => this.getSalesMoney(type));
+	}
+
+	// 获取本周销售总量
+	async getSales(type) {
+		let res = await request.get('/order/getSales', {type: type});
+		let myChart = echarts.init(document.getElementById('data_member1'));
+		let data = res.data || [];
+		if(data.length == 0) return;
+		let echartsData = [];
+		data.map(item => {
+			echartsData.push({value: [item.days, item.count]});
+		});
+		let option = {
 			grid: {
-				left: '1%',
-				right: '1%',
+				left: '3%',
+				right: '4%',
 				bottom: '3%',
 				containLabel: true
 			},
-			xAxis : [
-				{
-					type : 'category',
-					data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-					axisTick: {
-						alignWithLabel: true
-					}
+			tooltip: {
+				trigger: 'axis'
+			},
+			xAxis:  {
+				type: 'time',
+				boundaryGap: false,
+				splitLine:{
+					show:false
 				}
-			],
-			yAxis : [
-				{
-					type : 'value'
+			},
+			yAxis: {
+				type: 'value',
+				axisLabel: {
+					formatter: '{value} 单'
+				},
+			},
+			series: [{
+				name:'销售量',
+				type:'line',
+				data: echartsData,
+				lineStyle: {
+					color: '#2fc25b',
 				}
-			],
-			series : [
-				{
-					name:'直接访问',
-					type:'bar',
-					barWidth: '60%',
-					data:[10, 52, 200, 334, 390, 330, 220]
-				}
-			]
+			}]
 		};
-		// 绘制图表
-		myChart.setOption(options);
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
+	}
+
+	// 获得销售额数据汇总
+	async getSalesMoney(type) {
+		let res = await request.get('/order/getMoney', {type: type});
+		let myChart = echarts.init(document.getElementById('data_member2'));
+		let data = res.data || [];
+		if(data.length == 0) return;
+		let echartsData = [];
+		data.map(item => {
+			echartsData.push({value: [item.days, Number(item.money)]});
+		});
+		let option = {
+			grid: {
+				left: '3%',
+				right: '4%',
+				bottom: '3%',
+				containLabel: true
+			},
+			tooltip: {
+				trigger: 'axis'
+			},
+			xAxis:  {
+				type: 'time',
+				boundaryGap: false,
+				splitLine:{
+					show:false
+				}
+			},
+			yAxis: {
+				type: 'value',
+				axisLabel: {
+					formatter: '{value} 元'
+				}
+			},
+			series: [{
+				name:'销售额',
+				type:'line',
+				data: echartsData,
+				lineStyle: {
+					color: '#1890ff'
+				}
+			}]
+		};
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
+	}
+
+	async getData() {
+		let res = await request.get('/order/getData');
+		let data = res.data;
+		this.setState({
+			orderNum: data.orderNum || 0,
+			orderPrice: data.orderPrice || 0,
+			todayNum: data.todayNum && data.todayNum.length != 0 && data.todayNum[0].count ? data.todayNum[0].count : 0,
+			todayMoney: data.todayMoney && data.todayMoney.length != 0 && data.todayMoney[0].count ? data.todayMoney[0].count : 0
+		});
 	}
 
 	render() {
-		let {totalData} = this.state;
+		// alreadyMoney: data.alreadyMoney || 0, //已经提现金额
+		// resMoney: data.resMoney || 0, // 可提现金额
+		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney} = this.state;
 		return (
 			<div className='data'>
 				<div className='data_little_charts'>
-					<Card title="会员注册量" className="data_little_charts_cart">
-						<span>{totalData.userNum}</span>
+					<Card title="今日订单量(单)" className="data_little_charts_cart">
+						<span>{todayNum}</span>
 					</Card>
-					<Card title="销售额" className="data_little_charts_cart">
-						<span>{totalData.orderMoney}</span>
+					<Card title="今日销售额(单)" className="data_little_charts_cart">
+						<span>{todayMoney}</span>
 					</Card>
-					<Card title="订单总量" className="data_little_charts_cart">
-						<span>{totalData.orders}</span>
+					<Card title="订单总量(单)" className="data_little_charts_cart">
+						<span>{orderNum}</span>
 					</Card>
-					<Card title="店铺总量" className="data_little_charts_cart">
-						<span>{totalData.shops}</span>
+					<Card title="总销售额(元)" className="data_little_charts_cart">
+						<span>{orderPrice}</span>
+					</Card>
+					<Card title="已提现(元)" className="data_little_charts_cart">
+						<span>{alreadyMoney}</span>
+					</Card>
+					<Card title="可提现金额(元)" className="data_little_charts_cart">
+						<span>{resMoney}</span>
 					</Card>
 				</div>
 				<Row className="data_common_detail">
 					<Row className="data_common_detail_title">
-						<div className="data_common_detail_title_left">会员报表</div>
+						<div className="data_common_detail_title_left">订单数量</div>
 						<div className="data_common_detail_title_right">
-							<Button type="primary">本周</Button>
-							<Button>本月</Button>
-							<Button>本年</Button>
+							<Button type={salesType == 1 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 1)}>本周</Button>
+							<Button type={salesType == 2 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 2)}>本月</Button>
+							<Button type={salesType == 3 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 3)}>本年</Button>
 						</div>
 					</Row>
-					<Row id="data_member" className="data_common_detail_content"></Row>
+					<Row id="data_member1" className="data_common_detail_content"></Row>
+				</Row>
+				<Row className="data_common_detail">
+					<Row className="data_common_detail_title">
+						<div className="data_common_detail_title_left">销售额</div>
+						<div className="data_common_detail_title_right">
+							<Button type={moneyType == 1 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 1)}>本周</Button>
+							<Button type={moneyType == 2 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 2)}>本月</Button>
+							<Button type={moneyType == 3 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 3)}>本年</Button>
+						</div>
+					</Row>
+					<Row id="data_member2" className="data_common_detail_content"></Row>
 				</Row>
 			</div>
 		);

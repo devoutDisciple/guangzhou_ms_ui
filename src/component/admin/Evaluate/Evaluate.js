@@ -1,22 +1,60 @@
 import React from 'react';
 import {
-	Table, Tooltip
+	Table, Tooltip, Form, Select, Col
 } from 'antd';
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
+const FormItem = Form.Item;
+const Option = Select.Option;
 
-export default class Evaluate extends React.Component{
+class Evaluate extends React.Component{
 
 	constructor(props) {
 		super(props);
 	}
 
 	state = {
-		evaluateList: []
+		evaluateList: [],
+		shopid: '',
+		shopList: []
 	}
 
 	async componentDidMount() {
-		let result = await Request.get('/evaluate/getAll');
+		this.onSearchShop();
+	}
+
+	// 查询商店
+	async onSearchShop() {
+		let res = await Request.get('/shop/getAllForSelect');
+		let shopList = res.data || [];
+		if(shopList && shopList.length != 0) {
+			let id = shopList[0].id;
+			this.setState({
+				shopid: id,
+				shopList: shopList
+			}, async () => {
+				setTimeout(() => {
+					this.props.form.setFieldsValue({
+						shop: id,
+					});
+				}, 100);
+				await this.onSearchEvaluateList();
+			});
+		}
+	}
+
+	// 下拉选择改变的时候
+	selectChange(id) {
+		this.setState({
+			shopid: id,
+		}, async () => {
+			await this.onSearchEvaluateList();
+		});
+	}
+
+	// 查询评价列表
+	async onSearchEvaluateList() {
+		let result = await Request.get('/evaluate/getEvaluateByShopId', {shopid: this.state.shopid});
 		let data = result.data;
 		data.map(item => {
 			item.key = item.id;
@@ -28,16 +66,15 @@ export default class Evaluate extends React.Component{
 	}
 
 
-
-	// 查看订单详情
-	async onSearchOrderDetail() {
-
-	}
-
-
 	render() {
-		let {evaluateList} = this.state;
+		let {evaluateList, shopList} = this.state;
 		const columns = [
+			{
+				title: '订单编号',
+				dataIndex: 'orderid',
+				key: 'orderid',
+				align: 'center'
+			},
 			{
 				title: '用户名',
 				dataIndex: 'username',
@@ -45,10 +82,13 @@ export default class Evaluate extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '订单编号',
-				dataIndex: 'orderid',
-				key: 'orderid',
-				align: 'center'
+				title: '用户头像',
+				dataIndex: 'avatarUrl',
+				key: 'avatarUrl',
+				align: 'center',
+				render: (text, record) => {
+					return <img style={{width: '33px'}} src={record.avatarUrl}/>;
+				}
 			},
 			{
 				title: '商品名称',
@@ -84,21 +124,40 @@ export default class Evaluate extends React.Component{
 				dataIndex: 'create_time',
 				key: 'create_time',
 				align: 'center'
-			},
-			// {
-			// 	title: '操作',
-			// 	dataIndex: 'operation',
-			// 	key: 'operation',
-			// 	align: 'center',
-			// 	render:(text, record) => {
-			// 		return <span className="common_table_span">
-			// 			<a href="javascript:;" onClick={this.onSearchOrderDetail.bind(this, record)}>订单详情</a>
-			// 		</span>;
-			// 	}
-			// }
+			}
 		];
+		const { getFieldDecorator } = this.props.form;
+		const formItemLayout = {
+			labelCol: { span: 4 },
+			wrapperCol: { span: 20 },
+		};
 		return (
 			<div className='common'>
+				<div className='common_search'>
+					<Form {...formItemLayout}>
+						<Col span={6}>
+							<FormItem
+								label="商店">
+								{getFieldDecorator('shop', {
+									rules: [{
+										required: true,
+										message: '请选择',
+									}],
+								})(
+									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
+										{
+											shopList && shopList.length != 0 ?
+												shopList.map(item => {
+													return <Option key={item.id} value={item.id}>{item.name}</Option>;
+												})
+												: null
+										}
+									</Select>
+								)}
+							</FormItem>
+						</Col>
+					</Form>
+				</div>
 				<div className='common_content'>
 					<Table
 						bordered
@@ -115,3 +174,6 @@ export default class Evaluate extends React.Component{
 		);
 	}
 }
+
+const EvaluateForm = Form.create()(Evaluate);
+export default EvaluateForm;

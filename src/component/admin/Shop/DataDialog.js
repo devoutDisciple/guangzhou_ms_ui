@@ -1,18 +1,13 @@
 import React from 'react';
-import {Card, Row, Button} from 'antd';
+import {Card, Row, Button, Modal} from 'antd';
 import './index.less';
 import request from '../../../request/AxiosRequest';
-import {inject, observer} from 'mobx-react';
 import echarts from 'echarts';
-import BillDialog from './BillDialog';
 
-@inject('GlobalStore')
-@observer
 export default class Order extends React.Component{
 
 	constructor(props) {
 		super(props);
-		this.globalStore = this.props.GlobalStore;
 	}
 
 	state = {
@@ -24,12 +19,10 @@ export default class Order extends React.Component{
 		moneyType: 1,
 		alreadyMoney: 0, //已经提现金额
 		resMoney: 0, // 可提现金额
-		billDialogVisible: false,
 	}
 
 	async componentDidMount() {
-		// await this.globalStore.getLogin();
-		let shopid = this.globalStore.userinfo.shopid;
+		let shopid = this.props.shopid;
 		setTimeout(() => {
 			// 获取商店数据汇总
 			this.getData(shopid);
@@ -41,17 +34,10 @@ export default class Order extends React.Component{
 		this.getMoneyBillAlready();
 	}
 
-	// 控制提现弹框的开关
-	onControllerBillDialogVisible() {
-		this.setState({
-			billDialogVisible: !this.state.billDialogVisible
-		});
-	}
-
 
 	// 获取已提现金额和可提现金额
 	async getMoneyBillAlready() {
-		let shopid = this.globalStore.userinfo.shopid;
+		let shopid = this.props.shopid;
 		let res = await request.get('/bill/getBillMoneyReadyByShopid', {shopid: shopid});
 		let data = res.data;
 		this.setState({
@@ -77,12 +63,12 @@ export default class Order extends React.Component{
 
 	// 获取本周销售总量
 	async getSalesByShopid(type) {
-		let shopid = this.globalStore.userinfo.shopid;
+		let shopid = this.props.shopid;
 		let res = await request.get('/order/getSalesByShopid', {shopid: shopid, type: type});
 		let myChart = echarts.init(document.getElementById('data_member1'));
 		let data = res.data || [];
-		if(data.length == 0) return;
 		let echartsData = [];
+		if(data.length == 0) return;
 		data.map(item => {
 			echartsData.push({value: [item.days, item.count]});
 		});
@@ -124,7 +110,7 @@ export default class Order extends React.Component{
 
 	// 获得销售额数据汇总
 	async getSalesMoneyByShopid(type) {
-		let shopid = this.globalStore.userinfo.shopid;
+		let shopid = this.props.shopid;
 		let res = await request.get('/order/getMoneyByShopid', {shopid: shopid, type: type});
 		let myChart = echarts.init(document.getElementById('data_member2'));
 		let data = res.data || [];
@@ -180,65 +166,66 @@ export default class Order extends React.Component{
 		});
 	}
 
+	handleCancel() {
+		this.props.onControllerDataVisible();
+	}
+
 	render() {
 		// alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 		// resMoney: data.resMoney || 0, // 可提现金额
-		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney, billDialogVisible} = this.state;
+		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney} = this.state;
 		return (
-			<div className='data'>
-				<div className='data_little_charts'>
-					<Card title="今日订单量(单)" className="data_little_charts_cart">
-						<span>{todayNum}</span>
-					</Card>
-					<Card title="今日销售额(单)" className="data_little_charts_cart">
-						<span>{todayMoney}</span>
-					</Card>
-					<Card title="订单总量(单)" className="data_little_charts_cart">
-						<span>{orderNum}</span>
-					</Card>
-					<Card title="总销售额(元)" className="data_little_charts_cart">
-						<span>{orderPrice}</span>
-					</Card>
-					<Card title="已提现(元)" className="data_little_charts_cart">
-						<span>{alreadyMoney}</span>
-					</Card>
-					<Card title="可提现金额(元)" className="data_little_charts_cart">
-						<span>{resMoney}</span>
-						<span className="data_little_charts_cart_tixian">
-							<a href="javascript:;" onClick={this.onControllerBillDialogVisible.bind(this)}>提现</a>
-						</span>
-					</Card>
+			<Modal
+				className='common_dialog common_max_dialog'
+				title="商店数据汇总"
+				visible={true}
+				onOk={this.handleCancel.bind(this)}
+				onCancel={this.handleCancel.bind(this)}>
+				<div className='data'>
+					<div className='data_little_charts'>
+						<Card title="今日订单量(单)" className="data_little_charts_cart">
+							<span>{todayNum}</span>
+						</Card>
+						<Card title="今日销售额(单)" className="data_little_charts_cart">
+							<span>{todayMoney}</span>
+						</Card>
+						<Card title="订单总量(单)" className="data_little_charts_cart">
+							<span>{orderNum}</span>
+						</Card>
+						<Card title="总销售额(元)" className="data_little_charts_cart">
+							<span>{orderPrice}</span>
+						</Card>
+						<Card title="已提现(元)" className="data_little_charts_cart">
+							<span>{alreadyMoney}</span>
+						</Card>
+						<Card title="可提现金额(元)" className="data_little_charts_cart">
+							<span>{resMoney}</span>
+						</Card>
+					</div>
+					<Row className="data_common_detail">
+						<Row className="data_common_detail_title">
+							<div className="data_common_detail_title_left">订单数量</div>
+							<div className="data_common_detail_title_right">
+								<Button type={salesType == 1 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 1)}>本周</Button>
+								<Button type={salesType == 2 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 2)}>本月</Button>
+								<Button type={salesType == 3 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 3)}>本年</Button>
+							</div>
+						</Row>
+						<Row id="data_member1" className="data_common_detail_content"></Row>
+					</Row>
+					<Row className="data_common_detail">
+						<Row className="data_common_detail_title">
+							<div className="data_common_detail_title_left">销售额</div>
+							<div className="data_common_detail_title_right">
+								<Button type={moneyType == 1 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 1)}>本周</Button>
+								<Button type={moneyType == 2 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 2)}>本月</Button>
+								<Button type={moneyType == 3 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 3)}>本年</Button>
+							</div>
+						</Row>
+						<Row id="data_member2" className="data_common_detail_content"></Row>
+					</Row>
 				</div>
-				<Row className="data_common_detail">
-					<Row className="data_common_detail_title">
-						<div className="data_common_detail_title_left">订单数量</div>
-						<div className="data_common_detail_title_right">
-							<Button type={salesType == 1 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 1)}>本周</Button>
-							<Button type={salesType == 2 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 2)}>本月</Button>
-							<Button type={salesType == 3 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 3)}>本年</Button>
-						</div>
-					</Row>
-					<Row id="data_member1" className="data_common_detail_content"></Row>
-				</Row>
-				<Row className="data_common_detail">
-					<Row className="data_common_detail_title">
-						<div className="data_common_detail_title_left">销售额</div>
-						<div className="data_common_detail_title_right">
-							<Button type={moneyType == 1 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 1)}>本周</Button>
-							<Button type={moneyType == 2 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 2)}>本月</Button>
-							<Button type={moneyType == 3 ? 'primary' : null} onClick={this.onClickMoneyBtn.bind(this, 3)}>本年</Button>
-						</div>
-					</Row>
-					<Row id="data_member2" className="data_common_detail_content"></Row>
-				</Row>
-				{
-					billDialogVisible ?
-						<BillDialog
-							resMoney={resMoney}
-							onControllerBillDialogVisible={this.onControllerBillDialogVisible.bind(this)}/>
-						: null
-				}
-			</div>
+			</Modal>
 		);
 	}
 }
