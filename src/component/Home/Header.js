@@ -45,6 +45,7 @@ export default class MyHeader extends React.Component{
 	}
 
 	render() {
+		let {role} = this.globalStore.userinfo;
 		let {campus} = this.globalStore, selectedKeys = this.state.selectedKeys;
 		const menu = (
 			<Menu onClick={this.onClickMenu.bind(this)} selectedKeys={selectedKeys}>
@@ -61,12 +62,18 @@ export default class MyHeader extends React.Component{
 		);
 		return (
 			<Header className="root_layout_content_header">
-				<span className="root_layout_content_header_span">区域切换：</span>
-				<Dropdown overlay={menu} trigger={['click']}>
-					<a className="ant-dropdown-link" href="#">
-						{selectedKeys && selectedKeys.length != 0 ? selectedKeys[0] : ''} <Icon type="down" />
-					</a>
-				</Dropdown>
+				{
+					role == 1 ?
+						<span>
+							<span className="root_layout_content_header_span">区域切换：</span>
+							<Dropdown overlay={menu} trigger={['click']}>
+								<a className="ant-dropdown-link" href="#">
+									{selectedKeys && selectedKeys.length != 0 ? selectedKeys[0] : ''} <Icon type="down" />
+								</a>
+							</Dropdown>
+						</span>
+						: null
+				}
 				<span className="root_layout_content_header_span">您好：{this.globalStore.userinfo.username}</span>
 				<span
 					onClick={this.logout.bind(this)}
