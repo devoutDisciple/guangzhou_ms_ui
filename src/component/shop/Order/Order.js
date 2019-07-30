@@ -1,7 +1,9 @@
 import React from 'react';
 import {
-	Table, message
+	Button, Table, message, Form, Select, Col
 } from 'antd';
+const FormItem = Form.Item;
+const { Option } = Select;
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
@@ -9,7 +11,7 @@ import FilterOrderStatus from '../../../util/FilterOrderStatus';
 
 @inject('GlobalStore')
 @observer
-export default class Order extends React.Component{
+class Order extends React.Component{
 
 	constructor(props) {
 		super(props);
@@ -17,10 +19,13 @@ export default class Order extends React.Component{
 	}
 
 	state = {
-		oderList: []
+		oderList: [], // 全部订单
+		selectType: 1, // 默认选择全部订单
+		showData: [], // 列表订单
 	}
 
 	async componentDidMount() {
+		this.props.form.setFieldsValue({status: '1'});
 		// 查询所有订单
 		await this.onSearchOrder();
 	}
@@ -34,7 +39,9 @@ export default class Order extends React.Component{
 			item.key = item.id;
 			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
 		});
-		this.setState({oderList: res.data || []});
+		this.setState({oderList: data}, () => {
+			this.selectChange(this.state.selectType);
+		});
 	}
 
 	// 改变订单状态
@@ -46,9 +53,49 @@ export default class Order extends React.Component{
 		}
 	}
 
+	selectChange(value) {
+		this.setState({selectType: value});
+		let orderlist = this.state.oderList;
+		// 全部订单
+		if(value == 1) {
+			this.setState({
+				showData: orderlist
+			});
+		}
+		// 未接订单
+		if(value == 2) {
+			let showData = orderlist.filter(item => {
+				if(item.status == 1) return true;
+				return false;
+			});
+			this.setState({showData});
+		}
+		// 派送中订单
+		if(value == 3) {
+			let showData = orderlist.filter(item => {
+				if(item.status == 2 || item.status == 3) return true;
+				return false;
+			});
+			this.setState({showData});
+		}
+		// 已经完成订单
+		if(value == 4) {
+			let showData = orderlist.filter(item => {
+				if(item.status == 4 || item.status == 6) return true;
+				return false;
+			});
+			this.setState({showData});
+		}
+	}
+
 
 	render() {
-		let {oderList} = this.state;
+		let {showData} = this.state;
+		const { getFieldDecorator } = this.props.form;
+		const formItemLayout = {
+			labelCol: { span: 4 },
+			wrapperCol: { span: 20 },
+		};
 		const columns = [
 			{
 				title: '订单编号',
@@ -92,7 +139,10 @@ export default class Order extends React.Component{
 				key: 'status',
 				align: 'center',
 				render: (text, record) => {
-					return <span>{FilterOrderStatus.filterOrderStatus(record.status)}</span>;
+					let status = record.status;
+					if(status == 1 || status == 2 || status == 3) return <span style={{color: '#f3cf19'}}>{FilterOrderStatus.filterOrderStatus(record.status)}</span>;
+					if(status == 4 || status == 6) return <span style={{color: '#008dff'}}>{FilterOrderStatus.filterOrderStatus(record.status)}</span>;
+					if(status == 5) return <span style={{color: 'red'}}>{FilterOrderStatus.filterOrderStatus(record.status)}</span>;
 				}
 			},
 			{
@@ -129,14 +179,39 @@ export default class Order extends React.Component{
 		];
 		return (
 			<div className='common'>
+				<div className='common_search'>
+					<Form {...formItemLayout}>
+						<Col span={6}>
+							<FormItem
+								label="订单状态">
+								{getFieldDecorator('status', {
+									rules: [{
+										required: true,
+										message: '请选择',
+									}],
+								})(
+									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
+										<Option value="1">全部订单</Option>
+										<Option value="2">未接订单</Option>
+										<Option value="3">派送中订单</Option>
+										<Option value="4">已完成订单</Option>
+									</Select>
+								)}
+							</FormItem>
+						</Col>
+						<Col span={6} offset={1}>
+							<Button className='goods_search_btn' type='primary'>查询</Button>
+						</Col>
+					</Form>
+				</div>
 				<div className='common_content'>
 					<Table
 						bordered
-						dataSource={oderList}
+						dataSource={showData}
 						columns={columns}
 						pagination={
 							{
-								total: oderList.length,
+								total: showData.length,
 								showTotal: (total) => `共 ${total} 条`
 							}
 						}/>
@@ -145,3 +220,6 @@ export default class Order extends React.Component{
 		);
 	}
 }
+
+const OrderForm = Form.create()(Order);
+export default OrderForm;

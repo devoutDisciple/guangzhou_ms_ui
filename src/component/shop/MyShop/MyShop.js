@@ -75,6 +75,14 @@ export default class Shop extends React.Component{
 						<span className='shop_detail_label'>商店描述：</span>
 						<span className='shop_detail_content'>{data.desc}</span>
 					</Row>
+					<Row className='shop_detail_col'>
+						<span className='shop_detail_label'>打印机编号(SN)：</span>
+						<span className='shop_detail_content'>920535072</span>
+					</Row>
+					<Row className='shop_detail_col'>
+						<span className='shop_detail_label'>打印机秘钥(KEY)：</span>
+						<span className='shop_detail_content'>wm3yy7m3</span>
+					</Row>
 					<Row>
 						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改</Button>
 					</Row>
