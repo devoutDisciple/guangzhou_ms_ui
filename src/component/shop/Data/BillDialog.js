@@ -22,11 +22,11 @@ class BillDialog extends React.Component {
 	};
 
 	async componentDidMount() {
-		this.props.form.setFieldsValue({
-			type: '1',
-			account: 123,
-			money: 12
-		});
+		// this.props.form.setFieldsValue({
+		// 	type: '1',
+		// 	account: 123,
+		// 	money: 12
+		// });
 	}
 
 	handleOk() {
