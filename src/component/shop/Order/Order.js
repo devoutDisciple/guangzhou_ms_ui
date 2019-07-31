@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Button, Table, message, Form, Select, Col, Card
+	Button, Table, message, Form, Select, Col, Card, Row
 } from 'antd';
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -149,37 +149,6 @@ class Order extends React.Component{
 		}, 1000);
 	}
 
-	// 订单详情
-	expandedRowRender(data) {
-		console.log(data, 322);
-		let orderList = JSON.parse(data.orderList) || [];
-		orderList.map((item, index) => item.key = index);
-		const columns = [
-			{
-				title: '商品图片',
-				dataIndex: 'goodsUrl',
-				key: 'goodsUrl',
-				align: 'center',
-				render: (text, record) => {
-					return <img className='common_table_img' src={record.goodsUrl} alt="暂无图片"/>;
-				}
-			},
-			{
-				title: '商品名称',
-				dataIndex: 'goodsName',
-				key: 'goodsName',
-				align: 'center'
-			},
-			{
-				title: '数量',
-				dataIndex: 'num',
-				key: 'num',
-				align: 'center'
-			},
-		];
-		return <Table columns={columns} dataSource={orderList} pagination={false} />;
-	}
-
 	render() {
 		let {showData, selectType, classfyByAddressData} = this.state;
 		const { getFieldDecorator } = this.props.form;
@@ -223,6 +192,30 @@ class Order extends React.Component{
 				dataIndex: 'address',
 				key: 'address',
 				align: 'center'
+			},
+			{
+				title: '订单详情',
+				dataIndex: 'detail',
+				key: 'detail',
+				align: 'center',
+				render: (text, record) => {
+					let orderList = JSON.parse(record.orderList) || [];
+					return (
+						<span>
+							{
+								orderList.map((item, index) => {
+									return (
+										<Row className="shop_order_detail" key={index}>
+											<span className="shop_order_detail_img"><img className='common_table_img' src={item.goodsUrl}/></span>
+											<span className="shop_order_detail_name">{item.goodsName}</span>
+											<span className="shop_order_detail_num">x{item.num}</span>
+										</Row>
+									);
+								})
+							}
+						</span>
+					);
+				}
 			},
 			{
 				title: '订单总价',
@@ -324,11 +317,9 @@ class Order extends React.Component{
 											className="shop_order_container_cart"
 											key={index}
 											title={`收货地址：${item.address}`}
-											onClick={this.tokenOrders.bind(this, item.data, selectType == 2 ? 2 : 4)}
-											extra={<a href="javascript:;">{item.data, selectType == 2 ? '全部接单' : '派送完成'}</a>}>
+											extra={<a href="javascript:;" onClick={this.tokenOrders.bind(this, item.data, selectType == 2 ? 2 : 4)}>{item.data, selectType == 2 ? '全部接单' : '派送完成'}</a>}>
 											<Table
 												bordered
-												expandedRowRender={this.expandedRowRender.bind(this)}
 												dataSource={item.data}
 												columns={columns}
 												pagination={false}/>
@@ -341,7 +332,6 @@ class Order extends React.Component{
 						<div className='common_content'>
 							<Table
 								bordered
-								expandedRowRender={this.expandedRowRender.bind(this)}
 								dataSource={showData}
 								columns={columns}
 								pagination={
