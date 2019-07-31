@@ -156,6 +156,15 @@ class Order extends React.Component{
 		orderList.map((item, index) => item.key = index);
 		const columns = [
 			{
+				title: '商品图片',
+				dataIndex: 'goodsUrl',
+				key: 'goodsUrl',
+				align: 'center',
+				render: (text, record) => {
+					return <img className='common_table_img' src={record.goodsUrl} alt="暂无图片"/>;
+				}
+			},
+			{
 				title: '商品名称',
 				dataIndex: 'goodsName',
 				key: 'goodsName',
