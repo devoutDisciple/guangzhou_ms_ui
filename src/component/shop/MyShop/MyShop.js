@@ -60,6 +60,10 @@ export default class Shop extends React.Component{
 						<span className='shop_detail_content'>{data.address}</span>
 					</Row>
 					<Row className='shop_detail_col'>
+						<span className='shop_detail_label'>联系电话：</span>
+						<span className='shop_detail_content'>{data.phone}</span>
+					</Row>
+					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>起送费：</span>
 						<span className='shop_detail_content'>{data.start_price}</span>
 					</Row>
@@ -77,11 +81,11 @@ export default class Shop extends React.Component{
 					</Row>
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>打印机编号(SN)：</span>
-						<span className='shop_detail_content'>920535072</span>
+						<span className='shop_detail_content'>{data.sn}</span>
 					</Row>
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>打印机秘钥(KEY)：</span>
-						<span className='shop_detail_content'>wm3yy7m3</span>
+						<span className='shop_detail_content'>{data.key}</span>
 					</Row>
 					<Row>
 						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改</Button>

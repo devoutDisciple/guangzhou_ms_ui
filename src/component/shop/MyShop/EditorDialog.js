@@ -27,12 +27,15 @@ class AddDialog extends React.Component {
 			campus: data.campus,
 			name: data.name,
 			address: data.address,
+			phone: data.phone,
 			start_time: moment(data.start_time, 'HH:mm'),
 			end_time: moment(data.end_time, 'HH:mm'),
 			send_price: Number(data.send_price),
 			start_price: Number(data.start_price),
 			sort: Number(data.sort),
 			desc: data.desc,
+			sn: data.sn,
+			key: data.key
 		});
 	}
 
@@ -116,6 +119,17 @@ class AddDialog extends React.Component {
 								<Input placeholder="请输入" />
 							)}
 						</FormItem>
+						<FormItem
+							label="联系电话">
+							{getFieldDecorator('phone', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" />
+							)}
+						</FormItem>
 						<FormItem label="营业时间" style={{ marginBottom: 0 }} className='common_dialog_time'>
 							<FormItem
 								style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
@@ -162,28 +176,28 @@ class AddDialog extends React.Component {
 								<Input type="number" placeholder="请输入" />
 							)}
 						</FormItem>
-						{/* <FormItem
-							label="用户名">
-							{getFieldDecorator('username', {
+						<FormItem
+							label="编号">
+							{getFieldDecorator('sn', {
 								rules: [{
 									required: true,
-									message: '请输入',
+									message: '请输入打印机编号',
 								}],
 							})(
-								<Input placeholder="请输入(商家登录该系统的用户名)" />
+								<Input placeholder="请输入打印机编号(sn)" />
 							)}
 						</FormItem>
 						<FormItem
-							label="密码">
-							{getFieldDecorator('password', {
+							label="秘钥">
+							{getFieldDecorator('key', {
 								rules: [{
 									required: true,
-									message: '请输入',
+									message: '请输入打印机编号(KEY)',
 								}],
 							})(
-								<Input placeholder="请输入(商家登录该系统的密码)" />
+								<Input placeholder="请输入打印机编号(KEY)" />
 							)}
-						</FormItem> */}
+						</FormItem>
 						<FormItem
 							label="权重">
 							{getFieldDecorator('sort', {
