@@ -88,6 +88,11 @@ class Order extends React.Component{
 		}
 	}
 
+	printfOrder() {
+		setTimeout(() => {
+			message.success('打印成功');
+		}, 1000);
+	}
 
 	render() {
 		let {showData} = this.state;
@@ -170,8 +175,15 @@ class Order extends React.Component{
 						}
 						{
 							status != 4 && status != 5 && status != 6 ?
-								<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 5)}>取消该订单</a>
-								: <a href="javascript:;" disabled>取消该订单</a>
+								<span>
+									<a href="javascript:;" onClick={this.onChangeOrderStatus.bind(this, record, 5)}>取消该订单</a>
+									<a href="javascript:;" onClick={this.printfOrder.bind(this, record)}>打印订单</a>
+								</span>
+								:
+								<span>
+									<a href="javascript:;" disabled>取消该订单</a>
+									<a href="javascript:;" disabled>打印订单</a>
+								</span>
 						}
 					</span>;
 				}
