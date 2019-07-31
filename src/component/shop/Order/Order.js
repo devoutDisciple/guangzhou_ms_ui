@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Button, Table, message, Form, Select, Col
+	Button, Table, message, Form, Select, Col, Card
 } from 'antd';
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -8,6 +8,7 @@ import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 import FilterOrderStatus from '../../../util/FilterOrderStatus';
+import './index.less';
 
 @inject('GlobalStore')
 @observer
@@ -22,6 +23,7 @@ class Order extends React.Component{
 		oderList: [], // 全部订单
 		selectType: 1, // 默认选择全部订单
 		showData: [], // 列表订单
+		classfyByAddressData: [], // 通过地址对订单分类
 	}
 
 	async componentDidMount() {
@@ -39,8 +41,34 @@ class Order extends React.Component{
 			item.key = item.id;
 			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
 		});
+		console.log(this.state.selectType, 6789);
 		this.setState({oderList: data}, () => {
 			this.selectChange(this.state.selectType);
+		});
+	}
+
+	// 但选择未接订单的时候，对数据进行分类
+	async classifyByAddress() {
+		let showData = this.state.showData;
+		let data = [];
+		showData.map((item => {
+			let flag = false; // 默认没有
+			data.map(list => {
+				if(item.address == list.address) {
+					flag = true;
+					list.data.push(item);
+				}
+			});
+			if(!flag) {
+				data.push({
+					address: item.address,
+					data: [item]
+				});
+			}
+		}));
+		console.log(data, 888);
+		this.setState({
+			classfyByAddressData: data
 		});
 	}
 
@@ -53,7 +81,9 @@ class Order extends React.Component{
 		}
 	}
 
+	// 下拉框改变的时候
 	selectChange(value) {
+		console.log(value, 333);
 		this.setState({selectType: value});
 		let orderlist = this.state.oderList;
 		// 全部订单
@@ -68,7 +98,10 @@ class Order extends React.Component{
 				if(item.status == 1) return true;
 				return false;
 			});
-			this.setState({showData});
+			this.setState({showData}, () => {
+				// 对数据进行分类
+				this.classifyByAddress();
+			});
 		}
 		// 派送中订单
 		if(value == 3) {
@@ -76,7 +109,10 @@ class Order extends React.Component{
 				if(item.status == 2 || item.status == 3) return true;
 				return false;
 			});
-			this.setState({showData});
+			this.setState({showData}, () => {
+				// 对数据进行分类
+				this.classifyByAddress();
+			});
 		}
 		// 已经完成订单
 		if(value == 4) {
@@ -88,6 +124,25 @@ class Order extends React.Component{
 		}
 	}
 
+	// 全部接单
+	async tokenOrders(data, status) {
+		console.log(data);
+		let params = [];
+		data.map(item => {
+			params.push({
+				id: item.id,
+				status: status
+			});
+		});
+		let res = await Request.post('/order/updateMoreStatus', {data: params});
+		console.log(res);
+		if(res.data == 'success') {
+			message.success('操作成功');
+			this.onSearchOrder();
+		}
+	}
+
+	// 打印订单
 	printfOrder() {
 		setTimeout(() => {
 			message.success('打印成功');
@@ -95,7 +150,7 @@ class Order extends React.Component{
 	}
 
 	render() {
-		let {showData} = this.state;
+		let {showData, selectType, classfyByAddressData} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
@@ -115,15 +170,27 @@ class Order extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '联系方式',
+				title: '会员电话',
+				dataIndex: 'userPhone',
+				key: 'userPhone',
+				align: 'center'
+			},
+			{
+				title: '收餐人名称',
+				dataIndex: 'people',
+				key: 'people',
+				align: 'center'
+			},
+			{
+				title: '收餐人联系方式',
 				dataIndex: 'phone',
 				key: 'phone',
 				align: 'center'
 			},
 			{
-				title: '用户地址',
-				dataIndex: 'userAddress',
-				key: 'userAddress',
+				title: '收餐地址',
+				dataIndex: 'address',
+				key: 'address',
 				align: 'center'
 			},
 			{
@@ -216,18 +283,42 @@ class Order extends React.Component{
 						</Col>
 					</Form>
 				</div>
-				<div className='common_content'>
-					<Table
-						bordered
-						dataSource={showData}
-						columns={columns}
-						pagination={
+				{
+					selectType == 2 || selectType == 3?
+						<div className="shop_order_container">
 							{
-								total: showData.length,
-								showTotal: (total) => `共 ${total} 条`
+								classfyByAddressData.map((item, index) => {
+									return (
+										<Card
+											className="shop_order_container_cart"
+											key={index}
+											title={`收货地址：${item.address}`}
+											onClick={this.tokenOrders.bind(this, item.data, selectType == 2 ? 2 : 4)}
+											extra={<a href="javascript:;">{item.data, selectType == 2 ? '全部接单' : '派送完成'}</a>}>
+											<Table
+												bordered
+												dataSource={item.data}
+												columns={columns}
+												pagination={false}/>
+										</Card>
+									);
+								})
 							}
-						}/>
-				</div>
+						</div>
+						:
+						<div className='common_content'>
+							<Table
+								bordered
+								dataSource={showData}
+								columns={columns}
+								pagination={
+									{
+										total: showData.length,
+										showTotal: (total) => `共 ${total} 条`
+									}
+								}/>
+						</div>
+				}
 			</div>
 		);
 	}
