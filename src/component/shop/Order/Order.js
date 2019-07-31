@@ -149,6 +149,28 @@ class Order extends React.Component{
 		}, 1000);
 	}
 
+	// 订单详情
+	expandedRowRender(data) {
+		console.log(data, 322);
+		let orderList = JSON.parse(data.orderList) || [];
+		orderList.map((item, index) => item.key = index);
+		const columns = [
+			{
+				title: '商品名称',
+				dataIndex: 'goodsName',
+				key: 'goodsName',
+				align: 'center'
+			},
+			{
+				title: '数量',
+				dataIndex: 'num',
+				key: 'num',
+				align: 'center'
+			},
+		];
+		return <Table columns={columns} dataSource={orderList} pagination={false} />;
+	}
+
 	render() {
 		let {showData, selectType, classfyByAddressData} = this.state;
 		const { getFieldDecorator } = this.props.form;
@@ -297,6 +319,7 @@ class Order extends React.Component{
 											extra={<a href="javascript:;">{item.data, selectType == 2 ? '全部接单' : '派送完成'}</a>}>
 											<Table
 												bordered
+												expandedRowRender={this.expandedRowRender.bind(this)}
 												dataSource={item.data}
 												columns={columns}
 												pagination={false}/>
@@ -309,6 +332,7 @@ class Order extends React.Component{
 						<div className='common_content'>
 							<Table
 								bordered
+								expandedRowRender={this.expandedRowRender.bind(this)}
 								dataSource={showData}
 								columns={columns}
 								pagination={
