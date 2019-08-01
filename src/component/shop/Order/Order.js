@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-	Button, Table, message, Form, Select, Col, Card, Row
+	Button, Table, Form, Col, Row, Input, DatePicker, message
 } from 'antd';
 const FormItem = Form.Item;
-const { Option } = Select;
+// const { Option } = Select;
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 import FilterOrderStatus from '../../../util/FilterOrderStatus';
 import './index.less';
+const { RangePicker } = DatePicker;
 
 @inject('GlobalStore')
 @observer
@@ -20,112 +21,77 @@ class Order extends React.Component{
 	}
 
 	state = {
-		oderList: [], // 全部订单
-		selectType: 1, // 默认选择全部订单
-		showData: [], // 列表订单
-		classfyByAddressData: [], // 通过地址对订单分类
+		campus: '',
+		position: [],
+		positionActive: 'all', // 默认选择全部  订单地址
+		statusActive: 9, // 默认选择全部  订单是否打印
+		orderList: [],
+		selectedRowKeys: '',
+		selectedRows: [],
 	}
 
 	async componentDidMount() {
-		this.props.form.setFieldsValue({status: '1'});
-		// 查询所有订单
-		await this.onSearchOrder();
+		// 获取商店位置信息
+		await this.getShopDetail();
+		// 查询商店订单信息
+		await this.goodsSearchBtnClick();
 	}
 
-	// 查询所有订单
-	async onSearchOrder() {
+	// 获取商店位置数据
+	async getShopDetail() {
 		let shopid = this.globalStore.userinfo.shopid;
-		let res = await Request.get('/order/getListByShopid', {shopid: shopid});
-		let data = res.data || [];
-		data.map(item => {
-			item.key = item.id;
-			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
-		});
-		console.log(this.state.selectType, 6789);
-		this.setState({oderList: data}, () => {
-			this.selectChange(this.state.selectType);
-		});
-	}
-
-	// 但选择未接订单的时候，对数据进行分类
-	async classifyByAddress() {
-		let showData = this.state.showData;
-		let data = [];
-		showData.map((item => {
-			let flag = false; // 默认没有
-			data.map(list => {
-				if(item.address == list.address) {
-					flag = true;
-					list.data.push(item);
-				}
-			});
-			if(!flag) {
-				data.push({
-					address: item.address,
-					data: [item]
+		let shop = await Request.get('/shop/getShopByShopid', {id: shopid});
+		let campus = shop.data.campus || '';
+		let result = await Request.get('/position/getPositionByCampus', {campus});
+		let floor = JSON.parse(result.data.floor) || [];
+		let position = [];
+		floor.map(item => {
+			if(item.children && item.children.length) {
+				item.children.map(address => {
+					position.push(`${item.name} ${address.name}`);
 				});
 			}
-		}));
-		console.log(data, 888);
+		});
 		this.setState({
-			classfyByAddressData: data
+			campus, position
 		});
 	}
 
-	// 改变订单状态
-	async onChangeOrderStatus(record, status) {
-		let res = await Request.post('/order/updateStatus', {id: record.id, status});
-		if(res.data == 'success') {
-			message.success('更改成功');
-			return this.onSearchOrder();
-		}
+	// 位置按钮点击的时候
+	positionClick(positionActive) {
+		this.setState({positionActive}, () => this.goodsSearchBtnClick());
 	}
 
-	// 下拉框改变的时候
-	selectChange(value) {
-		console.log(value, 333);
-		this.setState({selectType: value});
-		let orderlist = this.state.oderList;
-		// 全部订单
-		if(value == 1) {
-			this.setState({
-				showData: orderlist
-			});
+	// 订单状态点击的时候后
+	statusClick(statusActive) {
+		this.setState({statusActive}, () => this.goodsSearchBtnClick());
+	}
+
+	// 点击查询
+	async goodsSearchBtnClick() {
+		let {positionActive, statusActive} = this.state;
+		let value = this.props.form.getFieldsValue();
+		console.log(value);
+		if(value.time) {
+			value.start_time = moment(moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'));
+			value.end_time = moment(moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'));
 		}
-		// 未接订单
-		if(value == 2) {
-			let showData = orderlist.filter(item => {
-				if(item.status == 1) return true;
-				return false;
-			});
-			this.setState({showData}, () => {
-				// 对数据进行分类
-				this.classifyByAddress();
-			});
-		}
-		// 派送中订单
-		if(value == 3) {
-			let showData = orderlist.filter(item => {
-				if(item.status == 2 || item.status == 3) return true;
-				return false;
-			});
-			this.setState({showData}, () => {
-				// 对数据进行分类
-				this.classifyByAddress();
-			});
-		}
-		// 已经完成订单
-		if(value == 4) {
-			let showData = orderlist.filter(item => {
-				if(item.status == 4 || item.status == 6) return true;
-				return false;
-			});
-			this.setState({showData});
-		}
+		console.log(positionActive, statusActive, value);
+		let params = {
+			campus: positionActive,
+			status: statusActive,
+			...value
+		};
+		let result = await Request.post('/order/getOrderByStatusAndPosition', params);
+		console.log(result);
+		let data = result.data || [];
+		data.map((item, index) => item.key = index);
+		this.setState({orderList: data});
 	}
 
 	// 全部接单
-	async tokenOrders(data, status) {
+	async tokenOrders(status) {
+		let data = this.state.selectedRows;
 		console.log(data);
 		let params = [];
 		data.map(item => {
@@ -138,7 +104,16 @@ class Order extends React.Component{
 		console.log(res);
 		if(res.data == 'success') {
 			message.success('操作成功');
-			this.onSearchOrder();
+			this.goodsSearchBtnClick();
+		}
+	}
+
+	// 改变订单状态
+	async onChangeOrderStatus(record, status) {
+		let res = await Request.post('/order/updateStatus', {id: record.id, status});
+		if(res.data == 'success') {
+			message.success('更改成功');
+			return this.goodsSearchBtnClick();
 		}
 	}
 
@@ -149,13 +124,37 @@ class Order extends React.Component{
 		}, 1000);
 	}
 
+
 	render() {
-		let {showData, selectType, classfyByAddressData} = this.state;
-		const { getFieldDecorator } = this.props.form;
-		const formItemLayout = {
-			labelCol: { span: 4 },
-			wrapperCol: { span: 20 },
+		let {orderList, position, positionActive, statusActive, selectedRows} = this.state;
+		const rowSelection = {
+			onChange: (selectedRowKeys, selectedRows) => {
+				console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+				this.setState({
+					selectedRowKeys, selectedRows
+				});
+			}
 		};
+		let address = {
+			title: '收餐地址',
+			dataIndex: 'address',
+			key: 'address',
+			align: 'center'
+		};
+		if(positionActive != 'all') {
+			address.render = (value, row, index) => {
+				const obj = {
+					children: value,
+					props: {},
+				};
+				if(index == 0) {
+					obj.props.rowSpan = 6;
+					return obj;
+				}
+				obj.props.colSpan = 0;
+				return obj;
+			};
+		}
 		const columns = [
 			{
 				title: '订单编号',
@@ -187,12 +186,7 @@ class Order extends React.Component{
 				key: 'phone',
 				align: 'center'
 			},
-			{
-				title: '收餐地址',
-				dataIndex: 'address',
-				key: 'address',
-				align: 'center'
-			},
+			{...address},
 			{
 				title: '订单详情',
 				dataIndex: 'detail',
@@ -227,7 +221,10 @@ class Order extends React.Component{
 				title: '订单时间',
 				dataIndex: 'order_time',
 				key: 'order_time',
-				align: 'center'
+				align: 'center',
+				render: (text) => {
+					return <span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>;
+				}
 			},
 			{
 				title: '订单状态',
@@ -280,68 +277,132 @@ class Order extends React.Component{
 				}
 			}
 		];
+		const { getFieldDecorator } = this.props.form;
+		const formItemLayout = {
+			labelCol: { span: 4 },
+			wrapperCol: { span: 20 },
+		};
 		return (
 			<div className='common'>
-				<div className='common_search'>
+				<Row className='shop_order_title'>
+					<Button
+						onClick={this.positionClick.bind(this, 'all')}
+						type={positionActive == 'all' ? 'primary' : null}>全部订单</Button>
+					{
+						position && position.length != 0 ?
+							position.map((item, index) => {
+								return <Button
+									key={index}
+									type={positionActive == item ? 'primary' : null}
+									onClick={this.positionClick.bind(this, item)}>{item}</Button>;
+							})
+							: null
+					}
+				</Row>
+				<div className='common_search shop_order_search'>
 					<Form {...formItemLayout}>
-						<Col span={6}>
-							<FormItem
-								label="订单状态">
-								{getFieldDecorator('status', {
-									rules: [{
-										required: true,
-										message: '请选择',
-									}],
-								})(
-									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
-										<Option value="1">全部订单</Option>
-										<Option value="2">未接订单</Option>
-										<Option value="3">派送中订单</Option>
-										<Option value="4">已完成订单</Option>
-									</Select>
-								)}
-							</FormItem>
-						</Col>
-						<Col span={6} offset={1}>
-							<Button className='goods_search_btn' type='primary'>查询</Button>
-						</Col>
+						<Row>
+							<Col span={6}>
+								<FormItem
+									label="宝贝名称">
+									{getFieldDecorator('name')(
+										<Input placeholder="请输入"/>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={6} offset={1}>
+								<FormItem
+									label="买家名称">
+									{getFieldDecorator('people')(
+										<Input placeholder="请输入"/>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={6} offset={1}>
+								<FormItem
+									label="订单编号">
+									{getFieldDecorator('id')(
+										<Input placeholder="请输入"/>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row>
+							<Col span={6}>
+								<FormItem
+									label="订单时间">
+									{getFieldDecorator('time')(
+										<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+									)}
+								</FormItem>
+							</Col>
+							<Col span={6} offset={1}>
+								<Button className='goods_search_btn' onClick={this.goodsSearchBtnClick.bind(this)} type='primary'>查询</Button>
+							</Col>
+						</Row>
 					</Form>
 				</div>
-				{
-					selectType == 2 || selectType == 3?
-						<div className="shop_order_container">
+				<Row className='shop_order_title'>
+					<Col span={18}>
+						<Button
+							onClick={this.statusClick.bind(this, 9)}
+							type={statusActive == 9 ? 'primary' : null}>全部</Button>
+						<Button
+							onClick={this.statusClick.bind(this, 1)}
+							type={statusActive == 1 ? 'primary' : null}>未打印</Button>
+						<Button
+							onClick={this.statusClick.bind(this, 2)}
+							type={statusActive == 2 ? 'primary' : null}>已打印</Button>
+						<Button
+							onClick={this.statusClick.bind(this, 3)}
+							type={statusActive == 3 ? 'primary' : null}>配送中</Button>
+						<Button
+							onClick={this.statusClick.bind(this, 4)}
+							type={statusActive == 4 ? 'primary' : null}>已完成</Button>
+						<Button
+							onClick={this.statusClick.bind(this, 5)}
+							type={statusActive == 5 ? 'primary' : null}>关闭订单</Button>
+					</Col>
+					<Col span={6} className="shop_order_btn_right">
+						{
+							statusActive == 1 ?
+								<Button
+									disabled={selectedRows.length == 0}
+									onClick={this.tokenOrders.bind(this, 2)}
+									type='primary'>全部打印</Button>
+								: null
+						}
+						{
+							statusActive == 2 ?
+								<Button
+									disabled={selectedRows.length == 0}
+									onClick={this.tokenOrders.bind(this, 3)}
+									type='primary'>全部派送</Button>
+								: null
+						}
+						{
+							statusActive == 3 ?
+								<Button
+									disabled={selectedRows.length == 0}
+									onClick={this.tokenOrders.bind(this, 4)}
+									type='primary'>全部完成</Button>
+								: null
+						}
+					</Col>
+				</Row>
+				<div className='common_content'>
+					<Table
+						bordered
+						dataSource={orderList}
+						columns={columns}
+						rowSelection={rowSelection}
+						pagination={
 							{
-								classfyByAddressData.map((item, index) => {
-									return (
-										<Card
-											className="shop_order_container_cart"
-											key={index}
-											title={`收货地址：${item.address}`}
-											extra={<a href="javascript:;" onClick={this.tokenOrders.bind(this, item.data, selectType == 2 ? 2 : 4)}>{item.data, selectType == 2 ? '全部接单' : '派送完成'}</a>}>
-											<Table
-												bordered
-												dataSource={item.data}
-												columns={columns}
-												pagination={false}/>
-										</Card>
-									);
-								})
+								total: orderList.length,
+								showTotal: (total) => `共 ${total} 条`
 							}
-						</div>
-						:
-						<div className='common_content'>
-							<Table
-								bordered
-								dataSource={showData}
-								columns={columns}
-								pagination={
-									{
-										total: showData.length,
-										showTotal: (total) => `共 ${total} 条`
-									}
-								}/>
-						</div>
-				}
+						}/>
+				</div>
 			</div>
 		);
 	}
