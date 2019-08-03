@@ -25,7 +25,7 @@ class Order extends React.Component{
 		position: [],
 		positionActive: 'all', // 默认选择全部  订单地址
 		print: 'all', // 默认选择全部  发货单状态 1-未打印 2-打印 all-全部
-		sendtab: 1, // 配送的tab 2-等待派送 3-派送中 4-成功  5-取消   6-评价 7-退款
+		sendtab: 1, // 配送的tab 1-等待派送 2-派送中 3-成功  4-取消   6-评价 7-退款
 		orderList: [],
 		selectedRowKeys: '',
 		selectedRows: [],
@@ -190,7 +190,7 @@ class Order extends React.Component{
 	}
 
 	render() {
-		let {position, positionActive, print, orderList, checkAll} = this.state;
+		let {position, positionActive, print, orderList, checkAll, sendtab} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 8 },
@@ -354,8 +354,12 @@ class Order extends React.Component{
 
 				</div>
 				<Row className="shop_order_fixed">
-					<Button onClick={this.tokenOrders.bind(this)}>批量派送</Button>
 					<Button onClick={this.allPrint.bind(this)}>批量打印订单</Button>
+					{
+						sendtab == 1 ?
+							<Button onClick={this.tokenOrders.bind(this)}>批量派送</Button>
+							: null
+					}
 				</Row>
 			</div>
 		);
