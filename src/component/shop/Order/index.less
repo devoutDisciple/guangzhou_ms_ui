@@ -1,31 +1,119 @@
-.shop_order_container{
-	margin-top: 20px;
-	width: 100%;
-	border: 1px solid #e8e8e8;
-	.shop_order_container_cart{
-		margin: 10px;
-	}
-	.common_table_span{
-		a{
-			margin: 0 10px;
+.shop_order{
+	padding-top: 0!important;
+	position: relative;
+	.shop_order_container{
+		margin-top: 20px;
+		width: 100%;
+		border: 1px solid #e8e8e8;
+		.shop_order_container_cart{
+			margin: 10px;
+		}
+		.common_table_span{
+			a{
+				margin: 0 10px;
+			}
 		}
 	}
-}
-.shop_order_title{
-	margin: 10px 0;
-	button{
-		margin-right: 10px;
+	.shop_order_title{
+		margin: 10px 0;
+		text-align: center;
+		button{
+			margin-right: 10px;
+		}
 	}
-}
-.shop_order_search{
-	height: 160px!important;
-}
-.shop_order_detail{
-	margin: 3px 0;
-	span{
-		margin: 0 3px;
+	.shop_order_search{
+		height: 50px!important;
+		overflow: hidden;
 	}
-}
-.shop_order_btn_right{
-	text-align: right;
+	.shop_order_detail{
+		margin: 3px 0;
+		span{
+			margin: 0 3px;
+		}
+	}
+	.shop_order_btn_right{
+		text-align: right;
+	}
+	.shop_order_tabs{
+		text-align: center;
+		height: 52px;
+		.ant-tabs-top{
+			display: inline-block;
+		}
+	}
+	.shop_order_table_title{
+		height: 30px;
+		line-height: 30px;
+		.ant-col{
+			text-align: center;
+			background: #f9f9f9;
+		}
+	}
+	.shop_order_print{
+		.shop_order_print_left{
+			padding-top: 10px;
+			padding-left: 10px;
+		}
+		.shop_order_print_center{
+			text-align: center;
+			button{
+				margin: 0 3px;
+			}
+		}
+	}
+	.shop_order_table_content{
+		.shop_order_table_content_title{
+			background: #eaf9ff;
+			height: 40px;
+			line-height: 40px;
+			border: 1px solid #f2f2f2;
+			margin-top: 10px;
+			padding-left: 10px;
+			.ant-checkbox-wrapper{
+				margin-right: 100px;
+			}
+		}
+		.shop_order_table_content_table{
+			.shop_order_table_content_table_left{
+				border: 1px solid #eee;
+				border-bottom: none;
+				border-top: none;
+				.shop_order_table_content_table_left_chunk{
+					border-bottom: 1px solid #eee;
+					height: 100px;
+					line-height: 100px;
+					img{
+						height: 40px;
+					}
+					.ant-col{
+						text-align: center;
+					}
+				}
+			}
+			.shop_order_table_content_table_right{
+				border: 1px solid #eee;
+				.shop_order_table_content_table_right_chunk{
+					border-right: 1px solid #eee;
+					text-align: center;
+				}
+				.shop_order_table_content_table_right_chunk_address{
+					display: inline-block;
+					line-height: 26px;
+				}
+			}
+		}
+
+	}
+	.shop_order_fixed{
+		position: fixed;
+		left: 50%;
+		bottom: 105px;
+		button{
+			background: red;
+			box-shadow: 12px 6px 10px #d9d9d9;
+			margin: 0 10px;
+			color: #fff;
+		}
+	}
+
 }

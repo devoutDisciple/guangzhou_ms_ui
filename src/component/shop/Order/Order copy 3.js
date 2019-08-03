@@ -9,7 +9,6 @@ import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 import './index.less';
-import FilterOrderStatus from '../../../util/FilterOrderStatus';
 
 @inject('GlobalStore')
 @observer
@@ -29,7 +28,6 @@ class Order extends React.Component{
 		orderList: [],
 		selectedRowKeys: '',
 		selectedRows: [],
-		checkAll: false, // 是否全选
 	}
 
 	async componentDidMount() {
@@ -74,29 +72,6 @@ class Order extends React.Component{
 		this.setState({sendtab: status}, () => this.goodsSearchBtnClick());
 	}
 
-	// 改变单个按钮是否选择的时候
-	checkboxClick(record) {
-		console.log(record, 888);
-		let orderList = this.state.orderList;
-		for(let item of orderList) {
-			if(item.id == record.id) {
-				item.checked = !item.checked;
-				break;
-			}
-		}
-		this.setState({orderList});
-	}
-
-	// 点击全选的时候
-	checkBoxAllClick() {
-		let {checkAll, orderList} = this.state;
-		this.setState({checkAll: !checkAll}, () => {
-			orderList.map(item => item.checked = !checkAll);
-			this.setState({orderList});
-		});
-
-	}
-
 	// 点击查询
 	async goodsSearchBtnClick() {
 		let {positionActive, print, sendtab} = this.state;
@@ -119,27 +94,23 @@ class Order extends React.Component{
 		data.map((item, index) => {
 			item.key = index;
 			item.orderList = JSON.parse(item.orderList) || [];
-			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
 		});
 		this.setState({orderList: data});
 	}
 
-	// 批量派送
-	async tokenOrders() {
-		let data = [];
-		let orderList = this.state.orderList;
-		orderList.map(item => {
-			item.checked ? data.push(item) : null;
-		});
-		if(data.length == 0) return message.warning('请勾选操作的订单');
+	// 全部接单
+	async tokenOrders(status) {
+		let data = this.state.selectedRows;
+		console.log(data);
 		let params = [];
 		data.map(item => {
 			params.push({
 				id: item.id,
-				status: 2
+				status: status
 			});
 		});
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
+		console.log(res);
 		if(res.data == 'success') {
 			message.success('操作成功');
 			this.goodsSearchBtnClick();
@@ -155,42 +126,16 @@ class Order extends React.Component{
 		}
 	}
 
-	// 取消订单
-	async cancelOrder(data) {
-		let res = await Request.post('/order/updateStatus', {id: data.id, status: 4});
-		if(res.data == 'success') {
-			message.success('取消成功');
-			return this.goodsSearchBtnClick();
-		}
-	}
-
 	// 打印订单
-	async allPrint() {
-		let data = [];
-		let orderList = this.state.orderList;
-		orderList.map(item => {
-			item.checked ? data.push(item) : null;
-		});
-		if(data.length == 0) return message.warning('请勾选操作的订单');
-		let params = [];
-		data.map(item => {
-			params.push({
-				id: item.id,
-				print: 2
-			});
-		});
-		let res = await Request.post('/order/updateMorePrint', {data: params});
-		if(res.data == 'success') {
-			message.success('操作成功');
-			this.goodsSearchBtnClick();
-		}
+	printfOrder() {
 		setTimeout(() => {
 			message.success('打印成功');
 		}, 1000);
 	}
 
+
 	render() {
-		let {position, positionActive, print, orderList, checkAll} = this.state;
+		let {position, positionActive, print, orderList} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 8 },
@@ -262,15 +207,22 @@ class Order extends React.Component{
 				</div>
 				<Row className="shop_order_tabs">
 					<Tabs defaultActiveKey="1" onTabClick={this.sendTabClick.bind(this)}>
-						<TabPane tab="等待派送" key="1" />
-						<TabPane tab="派送中" key="2" />
-						<TabPane tab="退款中" key="6" />
-						<TabPane tab="成功的订单" key="3" />
-						<TabPane tab="关闭的订单" key="4" />
+						<TabPane tab="未接订单" key="1">
+						</TabPane>
+						<TabPane tab="等待派送" key="2">
+						</TabPane>
+						<TabPane tab="派送中" key="3">
+						</TabPane>
+						<TabPane tab="退款中" key="7">
+						</TabPane>
+						<TabPane tab="成功的订单" key="4">
+						</TabPane>
+						<TabPane tab="关闭的订单" key="5">
+						</TabPane>
 					</Tabs>
 				</Row>
 				<Row className="shop_order_print">
-					<Col className="shop_order_print_left" span={8}><Checkbox checked={checkAll} onChange={this.checkBoxAllClick.bind(this)}>全选</Checkbox></Col>
+					<Col className="shop_order_print_left" span={8}><Checkbox>全选</Checkbox></Col>
 					<Col className="shop_order_print_center" span={8}>发货单:
 						<Button onClick={this.printClick.bind(this, 'all')} type={print == 'all' ? 'primary' : null}>全部</Button>
 						<Button onClick={this.printClick.bind(this, 1)} type={print == 1 ? 'primary' : null}>未打印</Button>
@@ -279,28 +231,24 @@ class Order extends React.Component{
 					<Col className="shop_order_print_right" span={8}></Col>
 				</Row>
 				<div className='common_content'>
-					<Row className="shop_order_table_title">
-						<Col span={3}>宝贝</Col>
-						<Col span={3}>单价</Col>
-						<Col span={3}>数量</Col>
-						<Col span={3}>备注</Col>
-						<Col span={3}>收货信息</Col>
-						<Col span={3}>交易状态</Col>
-						<Col span={3}>实收款</Col>
-						<Col span={3}>评价</Col>
-					</Row>
 					{
 						orderList && orderList.length != 0 ?
 							orderList.map((item, index) => {
 								return (
 									<Row key={index} className="shop_order_table_chunk">
+										<Row className="shop_order_table_title">
+											<Col span={3}>宝贝</Col>
+											<Col span={3}>单价</Col>
+											<Col span={3}>数量</Col>
+											<Col span={3}>备注</Col>
+											<Col span={3}>收货信息</Col>
+											<Col span={3}>交易状态</Col>
+											<Col span={3}>实收款</Col>
+											<Col span={3}>评价</Col>
+										</Row>
 										<Row className="shop_order_table_content">
 											<Row className="shop_order_table_content_title">
-												<Checkbox
-													onChange={this.checkboxClick.bind(this, item)}
-													checked={item.checked}>
-													订单号: {item.id}
-												</Checkbox>
+												<Checkbox>订单号: {item.id}</Checkbox>
 												<span>创建时间：{item.order_time}</span>
 											</Row>
 											<Row className="shop_order_table_content_table">
@@ -314,35 +262,33 @@ class Order extends React.Component{
 																			<Col span={12}><img src={order.goodsUrl}/></Col>
 																			<Col span={12}>{order.goodsName}</Col>
 																		</Col>
-																		<Col span={8}>{order.price}</Col>
-																		<Col span={8}>{order.num}</Col>
+																		<Col span={8}>回锅肉</Col>
+																		<Col span={8}>回锅肉</Col>
 																	</Row>
 																);
 															})
 															: null
 													}
+
+													<Row className="shop_order_table_content_table_left_chunk">
+														<Col span={6}>
+															<Col span={12}><img src="http://www.bws666.com/goods/6NC95A944CZK-1564499305142.jpg"/></Col>
+															<Col span={12}>回锅肉</Col>
+														</Col>
+														<Col span={6}>回锅肉</Col>
+														<Col span={6}>回锅肉</Col>
+														<Col span={6}>回锅肉</Col>
+													</Row>
 												</Col>
 												<Col
 													className="shop_order_table_content_table_right"
-													span={15}
-													style={{height: `${item.orderList.length * 100}px`, lineHeight: `${item.orderList.length * 100}px`}}>
-													<Col className="shop_order_table_content_table_right_chunk" span={5}>{item.desc ? item.desc : '--'}</Col>
-													<Col className="shop_order_table_content_table_right_chunk"span={5}>
-														<Row className="shop_order_table_content_table_right_chunk_address">
-															<Row>地址: {item.address}</Row>
-															<Row>姓名: {item.people}</Row>
-															<Row>电话: {item.phone}</Row>
-														</Row>
-													</Col>
-													<Col
-														className="shop_order_table_content_table_right_chunk"span={5}>
-														{FilterOrderStatus.filterOrderStatus(item.status)}
-														<a href="javascript:;" style={{marginLeft: '5px', fontSize: '10px'}} onClick={this.cancelOrder.bind(this, item)}>
-															取消该订单
-														</a>
-													</Col>
-													<Col className="shop_order_table_content_table_right_chunk"span={5}>{item.total_price}</Col>
-													<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>
+													span={14}
+													style={{height: '200px', lineHeight: '200px'}}>
+													<Col className="shop_order_table_content_table_right_chunk" span={5}>回锅肉</Col>
+													<Col className="shop_order_table_content_table_right_chunk"span={5}>回锅肉</Col>
+													<Col className="shop_order_table_content_table_right_chunk"span={5}>回锅肉</Col>
+													<Col className="shop_order_table_content_table_right_chunk"span={5}>回锅肉</Col>
+													<Col className="shop_order_table_content_table_right_chunk"span={4}>回锅肉</Col>
 												</Col>
 											</Row>
 										</Row>
@@ -354,8 +300,8 @@ class Order extends React.Component{
 
 				</div>
 				<Row className="shop_order_fixed">
-					<Button onClick={this.tokenOrders.bind(this)}>批量派送</Button>
-					<Button onClick={this.allPrint.bind(this)}>批量打印订单</Button>
+					<Button>批量派送</Button>
+					<Button>批量打印订单</Button>
 				</Row>
 			</div>
 		);
