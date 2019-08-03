@@ -55,6 +55,7 @@
         "io": true,
         "__dirname": true,
 		"process": true,
-		"$": true
+		"$": true,
+		"AMap": true
     }
 }

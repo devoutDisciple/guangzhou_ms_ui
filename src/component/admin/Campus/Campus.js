@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
 import Request from '../../../request/AxiosRequest';
+import MapDialog from './MapDialog';
 
 @inject('CampusStore')
 @observer
@@ -21,7 +22,9 @@ class Campus extends React.Component{
 		dataSource: [],
 		addDialogVisible: false,
 		editorDialogVisible: false,
-		editData: {}
+		editData: {},
+		mapDialogVisible: false,
+		mapData: {}, // 地图数据
 	}
 
 	componentDidMount() {
@@ -60,9 +63,19 @@ class Campus extends React.Component{
 	}
 
 	// 点击搜索
-	onSearch() {
+	async onSearch() {
 		let values = this.props.form.getFieldsValue();
-		this.campusStore.getCampus(values);
+		await this.campusStore.getCampus(values);
+	}
+
+	// 点击标记的时候
+	onSignClick(record) {
+		this.setState({mapData: record}, () => this.onControllerMapDialog());
+	}
+
+	// 控制地图显示的开关
+	onControllerMapDialog() {
+		this.setState({mapDialogVisible: !this.state.mapDialogVisible}, () => this.onSearch());
 	}
 
 	render() {
@@ -70,7 +83,7 @@ class Campus extends React.Component{
 				labelCol: { span: 4 },
 				wrapperCol: { span: 20 },
 			}, campusList = this.campusStore.campus,
-			{addDialogVisible, editorDialogVisible, editData} = this.state,
+			{addDialogVisible, editorDialogVisible, editData, mapDialogVisible, mapData} = this.state,
 			{ getFieldDecorator } = this.props.form,
 			columns = [
 				{
@@ -97,6 +110,7 @@ class Campus extends React.Component{
 							<a href="javascript:;" target="_blank">删除</a>
      					</Popconfirm>
 						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)} target="_blank">修改</a>
+						<a href="javascript:;" onClick={this.onSignClick.bind(this, record)} target="_blank">标记</a>
 					</span>;
 				}
 			}
@@ -144,6 +158,11 @@ class Campus extends React.Component{
 						onSearch={this.onSearch.bind(this)}
 						controllerEditorDialog={this.controllerEditorDialog.bind(this)}
 						editData={editData}/>
+					: null
+				}
+				{
+					mapDialogVisible ?
+					<MapDialog data={mapData} onControllerMapDialog={this.onControllerMapDialog.bind(this)}/>
 					: null
 				}
 			</div>
