@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Button, Checkbox, Form, Col, Row, Input, DatePicker, message, Tabs
+	Button, Checkbox, Form, Col, Row, Input, DatePicker, message, Tabs, Tooltip, Popconfirm
 } from 'antd';
 const { TabPane } = Tabs;
 const FormItem = Form.Item;
@@ -312,7 +312,11 @@ class Order extends React.Component{
 																	<Row className="shop_order_table_content_table_left_chunk" key={i}>
 																		<Col span={8}>
 																			<Col span={12}><img src={order.goodsUrl}/></Col>
-																			<Col span={12}>{order.goodsName}</Col>
+																			<Col span={12} className="common_table_tooltip">
+																				<Tooltip placement="top" title={order.goodsName}>
+																					{order.goodsName}
+																				</Tooltip>
+																			</Col>
 																		</Col>
 																		<Col span={8}>{order.price}</Col>
 																		<Col span={8}>{order.num}</Col>
@@ -337,9 +341,11 @@ class Order extends React.Component{
 													<Col
 														className="shop_order_table_content_table_right_chunk"span={5}>
 														{FilterOrderStatus.filterOrderStatus(item.status)}
-														<a href="javascript:;" style={{marginLeft: '5px', fontSize: '10px'}} onClick={this.cancelOrder.bind(this, item)}>
+														<Popconfirm placement="top" title="是否确认取消该订单" onConfirm={this.cancelOrder.bind(this, item)} okText="确认" cancelText="取消">
+															<a href="javascript:;" style={{marginLeft: '5px', fontSize: '10px'}}>
 															取消该订单
-														</a>
+															</a>
+     													</Popconfirm>
 													</Col>
 													<Col className="shop_order_table_content_table_right_chunk"span={5}>{item.total_price}</Col>
 													<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>

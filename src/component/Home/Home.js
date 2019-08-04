@@ -6,6 +6,7 @@ import MyHeader from './Header';
 import { Route, Switch } from 'react-router-dom';
 import {inject, observer} from 'mobx-react';
 import './index.less';
+import logo from '../../asserts/logo.png';
 
 // 管理员
 import Swiper from '../admin/Swiper/Swiper';
@@ -82,7 +83,10 @@ export default class MyLayout extends React.Component{
 						</div>
 					</Content>
 				</Layout>
-				<Footer className="root_layout_footer">专业小程序开发者 微信号： 15906672702 </Footer>
+				<Footer className="root_layout_footer">
+					<img src={logo}/>
+					<span>贝沃思美食</span>
+				</Footer>
 			</React.Fragment>
 		);
 	}
