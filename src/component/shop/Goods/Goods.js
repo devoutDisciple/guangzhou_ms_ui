@@ -186,12 +186,11 @@ class Goods extends React.Component{
 								:
 								<a href="javascript:;" onClick={this.onRecommend.bind(this, record, 2)}>取消推荐</a>
 						}
-
-						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
-							<a href="javascript:;" >删除</a>
-     					</Popconfirm>
 						<Popconfirm placement="top" title="是否确认" onConfirm={this.onControllerShow.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >{record.show == 1 ? '下架' : '上架'}</a>
+     					</Popconfirm>
+						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
+							<a href="javascript:;" >删除</a>
      					</Popconfirm>
 					</span>;
 				}
