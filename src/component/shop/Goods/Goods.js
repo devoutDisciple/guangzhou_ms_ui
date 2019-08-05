@@ -85,7 +85,16 @@ class Goods extends React.Component{
 
 	// 商品上下架
 	async onControllerShow(data) {
-		let result = await Request.get('/goods/updateShow', {show: data.show == 1 ? 2 : 1, id: data.id});
+		let result = await Request.post('/goods/updateShow', {show: data.show == 1 ? 2 : 1, id: data.id});
+		if(result.data == 'success') {
+			message.success('修改成功');
+			return this.onSearchGoods();
+		}
+	}
+
+	// 商品是否售罄 onControllerLeave
+	async onControllerLeave(data) {
+		let result = await Request.post('/goods/updateLeave', {leave: data.leave == 1 ? 2 : 1, id: data.id});
 		if(result.data == 'success') {
 			message.success('修改成功');
 			return this.onSearchGoods();
@@ -173,6 +182,16 @@ class Goods extends React.Component{
 				}
 			},
 			{
+				title: '是否售罄',
+				dataIndex: 'leave',
+				key: 'leave',
+				align: 'center',
+				render:(text, record) => {
+					if(record.leave == 1) return <span className='common_cell_green'>有余货</span>;
+					return <span className='common_cell_red'>已售罄</span>;
+				}
+			},
+			{
 				title: '操作',
 				dataIndex: 'operation',
 				key: 'operation',
@@ -188,6 +207,9 @@ class Goods extends React.Component{
 						}
 						<Popconfirm placement="top" title="是否确认" onConfirm={this.onControllerShow.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >{record.show == 1 ? '下架' : '上架'}</a>
+     					</Popconfirm>
+						 <Popconfirm placement="top" title="是否确认" onConfirm={this.onControllerLeave.bind(this, record)} okText="确认" cancelText="取消">
+							<a href="javascript:;" >{record.leave == 1 ? '已售罄' : '有余货'}</a>
      					</Popconfirm>
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>

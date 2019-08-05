@@ -4,6 +4,7 @@ import './index.less';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
 import EditorDialog from './EditorDialog';
+import moment from 'moment';
 
 @inject('GlobalStore')
 @observer
@@ -28,6 +29,17 @@ export default class Shop extends React.Component{
 		let shopid = this.globalStore.userinfo.shopid;
 		let res = await Request.get('/shop/getShopByShopid', {id: shopid});
 		let data = res.data || {};
+		let start_time = data.start_time;
+		let end_time = data.end_time;
+		start_time = moment(moment().format('YYYY-MM-DD ') + start_time).valueOf();
+		end_time = moment(moment().format('YYYY-MM-DD ') + end_time).valueOf();
+		if(start_time >= end_time) {
+			end_time = moment(moment(end_time).add(1, 'days')).valueOf();
+		}
+		let now = moment(new Date().getTime());
+		if(now >= start_time && now <= end_time) {
+			data.open = true;
+		}
 		this.setState({data});
 	}
 
@@ -46,6 +58,16 @@ export default class Shop extends React.Component{
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>名称：</span>
 						<span className='shop_detail_content'>{data.name}</span>
+					</Row>
+					<Row className='shop_detail_col'>
+						<span className='shop_detail_label'>状态：</span>
+						<span className='shop_detail_content'>
+							{data.status == 1 && data.open ?
+								<span className='common_cell_green'>营业中</span>
+								:
+								<span className='common_cell_red'>暂停营业</span>
+							}
+						</span>
 					</Row>
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>所属区域：</span>
