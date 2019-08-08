@@ -1,9 +1,18 @@
 .login{
     height: 100%;
     width: 100%;
-    background: url(../../asserts/loginBg.jpg) no-repeat;
+    background: #333;
     background-size: 100% 100%;
-    position: relative;
+	position: relative;
+	.login_logo{
+		position: absolute;
+		left: 10px;
+		top: 10px;
+		img{
+			height: 100px;
+			width: 100px;
+		}
+	}
     .login_content{
         width: 600px;
         height: 350px;
@@ -14,7 +23,6 @@
         transform: translate(-50%, -50%);
         box-shadow: 15px 15px 10px #424a4e;
         background: #fff;
-        opacity: 0.6;
         .login_content_title{
             height: 80px;
             line-height: 80px;

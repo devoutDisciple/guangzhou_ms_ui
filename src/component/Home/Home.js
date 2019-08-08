@@ -47,7 +47,7 @@ export default class MyLayout extends React.Component{
 				<Layout>
 					<Sider className="root_layout_sider">
 						<div className="root_layout_sider_header">
-                            贝沃思管理后台
+                            贝沃思工作台
 						</div>
 						<Menu />
 					</Sider>

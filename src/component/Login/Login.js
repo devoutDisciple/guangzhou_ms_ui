@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './login.less';
 import { Form, Icon, Input, Button, Row } from 'antd';
 import {inject, observer} from 'mobx-react';
+import src from '../../asserts/logo.png';
 
 @inject('GlobalStore')
 @observer
@@ -30,8 +31,9 @@ class Login extends React.Component{
     	const { getFieldDecorator } = this.props.form;
     	return (
     		<div className="login">
+    			<div className="login_logo"><img src={src}/></div>
     			<div className="login_content">
-    				<Row className='login_content_title'>贝沃思管理后台</Row>
+    				<Row className='login_content_title'>贝沃思工作台</Row>
     				<Row className='login_content_content'>
     					<Form>
     						<Form.Item className="login_content_content_row">
