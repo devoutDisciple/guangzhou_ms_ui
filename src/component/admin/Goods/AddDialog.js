@@ -89,6 +89,7 @@ class AddDialog extends React.Component {
 					const formData = new FormData();
 					formData.append('name', values.name);
 					formData.append('title', values.title);
+					formData.append('sales', values.sales);
 					formData.append('desc', desc);
 					formData.append('price', values.price);
 					formData.append('package_cost', values.package_cost);
@@ -174,6 +175,17 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="销量">
+							{getFieldDecorator('sales', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" type="number"/>
 							)}
 						</FormItem>
 						<FormItem

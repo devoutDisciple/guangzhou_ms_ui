@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Form, Modal, Row, Col, message, Select
+	Form, Modal, Row, Col, message, Select, Input
 } from 'antd';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
@@ -18,17 +18,41 @@ class EditorDialog extends React.Component {
 	state = {
 		allShopDetail: [],
 		allGoodsDetail: [],
+		type: '1', // 关联类型
+		show: '1', // 是否展示
 	};
 
 	async componentDidMount() {
 		let editData = this.props.editData;
+		console.log(editData);
 		await this.getAllShop();
 		await this.shopSelect(editData.shop_id);
 		setTimeout(() => {
-			this.props.form.setFieldsValue({
-				shop: String(editData.shop_id),
-				goods: String(editData.goods_id),
-				status: String(editData.status)
+			let show = String(editData.show), status = String(editData.status);
+			this.setState({
+				type: show, // 关联类型
+				status: status, // 是否展示
+			}, () => {
+				this.props.form.setFieldsValue({
+					show: show,
+					status: status
+				});
+				if(show == 1) {
+					this.props.form.setFieldsValue({
+						shop: String(editData.shop_id),
+					});
+				}
+				if(show == 2) {
+					this.props.form.setFieldsValue({
+						shop: String(editData.shop_id),
+						goods: String(editData.goods_id),
+					});
+				}
+				if(status == 1) {
+					this.props.form.setFieldsValue({
+						time: editData.time,
+					});
+				}
 			});
 		}, 100);
 	}
@@ -44,6 +68,8 @@ class EditorDialog extends React.Component {
 				formData.append('shop_id', values.shop);
 				formData.append('goods_id', values.goods);
 				formData.append('status', values.status);
+				formData.append('show', values.goods);
+				values.time ? formData.append('time', values.time) : null;
 				if(!this.cropper) {
 					let res = await Request.post('/adver/modify', formData);
 					if(res.data == 'success') {
@@ -119,13 +145,22 @@ class EditorDialog extends React.Component {
 		});
 	}
 
+	// 选择关联类型
+	typeSelect(type) {
+		this.setState({type});
+	}
+
+	showSelect(show) {
+		this.setState({show});
+	}
+
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		let {allShopDetail, allGoodsDetail} = this.state;
+		let {allShopDetail, allGoodsDetail, type, show} = this.state;
 		return (
 			<div>
 				<Modal
@@ -136,43 +171,67 @@ class EditorDialog extends React.Component {
 					onCancel={this.handleCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="关联店铺">
-							{getFieldDecorator('shop', {
+							label="关联设置">
+							{getFieldDecorator('show', {
 								rules: [{
 									required: true,
 									message: '请选择',
 								}],
 							})(
-								<Select placeholder="请选择" onSelect={this.shopSelect.bind(this)}>
-									{
-										allShopDetail && allShopDetail.length != 0 ?
-											allShopDetail.map(item => {
-												return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
-											})
-											: null
-									}
+								<Select placeholder="请选择" onSelect={this.typeSelect.bind(this)}>
+									<Option value="1">关联商店</Option>
+									<Option value="2">关联食品</Option>
+									<Option value="3">无</Option>
 								</Select>
 							)}
 						</FormItem>
-						<FormItem
-							label="关联食品">
-							{getFieldDecorator('goods', {
-								rules: [{
-									required: true,
-									message: '请选择',
-								}],
-							})(
-								<Select placeholder="请选择">
-									{
-										allGoodsDetail && allGoodsDetail.length != 0 ?
-											allGoodsDetail.map(item => {
-												return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
-											})
-											: null
-									}
-								</Select>
-							)}
-						</FormItem>
+						{
+							type == '1' || type == '2'?
+								<FormItem
+									label="关联店铺">
+									{getFieldDecorator('shop', {
+										rules: [{
+											required: true,
+											message: '请选择',
+										}],
+									})(
+										<Select placeholder="请选择" onSelect={this.shopSelect.bind(this)}>
+											{
+												allShopDetail && allShopDetail.length != 0 ?
+													allShopDetail.map(item => {
+														return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
+													})
+													: null
+											}
+										</Select>
+									)}
+								</FormItem>
+								: null
+						}
+
+						{
+							type == '2' ?
+								<FormItem
+									label="关联食品">
+									{getFieldDecorator('goods', {
+										rules: [{
+											required: true,
+											message: '请选择',
+										}],
+									})(
+										<Select placeholder="请选择">
+											{
+												allGoodsDetail && allGoodsDetail.length != 0 ?
+													allGoodsDetail.map(item => {
+														return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
+													})
+													: null
+											}
+										</Select>
+									)}
+								</FormItem>
+								: null
+						}
 						<FormItem
 							label="是否展示">
 							{getFieldDecorator('status', {
@@ -181,12 +240,27 @@ class EditorDialog extends React.Component {
 									message: '请选择',
 								}],
 							})(
-								<Select placeholder="请选择">
+								<Select placeholder="请选择" onSelect={this.showSelect.bind(this)}>
 									<Option value="1">展示</Option>
 									<Option value="2">不展示</Option>
 								</Select>
 							)}
 						</FormItem>
+						{
+							show == 1 ?
+								<FormItem
+									label="展示时间">
+									{getFieldDecorator('time', {
+										rules: [{
+											required: true,
+											message: '请输入',
+										}],
+									})(
+										<Input type="number" placeholder="请输入时间(秒)" />
+									)}
+								</FormItem>
+								: null
+						}
 						<Row className='campus_container'>
 							<Col span={4} className='campus_container_label'>图片录入：</Col>
 							<Col span={20}>

@@ -35,7 +35,7 @@ class EditorDialog extends React.Component {
 			package_cost: data.package_cost,
 			today: String(data.today) || '1',
 			sort: data.sort,
-			sales: data.sales
+			sales: Number(data.sales)
 		});
 		let list = data.desc || [], fileList = [];
 		list = JSON.parse(list);
@@ -117,6 +117,7 @@ class EditorDialog extends React.Component {
 				formData.append('package_cost', values.package_cost);
 				formData.append('today', values.today);
 				formData.append('sort', values.sort);
+				formData.append('sales', values.sales);
 				formData.append('shopid', this.props.shopid);
 				if(!this.cropper) {
 					let res = await request.post('/goods/update', formData);
@@ -204,6 +205,17 @@ class EditorDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="销量">
+							{getFieldDecorator('sales', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" type="number"/>
 							)}
 						</FormItem>
 						<FormItem

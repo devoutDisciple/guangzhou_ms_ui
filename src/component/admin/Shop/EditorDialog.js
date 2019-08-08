@@ -27,6 +27,7 @@ class AddDialog extends React.Component {
 			campus: data.campus,
 			name: data.name,
 			address: data.address,
+			sales: Number(data.sales),
 			start_time: moment(data.start_time, 'HH:mm'),
 			end_time: moment(data.end_time, 'HH:mm'),
 			send_price: Number(data.send_price),
@@ -103,6 +104,17 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="销量">
+							{getFieldDecorator('sales', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" type="number"/>
 							)}
 						</FormItem>
 						<FormItem

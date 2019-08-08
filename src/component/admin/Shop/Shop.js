@@ -142,6 +142,12 @@ export default class Shop extends React.Component{
 				}
 			},
 			{
+				title: '电话',
+				dataIndex: 'phone',
+				key: 'phone',
+				align: 'center'
+			},
+			{
 				title: '营收情况',
 				dataIndex: 'win',
 				key: 'win',

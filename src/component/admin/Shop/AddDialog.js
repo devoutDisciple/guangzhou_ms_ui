@@ -93,6 +93,17 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
+							label="销量">
+							{getFieldDecorator('sales', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" type="number"/>
+							)}
+						</FormItem>
+						<FormItem
 							label="店铺地址">
 							{getFieldDecorator('address', {
 								rules: [{
