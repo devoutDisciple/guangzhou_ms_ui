@@ -103,7 +103,7 @@ class BillDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="联系人姓名">
+							label="收款人姓名">
 							{getFieldDecorator('name', {
 								rules: [{
 									required: true,
@@ -114,7 +114,7 @@ class BillDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="联系人电话">
+							label="收款人电话">
 							{getFieldDecorator('phone', {
 								rules: [{
 									required: true,

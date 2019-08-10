@@ -71,13 +71,13 @@ export default class Order extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '联系人姓名',
+				title: '收款人姓名',
 				dataIndex: 'name',
 				key: 'name',
 				align: 'center'
 			},
 			{
-				title: '联系人电话',
+				title: '收款人电话',
 				dataIndex: 'phone',
 				key: 'phone',
 				align: 'center'

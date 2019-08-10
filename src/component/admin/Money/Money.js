@@ -72,13 +72,13 @@ export default class Order extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '联系人姓名',
+				title: '收款人姓名',
 				dataIndex: 'name',
 				key: 'name',
 				align: 'center'
 			},
 			{
-				title: '联系人手机号',
+				title: '收款人手机号',
 				dataIndex: 'phone',
 				key: 'phone',
 				align: 'center'

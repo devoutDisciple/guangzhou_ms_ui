@@ -68,7 +68,7 @@ class EditorDialog extends React.Component {
 				formData.append('shop_id', values.shop);
 				formData.append('goods_id', values.goods);
 				formData.append('status', values.status);
-				formData.append('show', values.goods);
+				formData.append('show', values.show);
 				values.time ? formData.append('time', values.time) : null;
 				if(!this.cropper) {
 					let res = await Request.post('/adver/modify', formData);
