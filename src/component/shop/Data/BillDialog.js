@@ -69,6 +69,8 @@ class BillDialog extends React.Component {
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleDialogCancel.bind(this)}>
+					{/* 提现申请的支付方式可以为多种选择，把常用的银行调出来，（前缀加上各个公司的LOGO） 工商银行，农业银行，建设银行，中国银行，招商银行，邮政银行，支付宝/微信
+       提现信息需加上  收款姓名，联系号码，提现账号改为收款账号。 */}
 					<Form {...formItemLayout}>
 						<FormItem
 							label="支付方式">
@@ -79,14 +81,41 @@ class BillDialog extends React.Component {
 								}],
 							})(
 								<Select placeholder="请选择">
-									<Option value="1">支付宝</Option>
-									<Option value="2">工商银行</Option>
+									<Option value="1">工商银行</Option>
+									<Option value="2">农业银行</Option>
+									<Option value="3">建设银行</Option>
+									<Option value="4">招商银行</Option>
+									<Option value="5">邮政银行</Option>
+									<Option value="6">支付宝</Option>
+									<Option value="7">微信</Option>
 								</Select>
 							)}
 						</FormItem>
 						<FormItem
-							label="提现账号">
+							label="收款账号">
 							{getFieldDecorator('account', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="联系人姓名">
+							{getFieldDecorator('name', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="联系人电话">
+							{getFieldDecorator('phone', {
 								rules: [{
 									required: true,
 									message: '请输入',

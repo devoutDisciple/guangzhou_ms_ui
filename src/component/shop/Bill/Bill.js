@@ -65,9 +65,21 @@ export default class Order extends React.Component{
 				}
 			},
 			{
-				title: '商家账号',
+				title: '收款账号',
 				dataIndex: 'account',
 				key: 'account',
+				align: 'center'
+			},
+			{
+				title: '联系人姓名',
+				dataIndex: 'name',
+				key: 'name',
+				align: 'center'
+			},
+			{
+				title: '联系人电话',
+				dataIndex: 'phone',
+				key: 'phone',
 				align: 'center'
 			},
 			{

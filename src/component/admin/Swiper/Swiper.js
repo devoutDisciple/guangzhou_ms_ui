@@ -83,9 +83,26 @@ export default class Swiper extends React.Component{
 					}
 				},
 				{
+					title: '关联类型',
+					dataIndex: 'type',
+					key: 'type',
+					align: 'center',
+					render:(text) => {
+						if(text == 1) return <span>关联店铺</span>;
+						if(text == 2) return <span>关联食品</span>;
+						if(text == 3) return <span>暂无关联</span>;
+					}
+				},
+				{
 					title: '关联店铺',
 					dataIndex: 'shopName',
 					key: 'shopName',
+					align: 'center',
+				},
+				{
+					title: '关联食品',
+					dataIndex: 'goodsName',
+					key: 'goodsName',
 					align: 'center'
 				},
 				{

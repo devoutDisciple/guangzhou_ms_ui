@@ -5,6 +5,7 @@ import {
 import {inject, observer} from 'mobx-react';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
+import request from '../../../request/AxiosRequest';
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -22,7 +23,28 @@ class AddDialog extends React.Component {
 	};
 
 	async componentDidMount() {
-		await this.swiperStore.getAllShop();
+		await this.getAllShop();
+	}
+
+	// 获取所有商店信息
+	async getAllShop() {
+		let res = await request.get('/shop/getAllForSelect');
+		let data = res.data || [];
+		data.map((item, index) => {
+			item.key = index;
+		});
+		this.setState({
+			allShopDetail: data
+		});
+	}
+
+	// 商店选择获取食品信息
+	async shopSelect(shopid) {
+		let res = await request.get('/goods/getDescGoodsByShopId', {shopid: shopid});
+		let data = res.data || [];
+		this.setState({
+			allGoodsDetail: data
+		});
 	}
 
 	async handleOk()  {
@@ -36,7 +58,9 @@ class AddDialog extends React.Component {
 					const formData = new FormData();
 					formData.append('campus', campus);
 					formData.append('file', blob);
-					formData.append('shop', values.shop);
+					formData.append('type', values.type);
+					values.shop ? formData.append('shopid', values.shop) : null;
+					values.goods ? formData.append('goodsid', values.goods) : null;
 					formData.append('sort', Number(values.sort) || 1);
 					let res = await this.swiperStore.addSwiper(formData);
 					if(res.data == 'success') {
@@ -82,13 +106,23 @@ class AddDialog extends React.Component {
 		};
 	}
 
+	// 选择关联类型
+	typeSelect(type) {
+		this.setState({type});
+	}
+
+	showSelect(show) {
+		this.setState({show});
+	}
+
+
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		let {allShopDetail} = this.swiperStore;
+		let {allShopDetail, type, allGoodsDetail} = this.state;
 		return (
 			<div>
 				<Modal
@@ -99,24 +133,67 @@ class AddDialog extends React.Component {
 					onCancel={this.handleCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="关联店铺">
-							{getFieldDecorator('shop', {
+							label="关联设置">
+							{getFieldDecorator('type', {
 								rules: [{
 									required: true,
-									message: '请输入',
+									message: '请选择',
 								}],
 							})(
-								<Select placeholder="请选择">
-									{
-										allShopDetail && allShopDetail.length != 0 ?
-											allShopDetail.map(item => {
-												return <Option key={item.id} value={item.id}>{item.name}</Option>;
-											})
-											: null
-									}
+								<Select placeholder="请选择" onSelect={this.typeSelect.bind(this)}>
+									<Option value="1">关联店铺</Option>
+									<Option value="2">关联食品</Option>
+									<Option value="3">无</Option>
 								</Select>
 							)}
 						</FormItem>
+						{
+							type == '1' || type == '2'?
+								<FormItem
+									label="关联店铺">
+									{getFieldDecorator('shop', {
+										rules: [{
+											required: true,
+											message: '请选择',
+										}],
+									})(
+										<Select placeholder="请选择" onSelect={this.shopSelect.bind(this)}>
+											{
+												allShopDetail && allShopDetail.length != 0 ?
+													allShopDetail.map(item => {
+														return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
+													})
+													: null
+											}
+										</Select>
+									)}
+								</FormItem>
+								: null
+						}
+
+						{
+							type == '2' ?
+								<FormItem
+									label="关联食品">
+									{getFieldDecorator('goods', {
+										rules: [{
+											required: true,
+											message: '请选择',
+										}],
+									})(
+										<Select placeholder="请选择">
+											{
+												allGoodsDetail && allGoodsDetail.length != 0 ?
+													allGoodsDetail.map(item => {
+														return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
+													})
+													: null
+											}
+										</Select>
+									)}
+								</FormItem>
+								: null
+						}
 						<FormItem
 							label="权重">
 							{getFieldDecorator('sort', {

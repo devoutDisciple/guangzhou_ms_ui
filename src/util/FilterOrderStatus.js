@@ -30,13 +30,28 @@ export default {
 	// 支付类型
 	filterBillType: function(status) {
 		let data = '';
-		// 1-支付宝 2-银行卡
+		// 1-工商银行 2-农业银行 3-建设银行 4-招商银行 5-邮政银行 6-支付宝 7-微信
 		switch(Number(status)) {
 		case 1:
-			data = '支付宝';
+			data = '工商银行';
 			break;
 		case 2:
-			data = '银行卡';
+			data = '农业银行';
+			break;
+		case 3:
+			data = '建设银行';
+			break;
+		case 4:
+			data = '招商银行';
+			break;
+		case 5:
+			data = '邮政银行';
+			break;
+		case 6:
+			data = '支付宝';
+			break;
+		case 7:
+			data = '微信';
 			break;
 		}
 		return data;

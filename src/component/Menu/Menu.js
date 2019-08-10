@@ -101,6 +101,14 @@ export default class MyMenu extends React.Component {
 				onSelect={this.onSelect.bind(this)}
 				selectedKeys={[this.state.selectedKeys]}
 				inlineCollapsed={false}>
+				<Menu.Item key="/home/shop/order">
+					<Icon type="inbox" />
+					<span>订单管理</span>
+				</Menu.Item>
+				<Menu.Item key="/home/shop/goods">
+					<Icon type="inbox" />
+					<span>菜品管理</span>
+				</Menu.Item>
 				<Menu.Item key="/home/shop/data">
 					<Icon type="inbox" />
 					<span>销售数据</span>
@@ -108,14 +116,6 @@ export default class MyMenu extends React.Component {
 				<Menu.Item key="/home/shop/my">
 					<Icon type="inbox" />
 					<span>我的店铺</span>
-				</Menu.Item>
-				<Menu.Item key="/home/shop/goods">
-					<Icon type="inbox" />
-					<span>菜品管理</span>
-				</Menu.Item>
-				<Menu.Item key="/home/shop/order">
-					<Icon type="inbox" />
-					<span>订单管理</span>
 				</Menu.Item>
 				<Menu.Item key="/home/shop/bill">
 					<Icon type="inbox" />
