@@ -37,9 +37,18 @@ class Order extends React.Component{
 		await this.getShopDetail();
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
+		await this.getAllOrderNum();
 	}
 
-	// 获取商店位置数据
+	// 获取丁数据数量
+	async getAllOrderNum() {
+		let shopid = this.globalStore.userinfo.shopid;
+		let position = this.state.position;
+		let res = await Request.post('/order/getNumData', {id: shopid, position});
+		console.log(res, 998);
+	}
+
+	// 获取商店订单数据
 	async getShopDetail() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let shop = await Request.get('/shop/getShopByShopid', {id: shopid});

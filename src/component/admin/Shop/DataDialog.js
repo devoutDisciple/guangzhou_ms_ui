@@ -181,7 +181,7 @@ export default class Order extends React.Component{
 				visible={true}
 				onOk={this.handleCancel.bind(this)}
 				onCancel={this.handleCancel.bind(this)}>
-				<div className='data'>
+				<div className='shop_dialog_data'>
 					<div className='data_little_charts'>
 						<Card title="今日订单量(单)" className="data_little_charts_cart">
 							<span>{todayNum}</span>

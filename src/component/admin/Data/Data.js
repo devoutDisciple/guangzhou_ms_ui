@@ -22,7 +22,8 @@ export default class Order extends React.Component{
 		salesType: 1,
 		moneyType: 1,
 		alreadyMoney: 0, //已经提现金额
-		resMoney: 0, // 可提现金额
+		resMoney: 0, // 可提现金额，
+		adminMoney: 0, // 平台营收
 	}
 
 	async componentDidMount() {
@@ -46,6 +47,7 @@ export default class Order extends React.Component{
 		this.setState({
 			alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 			resMoney: data.resMoney || 0, // 可提现金额
+			adminMoney: data.adminMoney || 0, // 平台营收
 		});
 	}
 
@@ -170,7 +172,7 @@ export default class Order extends React.Component{
 	render() {
 		// alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 		// resMoney: data.resMoney || 0, // 可提现金额
-		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney} = this.state;
+		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney, adminMoney} = this.state;
 		return (
 			<div className='data'>
 				<div className='data_little_charts'>
@@ -191,6 +193,9 @@ export default class Order extends React.Component{
 					</Card>
 					<Card title="可提现金额(元)" className="data_little_charts_cart">
 						<span>{resMoney}</span>
+					</Card>
+					<Card title="平台营收(元)" className="data_little_charts_cart">
+						<span>{adminMoney}</span>
 					</Card>
 				</div>
 				<Row className="data_common_detail">

@@ -185,7 +185,7 @@ export default class Order extends React.Component{
 		// resMoney: data.resMoney || 0, // 可提现金额
 		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney, billDialogVisible} = this.state;
 		return (
-			<div className='data'>
+			<div className='shop_data'>
 				<div className='data_little_charts'>
 					<Card title="今日订单量(单)" className="data_little_charts_cart">
 						<span>{todayNum}</span>
