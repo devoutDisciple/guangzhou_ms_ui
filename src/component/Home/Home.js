@@ -20,6 +20,7 @@ import Money from '../admin/Money/Money';
 import Evaluate from '../admin/Evaluate/Evaluate';
 import Data from '../admin/Data/Data';
 import Adver from '../admin/Adver/Adver';
+import Rate from '../admin/Rate/Rate';
 
 // 商店
 import MyShop from '../shop/MyShop/MyShop';
@@ -58,6 +59,7 @@ export default class MyLayout extends React.Component{
 								role == 1 ?
 									<Switch>
 										<Route exact path="/home" component={Campus} />
+										<Route path="/home/rate" component={Rate} />
 										<Route path="/home/adver" component={Adver} />
 										<Route path="/home/swiper" component={Swiper} />
 										<Route path="/home/campus" component={Campus} />

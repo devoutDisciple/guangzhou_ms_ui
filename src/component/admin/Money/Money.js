@@ -84,9 +84,27 @@ export default class Order extends React.Component{
 				align: 'center'
 			},
 			{
-				title: '提现金额(元)',
+				title: '申请金额(元)',
 				dataIndex: 'money',
 				key: 'money',
+				align: 'center'
+			},
+			{
+				title: '平台抽成(元)',
+				dataIndex: 'our_money',
+				key: 'our_money',
+				align: 'center'
+			},
+			{
+				title: '提现手续费(元)',
+				dataIndex: 'other_money',
+				key: 'other_money',
+				align: 'center'
+			},
+			{
+				title: '到账金额(元)',
+				dataIndex: 'real_money',
+				key: 'real_money',
 				align: 'center'
 			},
 
