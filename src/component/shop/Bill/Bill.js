@@ -1,10 +1,12 @@
 import React from 'react';
 // const { Option } = Select;
-import {Table, Popconfirm, message} from 'antd';
+import {Table, Popconfirm, message, Button, Col} from 'antd';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import Filter from '../../../util/FilterOrderStatus';
+import BillDialog from './BillDialog';
+
 
 @inject('GlobalStore')
 @observer
@@ -16,11 +18,14 @@ export default class Order extends React.Component{
 	}
 
 	state = {
-		list: []
+		list: [],
+		billDialogVisible: false,
+		resMoney: 0, // 可提现金额
 	}
 
 	async componentDidMount() {
 		await this.onSearchBill();
+		await this.getMoneyBillAlready();
 	}
 
 	async onSearchBill() {
@@ -45,9 +50,27 @@ export default class Order extends React.Component{
 		}
 	}
 
+	// 获取已提现金额和可提现金额
+	async getMoneyBillAlready() {
+		let shopid = this.globalStore.userinfo.shopid;
+		let res = await Request.get('/bill/getBillMoneyReadyByShopid', {shopid: shopid});
+		let data = res.data;
+		this.setState({
+			alreadyMoney: data.alreadyMoney || 0, //已经提现金额
+			resMoney: data.resMoney || 0, // 可提现金额
+		});
+	}
+
+	// 控制提现弹框的开关
+	onControllerBillDialogVisible() {
+		this.setState({
+			billDialogVisible: !this.state.billDialogVisible
+		});
+	}
+
 
 	render() {
-		let {list} = this.state;
+		let {list, billDialogVisible, resMoney} = this.state;
 		const columns = [
 			{
 				title: '审批编号',
@@ -131,6 +154,11 @@ export default class Order extends React.Component{
 		];
 		return (
 			<div className='common'>
+				<div className='common_search'>
+					<Col span={6} offset={1}>
+						<Button className='goods_search_btn' type='primary' onClick={this.onControllerBillDialogVisible.bind(this)}>新增</Button>
+					</Col>
+				</div>
 				<div className='common_content'>
 					<Table
 						bordered
@@ -143,6 +171,13 @@ export default class Order extends React.Component{
 							}
 						}/>
 				</div>
+				{
+					billDialogVisible ?
+						<BillDialog
+							resMoney={resMoney}
+							onControllerBillDialogVisible={this.onControllerBillDialogVisible.bind(this)}/>
+						: null
+				}
 			</div>
 		);
 	}
