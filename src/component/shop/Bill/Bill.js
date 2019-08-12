@@ -1,11 +1,14 @@
 import React from 'react';
 // const { Option } = Select;
-import {Table, Popconfirm, message, Button, Col} from 'antd';
+import {
+	Table, Popconfirm, message, Card, Popover
+} from 'antd';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 import Filter from '../../../util/FilterOrderStatus';
 import BillDialog from './BillDialog';
+import './index.less';
 
 
 @inject('GlobalStore')
@@ -21,13 +24,18 @@ export default class Order extends React.Component{
 		list: [],
 		billDialogVisible: false,
 		resMoney: 0, // 可提现金额
+		allMoney: 0,
+		alreadyMoney: 0, //已经提现金额
+		rate: {}
 	}
 
 	async componentDidMount() {
 		await this.onSearchBill();
 		await this.getMoneyBillAlready();
+		await this.onSearchRate();
 	}
 
+	// 获取列表数据
 	async onSearchBill() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let res = await Request.get('/bill/getAllByShopid', {shop_id: shopid});
@@ -39,6 +47,14 @@ export default class Order extends React.Component{
 		});
 		this.setState({list: res.data || []});
 	}
+
+	// 获取汇率数据
+	async onSearchRate() {
+		let result = await Request.get('/rate/getAll');
+		let data = result.data || [];
+		this.setState({rate: data[0] || {}});
+	}
+
 
 	// 撤销申请
 	async onCancelBill(data) {
@@ -56,6 +72,7 @@ export default class Order extends React.Component{
 		let res = await Request.get('/bill/getBillMoneyReadyByShopid', {shopid: shopid});
 		let data = res.data;
 		this.setState({
+			allMoney: data.allMoney || 0, //商店销售总额
 			alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 			resMoney: data.resMoney || 0, // 可提现金额
 		});
@@ -70,7 +87,9 @@ export default class Order extends React.Component{
 
 
 	render() {
-		let {list, billDialogVisible, resMoney} = this.state;
+		let {
+			list, billDialogVisible, resMoney, allMoney, alreadyMoney, rate
+		} = this.state;
 		const columns = [
 			{
 				title: '审批编号',
@@ -170,11 +189,25 @@ export default class Order extends React.Component{
 			},
 		];
 		return (
-			<div className='common'>
-				<div className='common_search'>
-					<Col span={6} offset={1}>
-						<Button className='goods_search_btn' type='primary' onClick={this.onControllerBillDialogVisible.bind(this)}>新增</Button>
-					</Col>
+			<div className='common bill'>
+				<div className='data_little_charts'>
+					<Card title="总销售额(元)" className="data_little_charts_cart">
+						<span>{allMoney}</span>
+					</Card>
+					<Card title="已提现(元)" className="data_little_charts_cart">
+						<span>{alreadyMoney}</span>
+					</Card>
+					<Card title="可提现金额(元)"
+						className="data_little_charts_cart data_little_charts_cart_last"
+						extra={
+							<Popover content={`实际到账金额 = 提现金额 * ${1 - rate.shop_rate / 100} * ${1 - rate.other_rate / 100}`} trigger="hover">
+								<a href="javascript:;">说明</a>
+							</Popover>}>
+						<span>{resMoney}</span>
+						<span className="data_little_charts_cart_tixian">
+							<a href="javascript:;" onClick={this.onControllerBillDialogVisible.bind(this)}>提现</a>
+						</span>
+					</Card>
 				</div>
 				<div className='common_content'>
 					<Table

@@ -30,6 +30,7 @@ class Order extends React.Component{
 		selectedRowKeys: '',
 		selectedRows: [],
 		checkAll: false, // 是否全选
+		titleData: [], // 头标数
 	}
 
 	async componentDidMount() {
@@ -38,14 +39,17 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
+		setInterval(async () => {
+			await this.getAllOrderNum();
+		}, 10000);
 	}
 
 	// 获取丁数据数量
 	async getAllOrderNum() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let position = this.state.position;
-		let res = await Request.post('/order/getNumData', {id: shopid, position});
-		console.log(res, 998);
+		let res = await Request.get('/order/getNumData', {id: shopid, floor: position});
+		this.setState({titleData: res.data || []});
 	}
 
 	// 获取商店订单数据
@@ -56,6 +60,7 @@ class Order extends React.Component{
 		let result = await Request.get('/position/getPositionByCampus', {campus});
 		let floor = JSON.parse(result.data.floor) || [];
 		let position = [];
+		console.log(floor);
 		floor.map(item => {
 			if(item.children && item.children.length) {
 				item.children.map(address => {
@@ -85,7 +90,6 @@ class Order extends React.Component{
 
 	// 改变单个按钮是否选择的时候
 	checkboxClick(record) {
-		console.log(record, 888);
 		let orderList = this.state.orderList;
 		for(let item of orderList) {
 			if(item.id == record.id) {
@@ -110,12 +114,10 @@ class Order extends React.Component{
 	async goodsSearchBtnClick() {
 		let {positionActive, print, sendtab} = this.state;
 		let value = this.props.form.getFieldsValue();
-		console.log(value);
 		if(value.time) {
 			value.start_time = moment(value.start_time).format('YYYY-MM-DD HH:mm:ss');
 			value.end_time = moment(value.end_time).format('YYYY-MM-DD HH:mm:ss');
 		}
-		console.log(positionActive, print, value);
 		let params = {
 			campus: positionActive,
 			print: print,
@@ -123,7 +125,6 @@ class Order extends React.Component{
 			...value
 		};
 		let result = await Request.post('/order/getOrderByStatusAndPosition', params);
-		console.log(result);
 		let data = result.data || [];
 		data.map((item, index) => {
 			item.key = index;
@@ -199,7 +200,7 @@ class Order extends React.Component{
 	}
 
 	render() {
-		let {position, positionActive, print, orderList, checkAll, sendtab} = this.state;
+		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 8 },
@@ -215,9 +216,17 @@ class Order extends React.Component{
 						position && position.length != 0 ?
 							position.map((item, index) => {
 								return <Button
+									className='shop_order_title_btn'
 									key={index}
 									type={positionActive == item ? 'primary' : null}
-									onClick={this.positionClick.bind(this, item)}>{item}</Button>;
+									onClick={this.positionClick.bind(this, item)}>
+									{item}
+									{
+										titleData[index] > 0 ?
+											<span className='shop_order_title_btn_span'>{titleData[index]}</span>
+											: null
+									}
+								</Button>;
 							})
 							: null
 					}
