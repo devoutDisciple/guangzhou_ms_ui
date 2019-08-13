@@ -34,6 +34,7 @@ class AddDialog extends React.Component {
 			start_price: Number(data.start_price),
 			sort: Number(data.sort),
 			desc: data.desc,
+			status: String(data.status),
 			sn: data.sn,
 			key: data.key
 		});
@@ -128,6 +129,20 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="开/关店">
+							{getFieldDecorator('status', {
+								rules: [{
+									required: true,
+									message: '请选择',
+								}],
+							})(
+								<Select placeholder="请选择">
+									<Option value="1">开店</Option>
+									<Option value="2">关店</Option>
+								</Select>
 							)}
 						</FormItem>
 						<FormItem label="营业时间" style={{ marginBottom: 0 }} className='common_dialog_time'>

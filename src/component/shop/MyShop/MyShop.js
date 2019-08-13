@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button } from 'antd';
+import { Row, Button, Modal } from 'antd';
 import './index.less';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
@@ -18,6 +18,8 @@ export default class Shop extends React.Component{
 	state = {
 		data: {},
 		editorDialogVisible: false,
+		imgUrl: '',
+		codeImgVidible: false,
 	}
 
 	componentDidMount() {
@@ -50,8 +52,26 @@ export default class Shop extends React.Component{
 		});
 	}
 
+	// 获取商店二维码
+	async onGetCode() {
+		let shopid = this.globalStore.userinfo.shopid;
+		let res = await Request.get('/shop/getAccessCode', {id: shopid});
+		console.log(res, 999);
+		this.setState({
+			codeImgVidible: true,
+		}, () => {
+			this.setState({
+				imgUrl: `http://localhost:3002/${res.data}`
+			});
+		});
+	}
+
+	handleCancelCodeImg() {
+		this.setState({codeImgVidible: false});
+	}
+
 	render() {
-		let {data, editorDialogVisible} = this.state;
+		let {data, editorDialogVisible, imgUrl, codeImgVidible} = this.state;
 		return (
 			<div className='data'>
 				<Row className="shop_detail">
@@ -111,6 +131,7 @@ export default class Shop extends React.Component{
 					</Row>
 					<Row>
 						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改</Button>
+						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取商店二维码</Button>
 					</Row>
 				</Row>
 				{
@@ -121,6 +142,18 @@ export default class Shop extends React.Component{
 							controllerEditorDialog={this.controllerEditorDialog.bind(this)} />
 						: null
 				}
+				{
+					codeImgVidible ?
+						<Modal
+							onCancel={this.handleCancelCodeImg.bind(this)}
+							title="小程序码"
+							footer={null}
+							visible={true}>
+							<img src={imgUrl}/>
+						</Modal>
+						: null
+				}
+
 			</div>
 		);
 	}

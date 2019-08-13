@@ -39,9 +39,9 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		setInterval(async () => {
-			await this.getAllOrderNum();
-		}, 10000);
+		// setInterval(async () => {
+		// 	await this.getAllOrderNum();
+		// }, 10000);
 	}
 
 	// 获取丁数据数量

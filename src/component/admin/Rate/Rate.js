@@ -1,9 +1,10 @@
 import React from 'react';
 import Request from '../../../request/AxiosRequest';
 import {
-	Table,
+	Table
 } from 'antd';
 import EditorDialog from './EditorDialog';
+import axios from 'axios';
 
 export default class Rate extends React.Component{
 
@@ -42,6 +43,16 @@ export default class Rate extends React.Component{
 		}, () => this.controllerEditorDialog());
 	}
 
+	//
+	async btnClick() {
+		let access_token = '24_KeztjsqzyULsifsSvxA25ixZVKigVnR_wUBa--NRPMxs0_111hsvst7p9VOx4kZhQkF_WI7GgRQbJksUFzUmyZIV6sSvxlWI3TaDSxo7rItfIGQyjKdF19WCvGXtSNAokihbf4Z9MiTmYqE-UFFeABABMM';
+		let params = JSON.parse(JSON.stringify({
+			'path': 'pages/index/index?age=1'
+		}));
+		let result = await axios.post(`https://api.weixin.qq.com/wxa/getwxacode?access_token=${access_token}`, params);
+		console.log(result);
+	}
+
 	render() {
 		const columns = [
 			{
@@ -69,6 +80,7 @@ export default class Rate extends React.Component{
 		let {data, visible, editData} = this.state;
 		return (
 			<div className='common'>
+				{/* <Button onClick={this.btnClick.bind(this)}>点击</Button> */}
 				<div className='common_content'>
 					<Table
 						bordered
