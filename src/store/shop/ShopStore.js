@@ -28,9 +28,10 @@ class ShopStore {
 
 	// 获取所有店铺信息
 	@action
-	 async getAll() {
+	 async getAll(value) {
+		 console.log(value, 99999);
 	 	try {
-			 let shop = await request.get('/shop/all');
+			 let shop = await request.get('/shop/all', value);
 	 		runInAction(() => {
 				 let data = shop.data || [];
 				 data.map(item => {

@@ -219,7 +219,8 @@ class Goods extends React.Component{
 			}
 		];
 		let {goodsList} = this.state;
-		let {addDialogVisible, shopid, editorDialogVisible, editData} = this.state;
+		let {addDialogVisible, editorDialogVisible, editData} = this.state;
+		let shopid = this.globalStore.userinfo.shopid;
 		return (
 			<div className='common'>
 				<div className='common_search'>

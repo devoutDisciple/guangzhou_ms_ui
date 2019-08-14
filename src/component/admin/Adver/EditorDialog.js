@@ -65,8 +65,8 @@ class EditorDialog extends React.Component {
 				console.log(values);
 				const formData = new FormData();
 				formData.append('id', this.props.editData.id);
-				formData.append('shop_id', values.shop);
-				formData.append('goods_id', values.goods);
+				values.shop ? formData.append('shop_id', values.shop) : null;
+				values.goods ? formData.append('goods_id', values.goods) : null;
 				formData.append('status', values.status);
 				formData.append('show', values.show);
 				values.time ? formData.append('time', values.time) : null;

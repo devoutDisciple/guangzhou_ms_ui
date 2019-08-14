@@ -109,8 +109,8 @@ class Campus extends React.Component{
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" target="_blank">删除</a>
      					</Popconfirm>
-						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)} target="_blank">修改</a>
-						<a href="javascript:;" onClick={this.onSignClick.bind(this, record)} target="_blank">标记</a>
+						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>修改</a>
+						<a href="javascript:;" onClick={this.onSignClick.bind(this, record)}>标记</a>
 					</span>;
 				}
 			}

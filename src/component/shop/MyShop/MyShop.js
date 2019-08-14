@@ -61,7 +61,7 @@ export default class Shop extends React.Component{
 			codeImgVidible: true,
 		}, () => {
 			this.setState({
-				imgUrl: `http://localhost:3002/${res.data}`
+				imgUrl: res.data
 			});
 		});
 	}

@@ -118,9 +118,11 @@ class Order extends React.Component{
 			value.start_time = moment(value.start_time).format('YYYY-MM-DD HH:mm:ss');
 			value.end_time = moment(value.end_time).format('YYYY-MM-DD HH:mm:ss');
 		}
+		let shopid = this.globalStore.userinfo.shopid;
 		let params = {
 			campus: positionActive,
 			print: print,
+			shopid: shopid,
 			sendtab: sendtab,
 			...value
 		};

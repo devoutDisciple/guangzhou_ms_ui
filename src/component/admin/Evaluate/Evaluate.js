@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-	Table, Tooltip, Form, Select, Col
+	Table, Tooltip, Form, Col, Input, Button
 } from 'antd';
 import Request from '../../../request/AxiosRequest';
 import moment from 'moment';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 class Evaluate extends React.Component{
 
@@ -20,27 +19,7 @@ class Evaluate extends React.Component{
 	}
 
 	async componentDidMount() {
-		this.onSearchShop();
-	}
-
-	// 查询商店
-	async onSearchShop() {
-		let res = await Request.get('/shop/getAllForSelect');
-		let shopList = res.data || [];
-		if(shopList && shopList.length != 0) {
-			let id = shopList[0].id;
-			this.setState({
-				shopid: id,
-				shopList: shopList
-			}, async () => {
-				setTimeout(() => {
-					this.props.form.setFieldsValue({
-						shop: id,
-					});
-				}, 100);
-				await this.onSearchEvaluateList();
-			});
-		}
+		this.onSearchEvaluateList();
 	}
 
 	// 下拉选择改变的时候
@@ -54,20 +33,24 @@ class Evaluate extends React.Component{
 
 	// 查询评价列表
 	async onSearchEvaluateList() {
-		let result = await Request.get('/evaluate/getEvaluateByShopId', {shopid: this.state.shopid});
-		let data = result.data;
+		let value = this.props.form.getFieldsValue();
+		console.log(value, 8989);
+		let result = await Request.get('/evaluate/getEvaluate', value);
+		let data = result.data || [];
+		let list = [];
 		data.map(item => {
 			item.key = item.id;
 			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+			if(item.shopName.includes(name)) list.push(item);
 		});
 		this.setState({
-			evaluateList: data
+			evaluateList: list
 		});
 	}
 
 
 	render() {
-		let {evaluateList, shopList} = this.state;
+		let {evaluateList} = this.state;
 		const columns = [
 			{
 				title: '订单编号',
@@ -91,9 +74,15 @@ class Evaluate extends React.Component{
 				}
 			},
 			{
-				title: '商品名称',
+				title: '菜品名称',
 				dataIndex: 'goodsName',
 				key: 'goodsName',
+				align: 'center'
+			},
+			{
+				title: '商店名称',
+				dataIndex: 'shopName',
+				key: 'shopName',
 				align: 'center'
 			},
 			{
@@ -134,27 +123,17 @@ class Evaluate extends React.Component{
 		return (
 			<div className='common'>
 				<div className='common_search'>
-					<Form {...formItemLayout}>
+					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="商店">
-								{getFieldDecorator('shop', {
-									rules: [{
-										required: true,
-										message: '请选择',
-									}],
-								})(
-									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
-										{
-											shopList && shopList.length != 0 ?
-												shopList.map(item => {
-													return <Option key={item.id} value={item.id}>{item.name}</Option>;
-												})
-												: null
-										}
-									</Select>
+								label="商店名称">
+								{getFieldDecorator('name')(
+									<Input placeholder="请输入商店名称" />
 								)}
 							</FormItem>
+						</Col>
+						<Col span={6} offset={1}>
+							<Button type='primary' onClick={this.onSearchEvaluateList.bind(this)}>查询</Button>
 						</Col>
 					</Form>
 				</div>

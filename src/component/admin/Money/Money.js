@@ -147,7 +147,7 @@ export default class Order extends React.Component{
 									<a href="javascript:;">拒绝</a>
 								</Popconfirm>
 								<Popconfirm placement="top" title="是否确认完成支付" onConfirm={this.onChangeBillStatus.bind(this, record, 3)} okText="确认" cancelText="取消">
-									<a href="javascript:;">已支付</a>
+									<a href="javascript:;">接受</a>
 								</Popconfirm>
 							</span>
 						);

@@ -1,16 +1,17 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
 import {
-	Button, Table, Popconfirm, message, Tooltip
+	Button, Table, Popconfirm, message, Tooltip, Form, Col, Input
 } from 'antd';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
 import Request from '../../../request/AxiosRequest';
 import DataDialog from './DataDialog';
+const FormItem = Form.Item;
 
 @inject('ShopStore')
 @observer
-export default class Shop extends React.Component{
+class Shop extends React.Component{
 
 	constructor(props) {
 		super(props);
@@ -63,7 +64,9 @@ export default class Shop extends React.Component{
 
 	// 点击搜索
 	onSearch() {
-		this.shopStore.getAll();
+		let value = this.props.form.getFieldsValue();
+		console.log(value);
+		this.shopStore.getAll(value);
 	}
 
 	// 确认关店或者开店
@@ -201,10 +204,27 @@ export default class Shop extends React.Component{
 		];
 		let {list} = this.shopStore,
 			{addDialogVisible, editorDialogVisible, editData, shopid, dataDialogVisible} = this.state;
+		const formItemLayout = {
+				labelCol: { span: 4 },
+				wrapperCol: { span: 20 },
+			}, { getFieldDecorator } = this.props.form;
 		return (
 			<div className='common'>
 				<div className='common_search'>
-					<Button type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
+					<Form className="common_search_form" {...formItemLayout}>
+						<Col span={6}>
+							<FormItem
+								label="商店名称">
+								{getFieldDecorator('name')(
+									<Input placeholder="请输入商店名称" />
+								)}
+							</FormItem>
+						</Col>
+						<Col span={6} offset={1}>
+							<Button type='primary' onClick={this.onSearch.bind(this)}>查询</Button>
+							<Button type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
+						</Col>
+					</Form>
 				</div>
 				<div className='common_content'>
 					<Table
@@ -244,3 +264,6 @@ export default class Shop extends React.Component{
 		);
 	}
 }
+
+const ShopForm = Form.create()(Shop);
+export default ShopForm;

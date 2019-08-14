@@ -1,10 +1,9 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
 import {
-	Button, Table, Popconfirm, message, Tooltip, Form, Select, Col
+	Button, Table, Popconfirm, message, Tooltip, Form, Col, Input
 } from 'antd';
 const FormItem = Form.Item;
-const { Option } = Select;
 import Request from '../../../request/AxiosRequest';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
@@ -23,39 +22,25 @@ class Goods extends React.Component{
 		addDialogVisible: false,
 		editorDialogVisible: false,
 		editData: {},
-		shopid: 1
+		goodsList: [],
 	}
 
 	async componentDidMount() {
-		// new Audio(
-		// 	'http://tts.baidu.com/text2audio?cuid=baiduid&lan=zh&ctp=1&pdt=311&tex=您有新的订单啦~'
-		//   ).play();
 		// 查询商店
-		await this.onSearchShop();
-	}
-
-	// 查询商店
-	async onSearchShop() {
-		await this.goodsStore.getAllShop();
-		let {shopList} = this.goodsStore;
-		if(shopList && shopList.length != 0) {
-			let id = shopList[0].id;
-			this.setState({
-				shopid: id
-			}, async () => {
-				setTimeout(() => {
-					this.props.form.setFieldsValue({
-						shop: id,
-					});
-				}, 100);
-				await this.onSearchGoods();
-			});
-		}
+		await this.onSearchGoods();
 	}
 
 	// 查询菜品
 	async onSearchGoods() {
-		await this.goodsStore.getAllGoods(this.state.shopid);
+		let value = this.props.form.getFieldsValue();
+		console.log(value, 999);
+		let result = await Request.get('/goods/getAllGoodsByName', value);
+		console.log(result);
+		let data = result.data || [];
+		data.map(item => {
+			item.key = item.id;
+		});
+		this.setState({goodsList: data});
 	}
 
 	// 新增编辑框的显示
@@ -100,14 +85,6 @@ class Goods extends React.Component{
 		}
 	}
 
-	// 商店选择的时候
-	selectChange(id) {
-		this.setState({
-			shopid: id
-		}, async () => {
-			await this.onSearchGoods();
-		});
-	}
 
 	render() {
 		const columns = [
@@ -121,6 +98,12 @@ class Goods extends React.Component{
 						<span className='common_table_ellipse'>{record.name}</span>
 					   </Tooltip>;
 				}
+			},
+			{
+				title: '商店名称',
+				dataIndex: 'shopName',
+				key: 'shopName',
+				align: 'center'
 			},
 			{
 				title: '图片',
@@ -203,34 +186,21 @@ class Goods extends React.Component{
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		let {shopList, goodsList} = this.goodsStore;
-		let {addDialogVisible, shopid, editorDialogVisible, editData} = this.state;
+		let {addDialogVisible, shopid, editorDialogVisible, editData, goodsList} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
-					<Form {...formItemLayout}>
+					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="商店">
-								{getFieldDecorator('shop', {
-									rules: [{
-										required: true,
-										message: '请选择',
-									}],
-								})(
-									<Select placeholder="请选择" onChange={this.selectChange.bind(this)}>
-										{
-											shopList && shopList.length != 0 ?
-												shopList.map(item => {
-													return <Option key={item.id} value={item.id}>{item.name}</Option>;
-												})
-												: null
-										}
-									</Select>
+								label="菜品名称">
+								{getFieldDecorator('name')(
+									<Input placeholder="请输入菜品名称" />
 								)}
 							</FormItem>
 						</Col>
 						<Col span={6} offset={1}>
+							<Button type='primary' onClick={this.onSearchGoods.bind(this)}>查询</Button>
 							<Button className='goods_search_btn' type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
 						</Col>
 					</Form>
