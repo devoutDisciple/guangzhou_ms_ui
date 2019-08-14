@@ -4,6 +4,7 @@ import './index.less';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
 import EditorDialog from './EditorDialog';
+import UserDialog from './UserDialog';
 import moment from 'moment';
 
 @inject('GlobalStore')
@@ -20,6 +21,7 @@ export default class Shop extends React.Component{
 		editorDialogVisible: false,
 		imgUrl: '',
 		codeImgVidible: false,
+		userDialogVisible: false,
 	}
 
 	componentDidMount() {
@@ -52,6 +54,13 @@ export default class Shop extends React.Component{
 		});
 	}
 
+	// 用户账号的修改
+	controllerUserDialog() {
+		this.setState({
+			userDialogVisible: !this.state.userDialogVisible
+		});
+	}
+
 	// 获取商店二维码
 	async onGetCode() {
 		let shopid = this.globalStore.userinfo.shopid;
@@ -71,7 +80,8 @@ export default class Shop extends React.Component{
 	}
 
 	render() {
-		let {data, editorDialogVisible, imgUrl, codeImgVidible} = this.state;
+		let {data, editorDialogVisible, imgUrl, codeImgVidible, userDialogVisible} = this.state;
+		let shopid = this.globalStore.userinfo.shopid;
 		return (
 			<div className='data'>
 				<Row className="shop_detail">
@@ -92,10 +102,6 @@ export default class Shop extends React.Component{
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>所属区域：</span>
 						<span className='shop_detail_content'>{data.campus}</span>
-					</Row>
-					<Row className='shop_detail_col'>
-						<span className='shop_detail_label'>月售：</span>
-						<span className='shop_detail_content'>{data.sales}</span>
 					</Row>
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>地址：</span>
@@ -130,7 +136,8 @@ export default class Shop extends React.Component{
 						<span className='shop_detail_content'>{data.key}</span>
 					</Row>
 					<Row>
-						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改</Button>
+						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改商店信息</Button>
+						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerUserDialog.bind(this)}>修改密码</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取商店二维码</Button>
 					</Row>
 				</Row>
@@ -140,6 +147,13 @@ export default class Shop extends React.Component{
 							editData={data}
 							onSearch={this.onSearchShop.bind(this)}
 							controllerEditorDialog={this.controllerEditorDialog.bind(this)} />
+						: null
+				}
+				{
+					userDialogVisible ?
+						<UserDialog
+							shopid={shopid}
+							controllerUserDialog={this.controllerUserDialog.bind(this)} />
 						: null
 				}
 				{

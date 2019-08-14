@@ -32,7 +32,6 @@ class AddDialog extends React.Component {
 			end_time: moment(data.end_time, 'HH:mm'),
 			send_price: Number(data.send_price),
 			start_price: Number(data.start_price),
-			sort: Number(data.sort),
 			desc: data.desc,
 			status: String(data.status),
 			sn: data.sn,
@@ -211,17 +210,6 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入打印机编号(KEY)" />
-							)}
-						</FormItem>
-						<FormItem
-							label="权重">
-							{getFieldDecorator('sort', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入权重, 权重越高, 排名越靠前" />
 							)}
 						</FormItem>
 						<FormItem
