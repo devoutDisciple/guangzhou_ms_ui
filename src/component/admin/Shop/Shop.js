@@ -4,6 +4,7 @@ import {
 	Button, Table, Popconfirm, message, Tooltip, Form, Col, Input
 } from 'antd';
 import AddDialog from './AddDialog';
+import UserDialog from './UserDialog';
 import EditorDialog from './EditorDialog';
 import Request from '../../../request/AxiosRequest';
 import DataDialog from './DataDialog';
@@ -24,6 +25,8 @@ class Shop extends React.Component{
 		editData: {},
 		dataDialogVisible: false,
 		shopid: '',
+		accountData: {},
+		accountVisible: false
 	}
 
 	componentDidMount() {
@@ -92,6 +95,20 @@ class Shop extends React.Component{
 		this.setState({
 			dataDialogVisible: !this.state.dataDialogVisible
 		});
+	}
+
+	// 修改账户
+	modifyAccount(record) {
+		this.setState({
+			shopid: record.id
+		}, () => {
+			this.onControllerAccountDialog();
+		});
+	}
+
+	// 控制修改账号密码
+	onControllerAccountDialog() {
+		this.setState({accountVisible: !this.state.accountVisible});
 	}
 
 
@@ -197,13 +214,14 @@ class Shop extends React.Component{
 						<Popconfirm placement="top" title="是否确认删除" onConfirm={this.onConfirmDelete.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >删除</a>
      					</Popconfirm>
-						 <a href="javascript:;" onClick={this.getMore.bind(this, record)}>更多</a>
+						 <a href="javascript:;" onClick={this.modifyAccount.bind(this, record)}>修改账户</a>
+						<a href="javascript:;" onClick={this.getMore.bind(this, record)}>更多</a>
 					</span>;
 				}
 			}
 		];
 		let {list} = this.shopStore,
-			{addDialogVisible, editorDialogVisible, editData, shopid, dataDialogVisible} = this.state;
+			{addDialogVisible, editorDialogVisible, editData, shopid, dataDialogVisible, accountVisible} = this.state;
 		const formItemLayout = {
 				labelCol: { span: 4 },
 				wrapperCol: { span: 20 },
@@ -243,6 +261,14 @@ class Shop extends React.Component{
 						<AddDialog
 							onSearch={this.onSearch.bind(this)}
 							controllerAddDialog={this.controllerAddDialog.bind(this)}/>
+						: null
+				}
+				{
+					accountVisible ?
+						<UserDialog
+							shopid={shopid}
+							onSearch={this.onSearch.bind(this)}
+							onControllerAccountDialog={this.onControllerAccountDialog.bind(this)}/>
 						: null
 				}
 				{

@@ -41,7 +41,11 @@ class Evaluate extends React.Component{
 		data.map(item => {
 			item.key = item.id;
 			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
-			if(item.shopName.includes(name)) list.push(item);
+			console.log(item.shopName);
+			if(!value.name) return list.push(item);
+			if(item.shopName.includes(value.name)) {
+				list.push(item);
+			}
 		});
 		this.setState({
 			evaluateList: list

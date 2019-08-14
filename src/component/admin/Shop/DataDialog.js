@@ -176,7 +176,7 @@ export default class Order extends React.Component{
 		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney} = this.state;
 		return (
 			<Modal
-				className='common_dialog common_max_dialog'
+				className='common_dialog common_max_dialog_max'
 				title="商店数据汇总"
 				visible={true}
 				onOk={this.handleCancel.bind(this)}

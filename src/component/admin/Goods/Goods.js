@@ -33,14 +33,19 @@ class Goods extends React.Component{
 	// 查询菜品
 	async onSearchGoods() {
 		let value = this.props.form.getFieldsValue();
-		console.log(value, 999);
-		let result = await Request.get('/goods/getAllGoodsByName', value);
-		console.log(result);
+		let result = await Request.get('/goods/getAllGoodsByName');
 		let data = result.data || [];
+		let list = [];
 		data.map(item => {
 			item.key = item.id;
+			if(!value.name) return list.push(item);
+			if(item.shopName.includes(value.name)) {
+				list.push(item);
+			}
 		});
-		this.setState({goodsList: data});
+		this.setState({
+			goodsList: list
+		});
 	}
 
 	// 新增编辑框的显示
@@ -193,9 +198,9 @@ class Goods extends React.Component{
 					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="菜品名称">
+								label="商店名称">
 								{getFieldDecorator('name')(
-									<Input placeholder="请输入菜品名称" />
+									<Input placeholder="请输入商店名称" />
 								)}
 							</FormItem>
 						</Col>
