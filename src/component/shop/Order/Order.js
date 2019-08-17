@@ -39,9 +39,10 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		// setInterval(async () => {
-		// 	await this.getAllOrderNum();
-		// }, 10000);
+		setInterval(async () => {
+			await this.getAllOrderNum();
+			await this.goodsSearchBtnClick();
+		}, 10000);
 	}
 
 	// 获取丁数据数量
@@ -331,12 +332,13 @@ class Order extends React.Component{
 																return (
 																	<Row className="shop_order_table_content_table_left_chunk" key={i}>
 																		<Col span={8}>
-																			<Col span={12}><img src={order.goodsUrl}/></Col>
-																			<Col span={12} className="common_table_tooltip">
+																			<Col span={8}><img src={order.goodsUrl}/></Col>
+																			<Col span={8} className="common_table_tooltip">
 																				<Tooltip placement="top" title={order.goodsName}>
 																					{order.goodsName}
 																				</Tooltip>
 																			</Col>
+																			<Col span={8}>{order.specification}</Col>
 																		</Col>
 																		<Col span={8}>{order.price}</Col>
 																		<Col span={8}>{order.num}</Col>

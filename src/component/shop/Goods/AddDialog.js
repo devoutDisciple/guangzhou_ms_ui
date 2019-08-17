@@ -325,7 +325,6 @@ class AddDialog extends React.Component {
 									onChange={this.handleChange.bind(this)}>
 									{fileList.length >= 3 ? null : uploadButton}
 								</Upload>
-
 							)}
 						</FormItem>
 						<FormItem

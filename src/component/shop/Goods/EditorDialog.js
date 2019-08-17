@@ -8,7 +8,7 @@ import config from '../../../../config/config';
 import request from '../../../request/AxiosRequest';
 
 const FormItem = Form.Item;
-// const { Option } = Select;
+let id = 2;
 
 class EditorDialog extends React.Component {
 
@@ -26,6 +26,21 @@ class EditorDialog extends React.Component {
 
 	async componentDidMount() {
 		let data = this.props.data;
+		console.log(data, 999787);
+		let specification = JSON.parse(data.specification) || [];
+		const { form } = this.props;
+		let typeObj = {};
+		let typeList = [];
+		specification.map((item, index) => {
+			typeList.push(index);
+			typeObj[`names[${index}]`] = item.name;
+			typeObj[`prices[${index}]`] = item.price;
+		});
+		form.setFieldsValue({
+			keys: typeList,
+		}, () => {
+			this.props.form.setFieldsValue(typeObj);
+		});
 		this.props.form.setFieldsValue({
 			name: data.name,
 			title: data.title,
@@ -33,6 +48,7 @@ class EditorDialog extends React.Component {
 			package_cost: data.package_cost,
 			sales: data.sales
 		});
+
 		let list = data.desc || [], fileList = [];
 		list = JSON.parse(list);
 		console.log(list, 9989);
@@ -100,6 +116,14 @@ class EditorDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
+				let {keys, names, prices} = values;
+				let specification = [];
+				keys.map(key => {
+					specification.push({
+						name: names[key],
+						price: prices[key]
+					});
+				});
 				let formData = new FormData(), {fileList} = this.state, desc = [];
 				fileList.map(item => {
 					desc.push(item.response ? item.response.data : item.url);
@@ -110,6 +134,7 @@ class EditorDialog extends React.Component {
 				formData.append('name', values.name);
 				formData.append('title', values.title);
 				formData.append('price', values.price);
+				formData.append('specification', JSON.stringify(specification));
 				formData.append('package_cost', values.package_cost);
 				formData.append('shopid', this.props.shopid);
 				if(!this.cropper) {
@@ -167,8 +192,35 @@ class EditorDialog extends React.Component {
 		this.setState({ fileList });
 	}
 
+	addType() {
+		const { form } = this.props;
+		// can use data-binding to get
+		const keys = form.getFieldValue('keys');
+		const nextKeys = keys.concat(id++);
+		// can use data-binding to set
+		// important! notify form to detect changes
+		form.setFieldsValue({
+			keys: nextKeys,
+		});
+	}
+
+	removeType(k) {
+		console.log(k);
+		const { form } = this.props;
+		// can use data-binding to get
+		const keys = form.getFieldValue('keys');
+		// We need at least one passenger
+		if (keys.length === 1) {
+		  return;
+		}
+		// can use data-binding to set
+		form.setFieldsValue({
+		  keys: keys.filter(key => key !== k),
+		});
+	}
+
 	render() {
-		const { getFieldDecorator } = this.props.form;
+		const { getFieldDecorator, getFieldValue } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
@@ -180,6 +232,60 @@ class EditorDialog extends React.Component {
 				<div className="ant-upload-text">Upload</div>
 			</div>
 		);
+		getFieldDecorator('keys', { initialValue: [] });
+		const keys = getFieldValue('keys');
+		const formItems = keys.map((k, index) => {
+			console.log(`names[${k}]`, 111000);
+			return (
+				<Row key={index} className="goods_dialog_type_formitem">
+					<Col span={10}>
+						<Form.Item
+							className="goods_dialog_type_formitem_input"
+							label=''
+							required={true}>
+							{getFieldDecorator(`names[${k}]`, {
+								validateTrigger: ['onChange', 'onBlur'],
+								rules: [
+									{
+										required: true,
+										whitespace: true,
+										message: '请输入',
+									},
+								],
+							})(
+								<Input placeholder="请输入" />
+							)}
+						</Form.Item>
+					</Col>
+					<Col span={10}>
+						<Form.Item
+							label=''
+							className="goods_dialog_type_formitem_input"
+							required={true}>
+							{getFieldDecorator(`prices[${k}]`, {
+								validateTrigger: ['onChange', 'onBlur'],
+								rules: [
+									{
+										required: true,
+										whitespace: true,
+										message: '请输入',
+									},
+								],
+							})(
+								<Input type="number" placeholder="请输入" />
+							)}
+						</Form.Item>
+					</Col>
+					<Col span={4} className="goods_dialog_type_title goods_dialog_type_plus">
+						<Icon
+							className="dynamic-delete-button"
+							type="minus-circle-o"
+							onClick={this.removeType.bind(this, k)}
+						/>
+					</Col>
+				</Row>
+			);
+		});
 		return (
 			<div>
 				<Modal
@@ -259,6 +365,18 @@ class EditorDialog extends React.Component {
 
 							)}
 						</FormItem>
+						<FormItem
+							className="goods_dialog_type_name"
+							label="规格录入">
+							<Row>
+								<Col span={10} className="goods_dialog_type_title">规格</Col>
+								<Col span={10} className="goods_dialog_type_title">价格</Col>
+								<Col span={4} className="goods_dialog_type_title goods_dialog_type_plus">
+									<Icon type="plus-circle" onClick={this.addType.bind(this)}/>
+								</Col>
+							</Row>
+						</FormItem>
+						{formItems}
 						<Modal visible={previewVisible} footer={null} onCancel={this.handleCancel.bind(this)}>
 							<img alt="example" style={{ width: '100%' }} src={previewImage} />
 						</Modal>
