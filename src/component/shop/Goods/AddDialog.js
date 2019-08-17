@@ -9,6 +9,7 @@ import request from '../../../request/AxiosRequest';
 
 const FormItem = Form.Item;
 // const { Option } = Select;
+let id = 2;
 
 class AddDialog extends React.Component {
 
@@ -23,6 +24,7 @@ class AddDialog extends React.Component {
 		],
 	};
 
+	// 文件改变
 	fileChange() {
 		let self = this;
 		let file = document.getElementById('goods_main_img').files[0];
@@ -50,6 +52,7 @@ class AddDialog extends React.Component {
 		};
 	}
 
+	// 描述信息改变
 	descChange() {
 		let files = document.getElementById('goods_desc_img').files;
 		console.log(files);
@@ -68,11 +71,19 @@ class AddDialog extends React.Component {
 		}
 	}
 
-
+	// 弹框确定
 	async handleOk()  {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
+				let {keys, names, prices} = values;
+				let specification = [];
+				keys.map(key => {
+					specification.push({
+						name: names[key],
+						price: prices[key]
+					});
+				});
 				if(!this.cropper) return message.warning('请上传主图');
 				let campus = localStorage.getItem('campus') || '';
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
@@ -91,9 +102,8 @@ class AddDialog extends React.Component {
 					formData.append('file', blob);
 					formData.append('position', campus);
 					formData.append('shopid', this.props.shopid);
-					console.log(formData, 999);
+					formData.append('specification', JSON.stringify(specification));
 					let res = await request.post('/goods/add', formData);
-					console.log(res, 222);
 					if(res.data == 'success') {
 						message.success('新增成功');
 						this.props.onSearch();
@@ -110,10 +120,12 @@ class AddDialog extends React.Component {
 		this.props.controllerAddDialog();
 	}
 
+	// 弹框取消
 	handleCancel() {
 		this.setState({ previewVisible: false });
 	}
 
+	// 文件编码
 	getBase64(file) {
 		return new Promise((resolve, reject) => {
 		  const reader = new FileReader();
@@ -123,6 +135,7 @@ class AddDialog extends React.Component {
 		});
 	}
 
+	// 文件预览
 	async handlePreview (file) {
   		if (!file.url && !file.preview) {
   			file.preview = await this.getBase64(file.originFileObj);
@@ -133,13 +146,40 @@ class AddDialog extends React.Component {
 		});
 	}
 
+	// 文件上传改变
 	handleChange ({ fileList }) {
-		console.log(fileList, 999);
 		this.setState({ fileList });
 	}
 
+	addType() {
+		const { form } = this.props;
+		// can use data-binding to get
+		const keys = form.getFieldValue('keys');
+		const nextKeys = keys.concat(id++);
+		// can use data-binding to set
+		// important! notify form to detect changes
+		form.setFieldsValue({
+			keys: nextKeys,
+		});
+	}
+
+	removeType(k) {
+		console.log(k);
+		const { form } = this.props;
+		// can use data-binding to get
+		const keys = form.getFieldValue('keys');
+		// We need at least one passenger
+		if (keys.length === 1) {
+		  return;
+		}
+		// can use data-binding to set
+		form.setFieldsValue({
+		  keys: keys.filter(key => key !== k),
+		});
+	}
+
 	render() {
-		const { getFieldDecorator } = this.props.form;
+		const { getFieldDecorator, getFieldValue } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
@@ -151,6 +191,60 @@ class AddDialog extends React.Component {
 				<div className="ant-upload-text">Upload</div>
 			</div>
 		);
+		getFieldDecorator('keys', { initialValue: [] });
+		const keys = getFieldValue('keys');
+		const formItems = keys.map((k, index) => {
+			console.log(k);
+			return (
+				<Row key={index} className="goods_dialog_type_formitem">
+					<Col span={10}>
+						<Form.Item
+							className="goods_dialog_type_formitem_input"
+							label=''
+							required={true}>
+							{getFieldDecorator(`names[${k}]`, {
+								validateTrigger: ['onChange', 'onBlur'],
+								rules: [
+									{
+										required: true,
+										whitespace: true,
+										message: '请输入',
+									},
+								],
+							})(
+								<Input placeholder="请输入" />
+							)}
+						</Form.Item>
+					</Col>
+					<Col span={10}>
+						<Form.Item
+							label=''
+							className="goods_dialog_type_formitem_input"
+							required={true}>
+							{getFieldDecorator(`prices[${k}]`, {
+								validateTrigger: ['onChange', 'onBlur'],
+								rules: [
+									{
+										required: true,
+										whitespace: true,
+										message: '请输入',
+									},
+								],
+							})(
+								<Input type="number" placeholder="请输入" />
+							)}
+						</Form.Item>
+					</Col>
+					<Col span={4} className="goods_dialog_type_title goods_dialog_type_plus">
+						<Icon
+							className="dynamic-delete-button"
+							type="minus-circle-o"
+							onClick={this.removeType.bind(this, k)}
+						/>
+					</Col>
+				</Row>
+			);
+		});
 		return (
 			<div>
 				<Modal
@@ -234,6 +328,18 @@ class AddDialog extends React.Component {
 
 							)}
 						</FormItem>
+						<FormItem
+							className="goods_dialog_type_name"
+							label="规格录入">
+							<Row>
+								<Col span={10} className="goods_dialog_type_title">规格</Col>
+								<Col span={10} className="goods_dialog_type_title">价格</Col>
+								<Col span={4} className="goods_dialog_type_title goods_dialog_type_plus">
+									<Icon type="plus-circle" onClick={this.addType.bind(this)}/>
+								</Col>
+							</Row>
+						</FormItem>
+						{formItems}
 						<Modal visible={previewVisible} footer={null} onCancel={this.handleCancel.bind(this)}>
 							<img alt="example" style={{ width: '100%' }} src={previewImage} />
 						</Modal>

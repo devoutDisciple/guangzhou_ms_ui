@@ -19,7 +19,7 @@ class Goods extends React.Component{
 	}
 
 	state = {
-		addDialogVisible: false,
+		addDialogVisible: true,
 		editorDialogVisible: false,
 		editData: {},
 		goodsList: []
