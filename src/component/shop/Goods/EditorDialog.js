@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Form, Input, Modal, Radio, Row, Col, message, Upload, Icon
+	Form, Input, Modal, Row, Col, message, Upload, Icon
 } from 'antd';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
@@ -25,16 +25,12 @@ class EditorDialog extends React.Component {
 	};
 
 	async componentDidMount() {
-		// this.props.form.setFieldsValue({
-		// 	today: '2'
-		// });
 		let data = this.props.data;
 		this.props.form.setFieldsValue({
 			name: data.name,
 			title: data.title,
 			price: data.price,
 			package_cost: data.package_cost,
-			today: String(data.today) || '1',
 			sales: data.sales
 		});
 		let list = data.desc || [], fileList = [];
@@ -115,7 +111,6 @@ class EditorDialog extends React.Component {
 				formData.append('title', values.title);
 				formData.append('price', values.price);
 				formData.append('package_cost', values.package_cost);
-				formData.append('today', values.today);
 				formData.append('shopid', this.props.shopid);
 				if(!this.cropper) {
 					let res = await request.post('/goods/update', formData);
@@ -225,20 +220,6 @@ class EditorDialog extends React.Component {
 								}],
 							})(
 								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
-							label="今日推荐">
-							{getFieldDecorator('today', {
-								rules: [{
-									required: true,
-									message: '请选择',
-								}],
-							})(
-								<Radio.Group>
-									<Radio value="1">是</Radio>
-									<Radio value="2">否</Radio>
-								</Radio.Group>
 							)}
 						</FormItem>
 						<FormItem

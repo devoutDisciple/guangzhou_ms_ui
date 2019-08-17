@@ -51,7 +51,6 @@ class AddDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
-				if(!(values.sort > 0)) return message.warning('权重请输入数字');
 				if(!this.cropper) return message.warning('请上传图片');
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					let campus = localStorage.getItem('campus') || '';

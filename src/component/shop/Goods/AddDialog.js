@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	Form, Input, Modal, Radio, Row, Col, message, Upload, Icon
+	Form, Input, Modal, Row, Col, message, Upload, Icon
 } from 'antd';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
@@ -22,12 +22,6 @@ class AddDialog extends React.Component {
 		fileList: [
 		],
 	};
-
-	async componentDidMount() {
-		this.props.form.setFieldsValue({
-			today: '2'
-		});
-	}
 
 	fileChange() {
 		let self = this;
@@ -80,6 +74,7 @@ class AddDialog extends React.Component {
 			try {
 				if (err) return;
 				if(!this.cropper) return message.warning('请上传主图');
+				let campus = localStorage.getItem('campus') || '';
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					let {fileList} = this.state;
 					let desc = [];
@@ -93,8 +88,8 @@ class AddDialog extends React.Component {
 					formData.append('desc', desc);
 					formData.append('price', values.price);
 					formData.append('package_cost', values.package_cost);
-					formData.append('today', values.today);
 					formData.append('file', blob);
+					formData.append('position', campus);
 					formData.append('shopid', this.props.shopid);
 					console.log(formData, 999);
 					let res = await request.post('/goods/add', formData);
@@ -196,20 +191,6 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input type="number" placeholder="请输入" />
-							)}
-						</FormItem>
-						<FormItem
-							label="今日推荐">
-							{getFieldDecorator('today', {
-								rules: [{
-									required: true,
-									message: '请选择',
-								}],
-							})(
-								<Radio.Group>
-									<Radio value="1">是</Radio>
-									<Radio value="2">否</Radio>
-								</Radio.Group>
 							)}
 						</FormItem>
 						<FormItem

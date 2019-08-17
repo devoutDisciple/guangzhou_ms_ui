@@ -73,16 +73,6 @@ class Goods extends React.Component{
 		});
 	}
 
-
-	// 修改今日推荐
-	async onRecommend(data, type) {
-		let result = await Request.get('/goods/updateToday', {id: data.id, type});
-		if(result.data == 'success') {
-			message.success('修改成功');
-			return this.onSearchGoods();
-		}
-	}
-
 	// 商品上下架
 	async onControllerShow(data) {
 		let result = await Request.post('/goods/updateShow', {show: data.show == 1 ? 2 : 1, id: data.id});
@@ -199,12 +189,6 @@ class Goods extends React.Component{
 				render:(text, record) => {
 					return <span className="common_table_span">
 						<a href="javascript:;" onClick={this.onEditorCampus.bind(this, record)}>修改</a>
-						{
-							record.today == 2 ?
-								<a href="javascript:;" onClick={this.onRecommend.bind(this, record, 1)}>今日推荐</a>
-								:
-								<a href="javascript:;" onClick={this.onRecommend.bind(this, record, 2)}>取消推荐</a>
-						}
 						<Popconfirm placement="top" title="是否确认" onConfirm={this.onControllerShow.bind(this, record)} okText="确认" cancelText="取消">
 							<a href="javascript:;" >{record.show == 1 ? '下架' : '上架'}</a>
      					</Popconfirm>

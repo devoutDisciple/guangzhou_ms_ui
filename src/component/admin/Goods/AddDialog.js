@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-	Form, Input, Modal, Radio, Row, Col, message, Upload, Icon
+	Form, Input, Modal, Radio, Row, Col, message, Upload, Icon, Select
 } from 'antd';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 import config from '../../../../config/config';
 import request from '../../../request/AxiosRequest';
+const { Option } = Select;
 
 const FormItem = Form.Item;
 
@@ -21,11 +22,26 @@ class AddDialog extends React.Component {
 		previewImage: '',
 		fileList: [
 		],
+		shopList: [], // 商店数据
 	};
 
 	async componentDidMount() {
 		this.props.form.setFieldsValue({
 			today: '2'
+		});
+		this.getAllShop();
+	}
+
+	// 获取商店信息
+	async getAllShop() {
+		let res = await request.get('/shop/getAllForSelect');
+		console.log(res, 7898);
+		let data = res.data || [];
+		data.map((item, index) => {
+			item.key = index;
+		});
+		this.setState({
+			shopList: data
 		});
 	}
 
@@ -78,6 +94,7 @@ class AddDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if(err) return;
+				let campus = localStorage.getItem('campus') || '';
 				if(!this.cropper) return message.warning('请上传主图');
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					let {fileList} = this.state;
@@ -96,7 +113,8 @@ class AddDialog extends React.Component {
 					formData.append('today', values.today);
 					formData.append('sort', values.sort);
 					formData.append('file', blob);
-					formData.append('shopid', this.props.shopid);
+					formData.append('position', campus);
+					formData.append('shopid', values.shopid);
 					console.log(formData, 999);
 					let res = await request.post('/goods/add', formData);
 					console.log(res, 222);
@@ -150,7 +168,7 @@ class AddDialog extends React.Component {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		const { previewVisible, previewImage, fileList } = this.state;
+		const { previewVisible, previewImage, fileList, shopList } = this.state;
 		const uploadButton = (
 			<div>
 				<Icon type="plus" />
@@ -166,6 +184,25 @@ class AddDialog extends React.Component {
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleDialogCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
+						<FormItem
+							label="商品名称">
+							{getFieldDecorator('shopid', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Select placeholder="请选择">
+									{
+										shopList && shopList.length != 0 ?
+											shopList.map(item => {
+												return <Option key={item.id} value={String(item.id)}>{item.name}</Option>;
+											})
+											: null
+									}
+								</Select>
+							)}
+						</FormItem>
 						<FormItem
 							label="商品名称">
 							{getFieldDecorator('name', {
