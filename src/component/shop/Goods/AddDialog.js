@@ -168,10 +168,6 @@ class AddDialog extends React.Component {
 		const { form } = this.props;
 		// can use data-binding to get
 		const keys = form.getFieldValue('keys');
-		// We need at least one passenger
-		if (keys.length === 1) {
-		  return;
-		}
 		// can use data-binding to set
 		form.setFieldsValue({
 		  keys: keys.filter(key => key !== k),
