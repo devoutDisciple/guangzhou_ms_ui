@@ -192,23 +192,13 @@ class AddDialog extends React.Component {
 						</FormItem>
 						<FormItem
 							label="编号">
-							{getFieldDecorator('sn', {
-								rules: [{
-									required: true,
-									message: '请输入打印机编号',
-								}],
-							})(
+							{getFieldDecorator('sn')(
 								<Input placeholder="请输入打印机编号(sn)" />
 							)}
 						</FormItem>
 						<FormItem
 							label="秘钥">
-							{getFieldDecorator('key', {
-								rules: [{
-									required: true,
-									message: '请输入打印机编号(KEY)',
-								}],
-							})(
+							{getFieldDecorator('key')(
 								<Input placeholder="请输入打印机编号(KEY)" />
 							)}
 						</FormItem>
