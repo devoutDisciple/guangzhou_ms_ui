@@ -91,7 +91,13 @@ class GlobalStore {
 					 username: user.data.username,
 					 role: user.data.role
 				 });
-				 location.hash = user.data.role == 2 ? '#/home/shop/order' : '#/home/campus';
+				 if(user.data.role == 2) {
+    				location.hash = '#/home/shop/order';
+    				localStorage.setItem('campus', user.data.campus);
+				 }
+				 if(user.data.role == 1) {
+    				location.hash = '#/home/campus';
+				 }
 				 this.setLogin(true);
 			 });
 		 } catch (error) {

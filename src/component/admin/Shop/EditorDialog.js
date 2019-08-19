@@ -27,13 +27,12 @@ class AddDialog extends React.Component {
 			campus: data.campus,
 			name: data.name,
 			address: data.address,
-			sales: Number(data.sales),
+			phone: data.phone,
 			start_time: moment(data.start_time, 'HH:mm'),
 			end_time: moment(data.end_time, 'HH:mm'),
 			send_price: Number(data.send_price),
 			start_price: Number(data.start_price),
-			sort: Number(data.sort),
-			desc: data.desc,
+			desc:  data.desc ? data.desc :'',
 		});
 	}
 
@@ -107,17 +106,6 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="销量">
-							{getFieldDecorator('sales', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input placeholder="请输入" type="number"/>
-							)}
-						</FormItem>
-						<FormItem
 							label="店铺地址">
 							{getFieldDecorator('address', {
 								rules: [{
@@ -126,6 +114,17 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="联系电话">
+							{getFieldDecorator('phone', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input type="number" placeholder="请输入" />
 							)}
 						</FormItem>
 						<FormItem label="营业时间" style={{ marginBottom: 0 }} className='common_dialog_time'>
@@ -197,17 +196,6 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem> */}
 						<FormItem
-							label="权重">
-							{getFieldDecorator('sort', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入权重, 权重越高, 排名越靠前" />
-							)}
-						</FormItem>
-						<FormItem
 							label="描述">
 							{getFieldDecorator('desc')(
 								<Input placeholder="请输入店铺地址" />
@@ -219,6 +207,8 @@ class AddDialog extends React.Component {
 		);
 	}
 }
+
+
 
 const AddDialogForm = Form.create()(AddDialog);
 export default AddDialogForm;

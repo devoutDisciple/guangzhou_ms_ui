@@ -31,6 +31,7 @@ class AddDialog extends React.Component {
 				if (err) return;
 				values.start_time = moment(values.start_time).format('HH:mm');
 				values.end_time = moment(values.end_time).format('HH:mm');
+				values.desc = values.desc ? values.desc :'';
 				let res = await this.shopStore.addShop(values);
 				if(res.data == 'success') {
 					this.props.controllerAddDialog();
@@ -93,17 +94,6 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="销量">
-							{getFieldDecorator('sales', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input placeholder="请输入" type="number"/>
-							)}
-						</FormItem>
-						<FormItem
 							label="店铺地址">
 							{getFieldDecorator('address', {
 								rules: [{
@@ -112,6 +102,17 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入" />
+							)}
+						</FormItem>
+						<FormItem
+							label="联系电话">
+							{getFieldDecorator('phone', {
+								rules: [{
+									required: true,
+									message: '请输入',
+								}],
+							})(
+								<Input type="number" placeholder="请输入" />
 							)}
 						</FormItem>
 						<FormItem label="营业时间" style={{ marginBottom: 0 }} className='common_dialog_time'>
@@ -169,17 +170,6 @@ class AddDialog extends React.Component {
 								}],
 							})(
 								<Input placeholder="请输入(商家登录该系统的密码)" />
-							)}
-						</FormItem>
-						<FormItem
-							label="权重">
-							{getFieldDecorator('sort', {
-								rules: [{
-									required: true,
-									message: '请输入',
-								}],
-							})(
-								<Input type="number" placeholder="请输入权重, 权重越高, 排名越靠前" />
 							)}
 						</FormItem>
 						<FormItem

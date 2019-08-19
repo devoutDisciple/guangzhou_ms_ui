@@ -191,7 +191,7 @@ class Goods extends React.Component{
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		let {addDialogVisible, shopid, editorDialogVisible, editData, goodsList} = this.state;
+		let {addDialogVisible, editorDialogVisible, editData, goodsList} = this.state;
 		return (
 			<div className='common'>
 				<div className='common_search'>
@@ -225,7 +225,6 @@ class Goods extends React.Component{
 				{
 					addDialogVisible ?
 						<AddDialog
-							shopid={shopid}
 							onSearch={this.onSearchGoods.bind(this)}
 							controllerAddDialog={this.controllerAddDialog.bind(this)}/>
 						: null
@@ -233,7 +232,6 @@ class Goods extends React.Component{
 				{
 					editorDialogVisible ?
 						<EditorDialog
-							shopid={shopid}
 							data={editData}
 							onSearch={this.onSearchGoods.bind(this)}
 							controllerEditorDialog={this.controllerEditorDialog.bind(this)}/>

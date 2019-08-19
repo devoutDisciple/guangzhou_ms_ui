@@ -185,7 +185,7 @@ class AddDialog extends React.Component {
 					onCancel={this.handleDialogCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="商品名称">
+							label="商店名称">
 							{getFieldDecorator('shopid', {
 								rules: [{
 									required: true,

@@ -206,8 +206,8 @@ class Order extends React.Component{
 		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
-			labelCol: { span: 8 },
-			wrapperCol: { span: 16 },
+			labelCol: { span: 10 },
+			wrapperCol: { span: 14 },
 		};
 		return (
 			<div className='common shop_order'>
@@ -264,14 +264,14 @@ class Order extends React.Component{
 							<Col span={4}>
 								<FormItem label="成交时间：从" colon={false}>
 									{getFieldDecorator('start_time')(
-										<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+										<DatePicker style={{minWidth: 0}} showTime format="YYYY-MM-DD HH:mm:ss" />,
 									)}
 								</FormItem>
 							</Col>
 							<Col span={4}>
-								<FormItem label="到" colon={false}>
+								<FormItem labelCol={{span: 3}} label="到" colon={false}>
 									{getFieldDecorator('end_time')(
-										<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+										<DatePicker style={{minWidth: 0}} showTime format="YYYY-MM-DD HH:mm:ss" />,
 									)}
 								</FormItem>
 							</Col>
