@@ -138,7 +138,7 @@ class Order extends React.Component{
 	}
 
 	// 批量派送
-	async tokenOrders() {
+	async tokenOrders(type) {
 		let data = [];
 		let orderList = this.state.orderList;
 		orderList.map(item => {
@@ -149,7 +149,7 @@ class Order extends React.Component{
 		data.map(item => {
 			params.push({
 				id: item.id,
-				status: 2
+				status: type
 			});
 		});
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
@@ -363,11 +363,15 @@ class Order extends React.Component{
 													<Col
 														className="shop_order_table_content_table_right_chunk"span={5}>
 														{FilterOrderStatus.filterOrderStatus(item.status)}
-														<Popconfirm placement="top" title="是否确认取消该订单" onConfirm={this.cancelOrder.bind(this, item)} okText="确认" cancelText="取消">
-															<a href="javascript:;" style={{marginLeft: '5px', fontSize: '10px'}}>
-															取消该订单
-															</a>
-     													</Popconfirm>
+														{
+															sendtab == 1 || sendtab == 2 ?
+																<Popconfirm placement="top" title="是否确认取消该订单" onConfirm={this.cancelOrder.bind(this, item)} okText="确认" cancelText="取消">
+																	<a href="javascript:;" style={{marginLeft: '5px', fontSize: '10px'}}>
+																		取消该订单
+																	</a>
+     															</Popconfirm>
+														 	: null
+														}
 													</Col>
 													<Col className="shop_order_table_content_table_right_chunk"span={5}>{item.total_price}</Col>
 													<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>
@@ -382,10 +386,19 @@ class Order extends React.Component{
 
 				</div>
 				<Row className="shop_order_fixed">
-					<Button onClick={this.allPrint.bind(this)}>批量打印订单</Button>
+					{
+						sendtab == 1 || sendtab == 2 ?
+							<Button onClick={this.allPrint.bind(this)}>批量打印订单</Button>
+							: null
+					}
 					{
 						sendtab == 1 ?
-							<Button onClick={this.tokenOrders.bind(this)}>批量派送</Button>
+							<Button onClick={this.tokenOrders.bind(this, 2)}>批量派送</Button>
+							: null
+					}
+					{
+						sendtab == 2 ?
+							<Button onClick={this.tokenOrders.bind(this, 3)}>批量送达</Button>
 							: null
 					}
 				</Row>
