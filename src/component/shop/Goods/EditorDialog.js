@@ -51,7 +51,6 @@ class EditorDialog extends React.Component {
 
 		let list = data.desc || [], fileList = [];
 		list = JSON.parse(list);
-		console.log(list, 9989);
 		list.map((item, index) => {
 			fileList.push({
 				uid: index,
@@ -358,7 +357,7 @@ class EditorDialog extends React.Component {
 									fileList={fileList}
 									onPreview={this.handlePreview.bind(this)}
 									onChange={this.handleChange.bind(this)}>
-									{fileList.length >= 3 ? null : uploadButton}
+									{fileList.length >= 10 ? null : uploadButton}
 								</Upload>
 
 							)}
