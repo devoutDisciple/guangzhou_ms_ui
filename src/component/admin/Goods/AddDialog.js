@@ -125,7 +125,6 @@ class AddDialog extends React.Component {
 					formData.append('shopid', values.shopid);
 					formData.append('specification', JSON.stringify(specification));
 					let res = await request.post('/goods/add', formData);
-					console.log(res, 222);
 					if(res.data == 'success') {
 						message.success('新增成功');
 						this.props.onSearch();

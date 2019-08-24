@@ -137,9 +137,9 @@ class EditorDialog extends React.Component {
 				formData.append('package_cost', values.package_cost);
 				formData.append('shopid', this.props.shopid);
 				if(!this.cropper) {
+					formData.append('type', 1);
 					let res = await request.post('/goods/update', formData);
 					if(res.data == 'success') {
-						formData.append('type', 1);
 						message.success('修改成功');
 						this.props.onSearch();
 						this.props.controllerEditorDialog();

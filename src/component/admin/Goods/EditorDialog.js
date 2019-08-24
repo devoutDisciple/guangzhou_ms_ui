@@ -142,6 +142,7 @@ class EditorDialog extends React.Component {
 				formData.append('shopid', this.props.data.shopid);
 				formData.append('specification', JSON.stringify(specification));
 				if(!this.cropper) {
+					formData.append('type', 1);
 					let res = await request.post('/goods/update', formData);
 					if(res.data == 'success') {
 						message.success('修改成功');
@@ -152,6 +153,7 @@ class EditorDialog extends React.Component {
 				}
 				this.cropper.getCroppedCanvas().toBlob(async (blob) => {
 					formData.append('file', blob);
+					formData.append('type', 2);
 					let res = await request.post('/goods/update', formData);
 					if(res.data == 'success') {
 						message.success('修改成功');
