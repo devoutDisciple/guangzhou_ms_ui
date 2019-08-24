@@ -39,10 +39,10 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		setInterval(async () => {
-			await this.getAllOrderNum();
-			await this.goodsSearchBtnClick();
-		}, 10000);
+		// setInterval(async () => {
+		// 	await this.getAllOrderNum();
+		// 	await this.goodsSearchBtnClick();
+		// }, 10000);
 	}
 
 	// 获取丁数据数量
@@ -204,6 +204,7 @@ class Order extends React.Component{
 
 	render() {
 		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
+		console.log(orderList, 8888111);
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 10 },

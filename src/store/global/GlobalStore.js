@@ -83,6 +83,7 @@ class GlobalStore {
 			 let user = await request.post('/account/login', values);
 			 runInAction(() => {
     			if(user.data.role == 2) {
+    				console.log(user.data, 1234);
     				this.setUserinfo({
     					shopid: user.data.shopid
     				});
