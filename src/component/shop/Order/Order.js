@@ -90,7 +90,7 @@ class Order extends React.Component{
 
 	// 派送tab点击之后
 	sendTabClick(status) {
-		this.setState({sendtab: status}, () => this.goodsSearchBtnClick());
+		this.setState({sendtab: status, checkAll: false}, () => this.goodsSearchBtnClick());
 	}
 
 	// 改变单个按钮是否选择的时候
@@ -206,6 +206,25 @@ class Order extends React.Component{
 		}, 1000);
 	}
 
+	// 同意退款
+	async onConfirmSure(record) {
+		let res = await Request.post('/pay/getBackPayMoney', {id: record.id});
+		console.log(res, 6666);
+		if(res.data == 'success') {
+			message.success('退款成功');
+			return this.goodsSearchBtnClick();
+		}
+	}
+
+	// 拒绝退款
+	async onConfirmRefuse(record) {
+		let res = await Request.post('/order/updateStatus', {id: record.id, status: 4});
+		if(res.data == 'success') {
+			message.success('操作成功');
+			return this.goodsSearchBtnClick();
+		}
+	}
+
 	render() {
 		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
 		console.log(orderList, 8888111);
@@ -313,7 +332,17 @@ class Order extends React.Component{
 						<Col span={3}>收货信息</Col>
 						<Col span={3}>交易状态</Col>
 						<Col span={3}>实收款</Col>
-						<Col span={3}>评价</Col>
+						{
+							sendtab == 6 ?
+								<Col span={3}>操作</Col>
+								: null
+						}
+						{
+							sendtab != 6 ?
+								<Col span={3}>评价</Col>
+								: null
+						}
+
 					</Row>
 					{
 						orderList && orderList.length != 0 ?
@@ -343,7 +372,12 @@ class Order extends React.Component{
 																					{order.goodsName}
 																				</Tooltip>
 																			</Col>
-																			<Col span={8}>{order.specification}</Col>
+																			<Col span={8} className="common_table_tooltip">
+																				<Tooltip placement="top" title={order.specification}>
+																					{order.specification}
+																				</Tooltip>
+																			</Col>
+																			{/* <Col span={8}>{order.specification}</Col> */}
 																		</Col>
 																		<Col span={8}>{order.price}</Col>
 																		<Col span={8}>{order.num}</Col>
@@ -379,7 +413,23 @@ class Order extends React.Component{
 														}
 													</Col>
 													<Col className="shop_order_table_content_table_right_chunk"span={5}>{item.total_price}</Col>
-													<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>
+													{
+														sendtab != 6 ?
+															<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>
+															: null
+													}
+													{
+														sendtab == 6 ?
+															<Col className="shop_order_table_content_table_right_chunk common_table_span"span={4}>
+																<Popconfirm placement="top" title="是否确认同意" onConfirm={this.onConfirmSure.bind(this, item)} okText="确认" cancelText="取消">
+																	<a href="javascript:;" >同意</a>
+     															</Popconfirm>
+																 <Popconfirm placement="top" title="是否确认拒绝" onConfirm={this.onConfirmRefuse.bind(this, item)} okText="确认" cancelText="取消">
+																	<a href="javascript:;" >拒绝</a>
+     															</Popconfirm>
+															</Col>
+															: null
+													}
 												</Col>
 											</Row>
 										</Row>
