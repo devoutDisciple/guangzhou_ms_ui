@@ -223,8 +223,8 @@ class Shop extends React.Component{
 		let {list} = this.shopStore,
 			{addDialogVisible, editorDialogVisible, editData, shopid, dataDialogVisible, accountVisible} = this.state;
 		const formItemLayout = {
-				labelCol: { span: 4 },
-				wrapperCol: { span: 20 },
+				labelCol: { span: 8 },
+				wrapperCol: { span: 16 },
 			}, { getFieldDecorator } = this.props.form;
 		return (
 			<div className='common'>

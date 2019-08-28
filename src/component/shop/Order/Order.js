@@ -39,17 +39,19 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		// window.goodsTimer = setInterval(async () => {
-		// 	await this.getAllOrderNum();
-		// 	await this.goodsSearchBtnClick();
-		// }, 10000);
+		if(!window.location.href.includes('localhost')) {
+			window.goodsTimer = setInterval(async () => {
+				await this.getAllOrderNum();
+				await this.goodsSearchBtnClick();
+			}, 10000);
+		}
 	}
 
 	componentWillUnmount() {
 		clearInterval(window.goodsTimer);
 	}
 
-	// 获取丁数据数量
+	// 获取订单数据数量
 	async getAllOrderNum() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let position = this.state.position;
@@ -175,7 +177,8 @@ class Order extends React.Component{
 	// 取消订单
 	async cancelOrder(data) {
 		let res = await Request.post('/order/updateStatus', {id: data.id, status: 4});
-		if(res.data == 'success') {
+		let result = await this.onConfirmSure(data);
+		if(res.data == 'success' && result.data == 'success') {
 			message.success('取消成功');
 			return this.goodsSearchBtnClick();
 		}
@@ -198,18 +201,17 @@ class Order extends React.Component{
 		});
 		let res = await Request.post('/order/updateMorePrint', {data: params});
 		if(res.data == 'success') {
-			message.success('操作成功');
+			message.success('打印中');
 			this.goodsSearchBtnClick();
 		}
-		setTimeout(() => {
-			message.success('打印成功');
-		}, 1000);
+		params.map(item => {
+			Request.post('/print/printOrder', {id: item.id});
+		});
 	}
 
 	// 同意退款
 	async onConfirmSure(record) {
 		let res = await Request.post('/pay/getBackPayMoney', {id: record.id});
-		console.log(res, 6666);
 		if(res.data == 'success') {
 			message.success('退款成功');
 			return this.goodsSearchBtnClick();
@@ -218,7 +220,7 @@ class Order extends React.Component{
 
 	// 拒绝退款
 	async onConfirmRefuse(record) {
-		let res = await Request.post('/order/updateStatus', {id: record.id, status: 4});
+		let res = await Request.post('/order/updateStatus', {id: record.id, status: 3});
 		if(res.data == 'success') {
 			message.success('操作成功');
 			return this.goodsSearchBtnClick();
@@ -230,8 +232,8 @@ class Order extends React.Component{
 		console.log(orderList, 8888111);
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
-			labelCol: { span: 10 },
-			wrapperCol: { span: 14 },
+			labelCol: { span: 8 },
+			wrapperCol: { span: 16 },
 		};
 		return (
 			<div className='common shop_order'>
@@ -261,7 +263,7 @@ class Order extends React.Component{
 				<div className='shop_order_search'>
 					<Form {...formItemLayout}>
 						<Row>
-							<Col span={4}>
+							<Col span={6}>
 								<FormItem
 									label="宝贝名称">
 									{getFieldDecorator('name')(
@@ -269,7 +271,7 @@ class Order extends React.Component{
 									)}
 								</FormItem>
 							</Col>
-							<Col span={4}>
+							<Col span={6}>
 								<FormItem
 									label="买家名称">
 									{getFieldDecorator('people')(
@@ -277,7 +279,7 @@ class Order extends React.Component{
 									)}
 								</FormItem>
 							</Col>
-							<Col span={4}>
+							<Col span={6}>
 								<FormItem
 									label="订单编号">
 									{getFieldDecorator('id')(
@@ -285,21 +287,31 @@ class Order extends React.Component{
 									)}
 								</FormItem>
 							</Col>
-							<Col span={4}>
+							<Col span={6}>
+								<FormItem
+									label="手机号">
+									{getFieldDecorator('phone')(
+										<Input placeholder="请输入"/>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row className="shop_order_search_time">
+							<Col span={6}>
 								<FormItem label="成交时间：从" colon={false}>
 									{getFieldDecorator('start_time')(
 										<DatePicker style={{minWidth: 0}} showTime format="YYYY-MM-DD HH:mm:ss" />,
 									)}
 								</FormItem>
 							</Col>
-							<Col span={4}>
-								<FormItem labelCol={{span: 3}} label="到" colon={false}>
+							<Col span={6}>
+								<FormItem className="shop_order_search_small" label="到" colon={false}>
 									{getFieldDecorator('end_time')(
 										<DatePicker style={{minWidth: 0}} showTime format="YYYY-MM-DD HH:mm:ss" />,
 									)}
 								</FormItem>
 							</Col>
-							<Col span={3} offset={1}>
+							<Col span={6}>
 								<Button className='goods_search_btn' onClick={this.goodsSearchBtnClick.bind(this)} type='primary'>查询</Button>
 							</Col>
 						</Row>
@@ -307,7 +319,7 @@ class Order extends React.Component{
 				</div>
 				<Row className="shop_order_tabs">
 					<Tabs defaultActiveKey="1" onTabClick={this.sendTabClick.bind(this)}>
-						<TabPane tab="等待派送" key="1" />
+						<TabPane tab="待派送" key="1" />
 						<TabPane tab="派送中" key="2" />
 						<TabPane tab="退款中" key="6" />
 						<TabPane tab="成功的订单" key="3" />
@@ -366,21 +378,26 @@ class Order extends React.Component{
 																return (
 																	<Row className="shop_order_table_content_table_left_chunk" key={i}>
 																		<Col span={8}>
-																			<Col span={8}><img src={order.goodsUrl}/></Col>
-																			<Col span={8} className="common_table_tooltip">
-																				<Tooltip placement="top" title={order.goodsName}>
-																					{order.goodsName}
-																				</Tooltip>
+																			<Col span={8} className="shop_order_table_content_table_left_chunk_col"><img src={order.goodsUrl}/></Col>
+																			<Col offset={1} span={15} className="shop_order_table_content_table_left_chunk_row">
+																				<Row className="shop_order_table_content_table_left_chunk_row_content">
+																					<Row className="shop_order_table_content_table_left_chunk_row_name">
+																						<Tooltip placement="top" title={order.goodsName}>
+																							{order.goodsName}
+																						</Tooltip>
+																					</Row>
+																				</Row>
+																				<Row className="shop_order_table_content_table_left_chunk_row_content">
+																					<Row className="shop_order_table_content_table_left_chunk_row_desc">
+																						<Tooltip placement="top" title={order.specification}>
+																						规格: {order.specification ? order.specification : null}
+																						</Tooltip>
+																					</Row>
+																				</Row>
 																			</Col>
-																			<Col span={8} className="common_table_tooltip">
-																				<Tooltip placement="top" title={order.specification}>
-																					{order.specification}
-																				</Tooltip>
-																			</Col>
-																			{/* <Col span={8}>{order.specification}</Col> */}
 																		</Col>
-																		<Col span={8}>{order.price}</Col>
-																		<Col span={8}>{order.num}</Col>
+																		<Col span={8} className="shop_order_table_content_table_left_chunk_col">{order.price}</Col>
+																		<Col span={8} className="shop_order_table_content_table_left_chunk_col">{order.num}</Col>
 																	</Row>
 																);
 															})

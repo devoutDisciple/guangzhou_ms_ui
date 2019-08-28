@@ -24,6 +24,9 @@ export default {
 		case 7:
 			data = '退款完成';
 			break;
+		case 8:
+			data = '退款失败';
+			break;
 		}
 		return data;
 	},

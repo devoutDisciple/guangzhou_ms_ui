@@ -188,8 +188,8 @@ class Goods extends React.Component{
 		];
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
-			labelCol: { span: 4 },
-			wrapperCol: { span: 20 },
+			labelCol: { span: 8 },
+			wrapperCol: { span: 16 },
 		};
 		let {addDialogVisible, editorDialogVisible, editData, goodsList} = this.state;
 		return (

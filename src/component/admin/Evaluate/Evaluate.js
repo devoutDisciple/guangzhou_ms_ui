@@ -101,14 +101,8 @@ class Evaluate extends React.Component{
 				}
 			},
 			{
-				title: '商店评分',
-				dataIndex: 'shop_grade',
-				key: 'shop_grade',
-				align: 'center'
-			},
-			{
-				title: '骑手评分',
-				dataIndex: 'sender_grade',
+				title: '菜品评分',
+				dataIndex: 'goods_grade',
 				key: 'sender_grade',
 				align: 'center'
 			},
@@ -121,8 +115,8 @@ class Evaluate extends React.Component{
 		];
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
-			labelCol: { span: 4 },
-			wrapperCol: { span: 20 },
+			labelCol: { span: 8 },
+			wrapperCol: { span: 16 },
 		};
 		return (
 			<div className='common'>

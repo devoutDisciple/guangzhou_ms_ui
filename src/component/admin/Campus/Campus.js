@@ -80,8 +80,8 @@ class Campus extends React.Component{
 
 	render() {
 		const formItemLayout = {
-				labelCol: { span: 4 },
-				wrapperCol: { span: 20 },
+				labelCol: { span: 8 },
+				wrapperCol: { span: 16 },
 			}, campusList = this.campusStore.campus,
 			{addDialogVisible, editorDialogVisible, editData, mapDialogVisible, mapData} = this.state,
 			{ getFieldDecorator } = this.props.form,
