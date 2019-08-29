@@ -33,9 +33,7 @@ class AddDialog extends React.Component {
 			send_price: Number(data.send_price),
 			start_price: Number(data.start_price),
 			desc: data.desc,
-			status: String(data.status),
-			sn: data.sn,
-			key: data.key
+			status: String(data.status)
 		});
 	}
 
@@ -190,7 +188,7 @@ class AddDialog extends React.Component {
 								<Input type="number" placeholder="请输入" />
 							)}
 						</FormItem>
-						<FormItem
+						{/* <FormItem
 							label="编号">
 							{getFieldDecorator('sn')(
 								<Input placeholder="请输入打印机编号(sn)" />
@@ -201,7 +199,7 @@ class AddDialog extends React.Component {
 							{getFieldDecorator('key')(
 								<Input placeholder="请输入打印机编号(KEY)" />
 							)}
-						</FormItem>
+						</FormItem> */}
 						<FormItem
 							label="描述">
 							{getFieldDecorator('desc')(

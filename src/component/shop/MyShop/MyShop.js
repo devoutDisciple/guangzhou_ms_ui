@@ -5,6 +5,7 @@ import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
 import EditorDialog from './EditorDialog';
 import UserDialog from './UserDialog';
+import PrintDialog from './PrintDialog';
 import moment from 'moment';
 
 @inject('GlobalStore')
@@ -22,6 +23,7 @@ export default class Shop extends React.Component{
 		imgUrl: '',
 		codeImgVidible: false,
 		userDialogVisible: false,
+		printDialogVisble: false,
 	}
 
 	componentDidMount() {
@@ -54,6 +56,12 @@ export default class Shop extends React.Component{
 		});
 	}
 
+	controllerPrintDialog() {
+		this.setState({
+			printDialogVisble: !this.state.printDialogVisble
+		});
+	}
+
 	// 用户账号的修改
 	controllerUserDialog() {
 		this.setState({
@@ -80,7 +88,7 @@ export default class Shop extends React.Component{
 	}
 
 	render() {
-		let {data, editorDialogVisible, imgUrl, codeImgVidible, userDialogVisible} = this.state;
+		let {data, editorDialogVisible, imgUrl, codeImgVidible, userDialogVisible, printDialogVisble} = this.state;
 		let shopid = this.globalStore.userinfo.shopid;
 		return (
 			<div className='data'>
@@ -137,6 +145,7 @@ export default class Shop extends React.Component{
 					</Row>
 					<Row>
 						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改商店信息</Button>
+						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerPrintDialog.bind(this)}>打印机录入</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerUserDialog.bind(this)}>修改密码</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取商店二维码</Button>
 					</Row>
@@ -147,6 +156,14 @@ export default class Shop extends React.Component{
 							editData={data}
 							onSearch={this.onSearchShop.bind(this)}
 							controllerEditorDialog={this.controllerEditorDialog.bind(this)} />
+						: null
+				}
+				{
+					printDialogVisble ?
+						<PrintDialog
+							editData={data}
+							onSearch={this.onSearchShop.bind(this)}
+							controllerPrintDialog={this.controllerPrintDialog.bind(this)} />
 						: null
 				}
 				{

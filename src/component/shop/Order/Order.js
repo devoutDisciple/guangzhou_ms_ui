@@ -193,20 +193,20 @@ class Order extends React.Component{
 		});
 		if(data.length == 0) return message.warning('请勾选操作的订单');
 		let params = [];
+		let ids = [];
 		data.map(item => {
 			params.push({
 				id: item.id,
 				print: 2
 			});
+			ids.push(item.id);
 		});
 		let res = await Request.post('/order/updateMorePrint', {data: params});
 		if(res.data == 'success') {
 			message.success('打印中');
 			this.goodsSearchBtnClick();
 		}
-		params.map(item => {
-			Request.post('/print/printOrder', {id: item.id});
-		});
+		await Request.post('/print/printMoreOrder', {ids});
 	}
 
 	// 同意退款
