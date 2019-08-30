@@ -1,13 +1,14 @@
 import React from 'react';
 import {inject, observer} from 'mobx-react';
 import {
-	Table, Popconfirm, message, Tooltip, Form, Button, Col
+	Table, Popconfirm, message, Tooltip, Form, Button, Col, Input
 } from 'antd';
 import Request from '../../../request/AxiosRequest';
 import AddDialog from './AddDialog';
 import EditorDialog from './EditorDialog';
 import './index.less';
 import request from '../../../request/AxiosRequest';
+const FormItem = Form.Item;
 
 @inject('GlobalStore')
 @observer
@@ -31,7 +32,11 @@ class Goods extends React.Component{
 
 	// 查询菜品
 	async onSearchGoods() {
-		let res = await request.get('/goods/getByShopId', {id: this.globalStore.userinfo.shopid});
+		let value = this.props.form.getFieldsValue();
+		let params = {};
+		params.id = this.globalStore.userinfo.shopid;
+		value.name ? params.name = value.name : null;
+		let res = await request.get('/goods/getByShopId', params);
 		let data = res.data || [];
 		data.map((item, index) => {
 			item.key = index;
@@ -205,12 +210,32 @@ class Goods extends React.Component{
 		let {goodsList} = this.state;
 		let {addDialogVisible, editorDialogVisible, editData} = this.state;
 		let shopid = this.globalStore.userinfo.shopid;
+		const formItemLayout = {
+				labelCol: { span: 8 },
+				wrapperCol: { span: 16 },
+			}, { getFieldDecorator } = this.props.form;
 		return (
 			<div className='common'>
-				<div className='common_search'>
+				{/* <div className='common_search'>
 					<Col span={6} offset={1}>
 						<Button className='goods_search_btn' type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
 					</Col>
+				</div> */}
+				<div className='common_search'>
+					<Form className="common_search_form" {...formItemLayout}>
+						<Col span={6}>
+							<FormItem
+								label="菜品名称">
+								{getFieldDecorator('name')(
+									<Input placeholder="请输入菜品名称" />
+								)}
+							</FormItem>
+						</Col>
+						<Col span={6} offset={1}>
+							<Button type='primary' onClick={this.onSearchGoods.bind(this)}>查询</Button>
+							<Button className='goods_search_btn' type='primary' onClick={this.controllerAddDialog.bind(this)}>新增</Button>
+						</Col>
+					</Form>
 				</div>
 				<div className='common_content'>
 					<Table
