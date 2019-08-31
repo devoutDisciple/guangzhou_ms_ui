@@ -86,13 +86,17 @@ export default class MyMenu extends React.Component {
 						<Icon type="inbox" />
 						<span>提现管理</span>
 					</Menu.Item>
+					<Menu.Item key="/home/data">
+						<Icon type="inbox" />
+						<span>数据汇总</span>
+					</Menu.Item>
 					<Menu.Item key="/home/evaluate">
 						<Icon type="inbox" />
 						<span>用户评价</span>
 					</Menu.Item>
-					<Menu.Item key="/home/data">
+					<Menu.Item key="/home/options">
 						<Icon type="inbox" />
-						<span>数据汇总</span>
+						<span>意见反馈</span>
 					</Menu.Item>
 				</Menu>
 			);

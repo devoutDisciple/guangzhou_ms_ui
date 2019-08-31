@@ -21,6 +21,7 @@ import Evaluate from '../admin/Evaluate/Evaluate';
 import Data from '../admin/Data/Data';
 import Adver from '../admin/Adver/Adver';
 import Rate from '../admin/Rate/Rate';
+import Options from '../admin/Options/Options';
 
 // 商店
 import MyShop from '../shop/MyShop/MyShop';
@@ -71,6 +72,7 @@ export default class MyLayout extends React.Component{
 										<Route path="/home/money" component={Money} />
 										<Route path="/home/evaluate" component={Evaluate} />
 										<Route path="/home/data" component={Data} />
+										<Route path="/home/options" component={Options} />
 									</Switch>
 									:
 									<Switch>

@@ -224,7 +224,7 @@ class Order extends React.Component{
 
 	// 拒绝退款
 	async onConfirmRefuse(record) {
-		let res = await Request.post('/order/updateStatus', {id: record.id, status: 3});
+		let res = await Request.post('/order/updateStatus', {id: record.id, status: 8});
 		if(res.data == 'success') {
 			message.success('操作成功');
 			return this.goodsSearchBtnClick();
