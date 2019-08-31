@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button, Modal } from 'antd';
+import { Row, Button, Modal, message } from 'antd';
 import './index.less';
 import {inject, observer} from 'mobx-react';
 import Request from '../../../request/AxiosRequest';
@@ -83,6 +83,20 @@ export default class Shop extends React.Component{
 		});
 	}
 
+	// 是否开启自动打印
+	async controllerAutoPrint() {
+		let shopid = this.globalStore.userinfo.shopid;
+		let data = this.state.data || {};
+		if(!data.sn || !data.key) {
+			return message.warning('请录入打印机');
+		}
+		console.log(data, 111);
+		let res = await Request.post('/shop/startAutoPrint', {id: shopid, auto_print: data.auto_print == 1 ? 2 : 1});
+		console.log(res.data);
+		await this.onSearchShop();
+		return message.success(res.data);
+	}
+
 	handleCancelCodeImg() {
 		this.setState({codeImgVidible: false});
 	}
@@ -146,6 +160,7 @@ export default class Shop extends React.Component{
 					<Row>
 						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改商店信息</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerPrintDialog.bind(this)}>打印机录入</Button>
+						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerAutoPrint.bind(this)}>{data.auto_print == 1 ? '取消自动打印' : '开启自动打印'}</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerUserDialog.bind(this)}>修改密码</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取商店二维码</Button>
 					</Row>
