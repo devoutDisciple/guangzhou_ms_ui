@@ -42,7 +42,6 @@ export default class Member extends React.Component{
 	// 查看用户所有订单
 	async onSearchOrder(record) {
 		let res = await request.get('/order/getListByOpenid', {openid: record.openid});
-		console.log(res, 9999);
 		this.setState({
 			orderList: res.data || []
 		}, () => {

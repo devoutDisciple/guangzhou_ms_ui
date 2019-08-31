@@ -17,7 +17,6 @@ export default class EvaluateDialog extends React.Component {
 
 	async componentDidMount() {
 		let data = this.props.data;
-		console.log(data, 6789);
 		data.map((item, index) => {
 			item.key = index;
 			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');

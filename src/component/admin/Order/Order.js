@@ -25,7 +25,6 @@ export default class Order extends React.Component{
 	// 查询所有订单
 	async onSearchOrder() {
 		let res = await Request.get('/order/getAll');
-		console.log(res);
 		let data = res.data || [];
 		data.map(item => {
 			item.key = item.id;

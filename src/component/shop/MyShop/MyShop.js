@@ -73,7 +73,6 @@ export default class Shop extends React.Component{
 	async onGetCode() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let res = await Request.get('/shop/getAccessCode', {id: shopid});
-		console.log(res, 999);
 		this.setState({
 			codeImgVidible: true,
 		}, () => {
@@ -90,9 +89,7 @@ export default class Shop extends React.Component{
 		if(!data.sn || !data.key) {
 			return message.warning('请录入打印机');
 		}
-		console.log(data, 111);
 		let res = await Request.post('/shop/startAutoPrint', {id: shopid, auto_print: data.auto_print == 1 ? 2 : 1});
-		console.log(res.data);
 		await this.onSearchShop();
 		return message.success(res.data);
 	}

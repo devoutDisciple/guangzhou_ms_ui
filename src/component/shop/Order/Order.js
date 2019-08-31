@@ -67,7 +67,6 @@ class Order extends React.Component{
 		let result = await Request.get('/position/getPositionByCampus', {campus});
 		let floor = JSON.parse(result.data.floor) || [];
 		let position = [];
-		console.log(floor);
 		floor.map(item => {
 			if(item.children && item.children.length) {
 				item.children.map(address => {
@@ -233,7 +232,6 @@ class Order extends React.Component{
 
 	render() {
 		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
-		console.log(orderList, 8888111);
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 8 },

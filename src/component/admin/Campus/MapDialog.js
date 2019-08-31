@@ -33,7 +33,6 @@ export default class MapDialog extends React.Component {
 	showInfoClick(e) {
 		let siteX = e.lnglat.getLng();
 		let siteY = e.lnglat.getLat();
-		console.log(siteX, siteY);
 		this.setState({siteX, siteY});
 		// 移除已创建的 marker
 		this.map.remove(this.marker);
@@ -44,7 +43,6 @@ export default class MapDialog extends React.Component {
 	}
 
 	async handleOk() {
-		console.log(1111);
 		let {data} = this.props;
 		let {siteX, siteY} = this.state;
 		let res = await request.post('/position/updatePositionSite', {id: data.id, siteX, siteY});

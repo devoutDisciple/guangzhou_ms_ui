@@ -71,19 +71,16 @@ class Order extends React.Component{
 	async goodsSearchBtnClick() {
 		let {positionActive, statusActive} = this.state;
 		let value = this.props.form.getFieldsValue();
-		console.log(value);
 		if(value.time) {
 			value.start_time = moment(moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'));
 			value.end_time = moment(moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'));
 		}
-		console.log(positionActive, statusActive, value);
 		let params = {
 			campus: positionActive,
 			status: statusActive,
 			...value
 		};
 		let result = await Request.post('/order/getOrderByStatusAndPosition', params);
-		console.log(result);
 		let data = result.data || [];
 		data.map((item, index) => item.key = index);
 		this.setState({orderList: data});
@@ -92,7 +89,6 @@ class Order extends React.Component{
 	// 全部接单
 	async tokenOrders(status) {
 		let data = this.state.selectedRows;
-		console.log(data);
 		let params = [];
 		data.map(item => {
 			params.push({
@@ -101,7 +97,6 @@ class Order extends React.Component{
 			});
 		});
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
-		console.log(res);
 		if(res.data == 'success') {
 			message.success('操作成功');
 			this.goodsSearchBtnClick();
@@ -129,7 +124,6 @@ class Order extends React.Component{
 		let {orderList, position, positionActive, statusActive, selectedRows} = this.state;
 		const rowSelection = {
 			onChange: (selectedRowKeys, selectedRows) => {
-				console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
 				this.setState({
 					selectedRowKeys, selectedRows
 				});

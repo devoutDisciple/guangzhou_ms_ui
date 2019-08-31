@@ -40,8 +40,6 @@ class BillDialog extends React.Component {
 			values.create_time = moment().format('YYYY-MM-DD HH:mm:ss');
 			values.modify_time = moment().format('YYYY-MM-DD HH:mm:ss');
 			let res = await request.post('/bill/addBill', values);
-			console.log(values);
-			console.log(res);
 			if(res.data == 'success') {
 				this.props.onControllerBillDialogVisible();
 				return message.success('申请成功');

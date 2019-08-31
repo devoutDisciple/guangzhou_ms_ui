@@ -59,7 +59,6 @@ export default class Order extends React.Component{
 	// 撤销申请
 	async onCancelBill(data) {
 		let res = await Request.post('/bill/modifyBillById', {id: data.id, status: 4});
-		console.log(res);
 		if(res.data == 'success') {
 			message.success('撤销成功');
 			this.onSearchBill();

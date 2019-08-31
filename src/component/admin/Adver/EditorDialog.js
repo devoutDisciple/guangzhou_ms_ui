@@ -24,7 +24,6 @@ class EditorDialog extends React.Component {
 
 	async componentDidMount() {
 		let editData = this.props.editData;
-		console.log(editData);
 		await this.getAllShop();
 		await this.shopSelect(editData.shop_id);
 		setTimeout(() => {
@@ -61,8 +60,6 @@ class EditorDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
-				console.log(this.props.editData);
-				console.log(values);
 				const formData = new FormData();
 				formData.append('id', this.props.editData.id);
 				values.shop ? formData.append('shop_id', values.shop) : null;
@@ -136,7 +133,6 @@ class EditorDialog extends React.Component {
 
 	// 商店选择获取食品信息
 	async shopSelect(shopid) {
-		console.log(shopid, 678);
 		// 获取所有店铺信息
 		let res = await Request.get('/goods/getDescGoodsByShopId', {shopid: shopid});
 		let data = res.data || [];

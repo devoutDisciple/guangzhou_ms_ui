@@ -41,7 +41,6 @@ class Order extends React.Component{
 			item.key = item.id;
 			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
 		});
-		console.log(this.state.selectType, 6789);
 		this.setState({oderList: data}, () => {
 			this.selectChange(this.state.selectType);
 		});
@@ -66,7 +65,6 @@ class Order extends React.Component{
 				});
 			}
 		}));
-		console.log(data, 888);
 		this.setState({
 			classfyByAddressData: data
 		});
@@ -76,7 +74,6 @@ class Order extends React.Component{
 
 	// 下拉框改变的时候
 	selectChange(value) {
-		console.log(value, 333);
 		this.setState({selectType: value});
 		let orderlist = this.state.oderList;
 		// 全部订单
@@ -119,7 +116,6 @@ class Order extends React.Component{
 
 	// 全部接单
 	async tokenOrders(data, status) {
-		console.log(data);
 		let params = [];
 		data.map(item => {
 			params.push({
@@ -128,7 +124,6 @@ class Order extends React.Component{
 			});
 		});
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
-		console.log(res);
 		if(res.data == 'success') {
 			message.success('操作成功');
 			this.onSearchOrder();

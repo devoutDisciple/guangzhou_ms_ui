@@ -35,7 +35,6 @@ class AddDialog extends React.Component {
 	// 获取商店信息
 	async getAllShop() {
 		let res = await request.get('/shop/getAllForSelect');
-		console.log(res, 7898);
 		let data = res.data || [];
 		data.map((item, index) => {
 			item.key = index;
@@ -177,7 +176,6 @@ class AddDialog extends React.Component {
 	}
 
 	removeType(k) {
-		console.log(k);
 		const { form } = this.props;
 		// can use data-binding to get
 		const keys = form.getFieldValue('keys');
@@ -188,7 +186,6 @@ class AddDialog extends React.Component {
 	}
 
 	handleChange ({ fileList }) {
-		console.log(fileList, 999);
 		this.setState({ fileList });
 	}
 
@@ -208,7 +205,6 @@ class AddDialog extends React.Component {
 		getFieldDecorator('keys', { initialValue: [] });
 		const keys = getFieldValue('keys');
 		const formItems = keys.map((k, index) => {
-			console.log(k);
 			return (
 				<Row key={index} className="goods_dialog_type_formitem">
 					<Col span={10}>

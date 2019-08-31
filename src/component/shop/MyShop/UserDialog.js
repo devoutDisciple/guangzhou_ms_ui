@@ -18,7 +18,6 @@ class UserDialog extends React.Component {
 	async componentDidMount() {
 		let shopid = this.props.shopid;
 		let res = await Request.get('/account/getAccount', {id: shopid});
-		console.log(res, 7989);
 		let data = res.data || {};
 		this.props.form.setFieldsValue({
 			username: data.username,
@@ -30,7 +29,6 @@ class UserDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
-				console.log(values);
 				let shopid = this.props.shopid;
 				let result = await Request.post('/account/modifyAccount', {id: shopid, password: values.password});
 				if(result.data == 'success') {

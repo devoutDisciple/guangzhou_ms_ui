@@ -76,12 +76,10 @@ class Order extends React.Component{
 	async goodsSearchBtnClick() {
 		let {positionActive, print, sendtab} = this.state;
 		let value = this.props.form.getFieldsValue();
-		console.log(value);
 		if(value.time) {
 			value.start_time = moment(value.start_time).format('YYYY-MM-DD HH:mm:ss');
 			value.end_time = moment(value.end_time).format('YYYY-MM-DD HH:mm:ss');
 		}
-		console.log(positionActive, print, value);
 		let params = {
 			campus: positionActive,
 			print: print,
@@ -89,7 +87,6 @@ class Order extends React.Component{
 			...value
 		};
 		let result = await Request.post('/order/getOrderByStatusAndPosition', params);
-		console.log(result);
 		let data = result.data || [];
 		data.map((item, index) => {
 			item.key = index;
@@ -101,7 +98,6 @@ class Order extends React.Component{
 	// 全部接单
 	async tokenOrders(status) {
 		let data = this.state.selectedRows;
-		console.log(data);
 		let params = [];
 		data.map(item => {
 			params.push({
@@ -110,7 +106,6 @@ class Order extends React.Component{
 			});
 		});
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
-		console.log(res);
 		if(res.data == 'success') {
 			message.success('操作成功');
 			this.goodsSearchBtnClick();

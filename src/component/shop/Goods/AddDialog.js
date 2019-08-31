@@ -55,7 +55,6 @@ class AddDialog extends React.Component {
 	// 描述信息改变
 	descChange() {
 		let files = document.getElementById('goods_desc_img').files;
-		console.log(files);
 		let dom = document.querySelector('.goods_desc_preview');
 		for(let i = 0; i < files.length; i++) {
 			var reader = new FileReader();
@@ -164,7 +163,6 @@ class AddDialog extends React.Component {
 	}
 
 	removeType(k) {
-		console.log(k);
 		const { form } = this.props;
 		// can use data-binding to get
 		const keys = form.getFieldValue('keys');
@@ -190,7 +188,6 @@ class AddDialog extends React.Component {
 		getFieldDecorator('keys', { initialValue: [] });
 		const keys = getFieldValue('keys');
 		const formItems = keys.map((k, index) => {
-			console.log(k);
 			return (
 				<Row key={index} className="goods_dialog_type_formitem">
 					<Col span={10}>

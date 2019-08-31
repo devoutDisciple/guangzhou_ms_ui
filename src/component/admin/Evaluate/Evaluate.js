@@ -34,14 +34,12 @@ class Evaluate extends React.Component{
 	// 查询评价列表
 	async onSearchEvaluateList() {
 		let value = this.props.form.getFieldsValue();
-		console.log(value, 8989);
 		let result = await Request.get('/evaluate/getEvaluate', value);
 		let data = result.data || [];
 		let list = [];
 		data.map(item => {
 			item.key = item.id;
 			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
-			console.log(item.shopName);
 			if(!value.name) return list.push(item);
 			if(item.shopName.includes(value.name)) {
 				list.push(item);

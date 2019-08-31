@@ -19,7 +19,6 @@ export default class AddressDialog extends React.Component {
 		let data = this.props.data;
 		try {
 			data = JSON.parse(data.address);
-			console.log(data, 444);
 			data.map((item, index) => {
 				item.key = index;
 				if(item.floor == '暂无全餐点') item.floor = '';

@@ -46,7 +46,6 @@ class Campus extends React.Component{
 
 	// 确认删除
 	async onConfirmDelete(record) {
-		console.log(record, 111);
 		let result = await Request.post('/position/delete', {id: record.id, name: record.name});
 		if(result.data == 'success') {
 			message.success('删除成功');

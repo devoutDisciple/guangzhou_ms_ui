@@ -26,7 +26,6 @@ class EditorDialog extends React.Component {
 
 	async componentDidMount() {
 		let data = this.props.data;
-		console.log(data, 999787);
 		let specification = JSON.parse(data.specification) || [];
 		const { form } = this.props;
 		let typeObj = {};
@@ -93,7 +92,6 @@ class EditorDialog extends React.Component {
 
 	descChange() {
 		let files = document.getElementById('goods_desc_img').files;
-		console.log(files);
 		let dom = document.querySelector('.goods_desc_preview');
 		for(let i = 0; i < files.length; i++) {
 			var reader = new FileReader();
@@ -111,7 +109,6 @@ class EditorDialog extends React.Component {
 
 
 	async handleOk()  {
-		console.log(this.state.fileList, 6789);
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
@@ -206,7 +203,6 @@ class EditorDialog extends React.Component {
 	}
 
 	removeType(k) {
-		console.log(k);
 		const { form } = this.props;
 		// can use data-binding to get
 		const keys = form.getFieldValue('keys');
@@ -232,7 +228,6 @@ class EditorDialog extends React.Component {
 		getFieldDecorator('keys', { initialValue: [] });
 		const keys = getFieldValue('keys');
 		const formItems = keys.map((k, index) => {
-			console.log(`names[${k}]`, 111000);
 			return (
 				<Row key={index} className="goods_dialog_type_formitem">
 					<Col span={10}>

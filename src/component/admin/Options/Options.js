@@ -23,7 +23,6 @@ export default class Evaluate extends React.Component{
 	async onSearch() {
 		let result = await Request.get('/option/all');
 		let data = result.data || [];
-		console.log(data, 111);
 		data.map(item => {
 			item.key = item.id;
 			item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');

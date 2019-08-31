@@ -34,7 +34,6 @@ class AddDialog extends React.Component {
 				if (err) return;
 				values.id = editData.id;
 				let res = await Request.post('/print/add', values);
-				console.log(res.data, 111);
 				// u7f16\u53f7\u548cKEY
 				if(res.data && res.data.includes('u7f16') && res.data.includes('u53f7') && res.data.includes('u548cKEY')) {
 				// if(res.data && res.data.includes('\uff08\u9519\u8bef\uff1a\u6253\u5370\u673a\u7f16\u53f7\u548cKEY\u4e0d\u6b63\u786e\uff09')) {

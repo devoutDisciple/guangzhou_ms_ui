@@ -68,7 +68,6 @@ class Shop extends React.Component{
 	// 点击搜索
 	onSearch() {
 		let value = this.props.form.getFieldsValue();
-		console.log(value);
 		this.shopStore.getAll(value);
 	}
 

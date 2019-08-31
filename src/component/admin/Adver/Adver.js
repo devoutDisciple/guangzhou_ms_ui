@@ -26,7 +26,6 @@ export default class Adver extends React.Component{
 		let result = await Request.get('/adver/getAll');
 		let data = result.data || [];
 		data.map(item => item.key = item.id);
-		console.log(data);
 		this.setState({data});
 	}
 

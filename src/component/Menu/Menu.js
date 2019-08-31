@@ -27,7 +27,6 @@ export default class MyMenu extends React.Component {
 	}
 
 	onSelect(data) {
-		console.log(data);
 		let key = data.key;
 		location.hash = '#' + key;
 		this.setState({
