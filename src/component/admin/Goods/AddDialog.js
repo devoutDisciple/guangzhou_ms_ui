@@ -359,7 +359,7 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<Row className='campus_container'>
-							<Col span={4} className='campus_container_label'>主图录入：</Col>
+							<Col span={4} className='campus_container_label campus_container_label_require'>主图录入：</Col>
 							<Col span={20}>
 								<input
 									type="file"
@@ -375,12 +375,7 @@ class AddDialog extends React.Component {
 						</Row>
 						<FormItem
 							label="描述图片">
-							{getFieldDecorator('descFile', {
-								rules: [{
-									required: true,
-									message: '请选择',
-								}],
-							})(
+							{getFieldDecorator('descFile')(
 								<Upload
 									action={`${config.baseUrl}/goods/uploadDescImg`}
 									listType="picture-card"

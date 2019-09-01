@@ -327,7 +327,7 @@ class EditorDialog extends React.Component {
 							)}
 						</FormItem>
 						<Row className='campus_container'>
-							<Col span={4} className='campus_container_label'>主图录入：</Col>
+							<Col span={4} className='campus_container_label campus_container_label_require'>主图录入：</Col>
 							<Col span={20}>
 								<input
 									type="file"

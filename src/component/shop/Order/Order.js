@@ -43,7 +43,7 @@ class Order extends React.Component{
 			window.goodsTimer = setInterval(async () => {
 				await this.getAllOrderNum();
 				await this.goodsSearchBtnClick();
-			}, 10000);
+			}, 1000 * 30);
 		}
 	}
 
