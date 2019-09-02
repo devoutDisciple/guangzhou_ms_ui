@@ -113,7 +113,6 @@ class Order extends React.Component{
 			orderList.map(item => item.checked = !checkAll);
 			this.setState({orderList});
 		});
-
 	}
 
 	// 点击查询
@@ -133,8 +132,14 @@ class Order extends React.Component{
 			...value
 		};
 		let result = await Request.post('/order/getOrderByStatusAndPosition', params);
+		let {orderList} = this.state;
 		let data = result.data || [];
 		data.map((item, index) => {
+			let flag = false;
+			orderList.map(order => {
+				if(order.id == item.id) flag = true;
+			});
+			if(flag) item.checked = true;
 			item.key = index;
 			item.orderList = JSON.parse(item.orderList) || [];
 			item.order_time = moment(item.order_time).format('YYYY-MM-DD HH:mm:ss');
@@ -175,8 +180,8 @@ class Order extends React.Component{
 
 	// 取消订单
 	async cancelOrder(data) {
-		let res = await Request.post('/order/updateStatus', {id: data.id, status: 4});
 		let result = await this.onConfirmSure(data);
+		let res = await Request.post('/order/updateStatus', {id: data.id, status: 4});
 		if(res.data == 'success' && result.data == 'success') {
 			message.success('取消成功');
 			return this.goodsSearchBtnClick();
