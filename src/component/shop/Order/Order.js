@@ -10,6 +10,7 @@ import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 import './index.less';
 import FilterOrderStatus from '../../../util/FilterOrderStatus';
+import EvaluateDialog from './EvaluateDialog';
 
 @inject('GlobalStore')
 @observer
@@ -31,6 +32,8 @@ class Order extends React.Component{
 		selectedRows: [],
 		checkAll: false, // 是否全选
 		titleData: [], // 头标数
+		evaluateDialogVisible: false, // 显示评价弹框
+		evaluateData: {}, // 评价数据
 	}
 
 	async componentDidMount() {
@@ -235,8 +238,31 @@ class Order extends React.Component{
 		}
 	}
 
+	// 查看评价
+	evaluateClick(data) {
+		this.setState({
+			evaluateData: data
+		}, () => this.onControllerEvaluateDialogVisible());
+	}
+
+	onControllerEvaluateDialogVisible() {
+		this.setState({
+			evaluateDialogVisible: !this.state.evaluateDialogVisible
+		});
+	}
+
 	render() {
-		let {position, positionActive, print, orderList, checkAll, sendtab, titleData} = this.state;
+		let {
+			position,
+			positionActive,
+			print,
+			orderList,
+			checkAll,
+			sendtab,
+			titleData,
+			evaluateDialogVisible,
+			evaluateData
+		} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 			labelCol: { span: 8 },
@@ -439,7 +465,9 @@ class Order extends React.Component{
 													<Col className="shop_order_table_content_table_right_chunk"span={5}>{item.total_price}</Col>
 													{
 														sendtab != 6 ?
-															<Col className="shop_order_table_content_table_right_chunk"span={4}>--</Col>
+															<Col className="shop_order_table_content_table_right_chunk"span={4}>
+																{item.status == 5 ? <a onClick={this.evaluateClick.bind(this, item)} href="javascript:;">查看</a> : '--'}
+															</Col>
 															: null
 													}
 													{
@@ -481,6 +509,13 @@ class Order extends React.Component{
 							: null
 					}
 				</Row>
+				{
+					evaluateDialogVisible ?
+						<EvaluateDialog
+							data={evaluateData}
+							onControllerEvaluateDialogVisible={this.onControllerEvaluateDialogVisible.bind(this)}/>
+						: null
+				}
 			</div>
 		);
 	}
