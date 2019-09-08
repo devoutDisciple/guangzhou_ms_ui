@@ -34,6 +34,11 @@ class Order extends React.Component{
 		titleData: [], // 头标数
 		evaluateDialogVisible: false, // 显示评价弹框
 		evaluateData: {}, // 评价数据
+		sendResult: { // 未派送和退款中的订单数量
+			sendNum: 0,
+			payNum: 0
+		},
+		newOrderNum: 0, // 新订单的数量
 	}
 
 	async componentDidMount() {
@@ -42,12 +47,12 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		if(!window.location.href.includes('localhost')) {
-			window.goodsTimer = setInterval(async () => {
-				await this.getAllOrderNum();
-				await this.goodsSearchBtnClick();
-			}, 1000 * 30);
-		}
+		// if(!window.location.href.includes('localhost')) {
+		window.goodsTimer = setInterval(async () => {
+			await this.getAllOrderNum();
+			await this.goodsSearchBtnClick();
+		}, 1000 * 15);
+		// }
 	}
 
 	componentWillUnmount() {
@@ -58,8 +63,22 @@ class Order extends React.Component{
 	async getAllOrderNum() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let position = this.state.position;
+		// 获取订单数量
 		let res = await Request.get('/order/getNumData', {id: shopid, floor: position});
-		this.setState({titleData: res.data || []});
+		// 查看是否有未派送和退款中订单
+		let sendResult = await Request.get('/order/getOrderByStatusForSendAndPay', {id: shopid});
+		// 查看是否有新的订单
+		let newResult = await Request.get('/order/getNewOrderByShopId', {id: shopid});
+		let newOrderNum = newResult.data ? newResult.data.newOrderNum : 0;
+		let oldOrderNum = this.state.newOrderNum;
+		if(oldOrderNum < newOrderNum) {
+			message.success('您有新的订单');
+		}
+		this.setState({
+			titleData: res.data || [],
+			sendResult: sendResult.data || {sendNum: 0, payNum: 0},
+			newOrderNum: newOrderNum
+		});
 	}
 
 	// 获取商店订单数据
@@ -168,6 +187,7 @@ class Order extends React.Component{
 		let res = await Request.post('/order/updateMoreStatus', {data: params});
 		if(res.data == 'success') {
 			message.success('操作成功');
+			this.getAllOrderNum();
 			this.goodsSearchBtnClick();
 		}
 	}
@@ -261,7 +281,8 @@ class Order extends React.Component{
 			sendtab,
 			titleData,
 			evaluateDialogVisible,
-			evaluateData
+			evaluateData,
+			sendResult
 		} = this.state;
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
@@ -352,11 +373,25 @@ class Order extends React.Component{
 				</div>
 				<Row className="shop_order_tabs">
 					<Tabs defaultActiveKey="1" onTabClick={this.sendTabClick.bind(this)}>
-						<TabPane tab="待派送" key="1" />
-						<TabPane tab="派送中" key="2" />
-						<TabPane tab="退款中" key="6" />
-						<TabPane tab="成功的订单" key="3" />
-						<TabPane tab="关闭的订单" key="4" />
+						<TabPane tab={
+							<span className='shop_order_tabs_span'>
+								待派送
+								{sendResult.sendNum ? <a className='shop_order_tabs_dot'></a> : null}
+							</span>}
+						key="1"
+						/>
+						{/* <TabPane tab={<span className='shop_order_tabs_span'>待派送{sendResult.sendNum ? <a className='shop_order_tabs_dot'></a> : null}</span>} key="1" /> */}
+						<TabPane tab={<span>派送中</span>} key="2" />
+						<TabPane tab={
+							<span className='shop_order_tabs_span'>
+								退款中
+								{sendResult.payNum ? <a className='shop_order_tabs_dot'></a> : null}
+							</span>}
+						key="6"
+						/>
+						{/* <TabPane tab={<span className='shop_order_tabs_span'>退款中{sendResult.payNum ? <a className='shop_order_tabs_dot'></a> : null}</span>} key="6" /> */}
+						<TabPane tab={<span>成功的订单</span>} key="3" />
+						<TabPane tab={<span>关闭的订单</span>} key="4" />
 					</Tabs>
 				</Row>
 				<Row className="shop_order_print">

@@ -18,7 +18,9 @@ export default class Shop extends React.Component{
 	}
 
 	state = {
-		data: {},
+		data: {
+			show: true
+		},
 		editorDialogVisible: false,
 		imgUrl: '',
 		codeImgVidible: false,
@@ -101,6 +103,9 @@ export default class Shop extends React.Component{
 	render() {
 		let {data, editorDialogVisible, imgUrl, codeImgVidible, userDialogVisible, printDialogVisble} = this.state;
 		let shopid = this.globalStore.userinfo.shopid;
+		let open = true;
+		console.log(data);
+		if(!data.show && (data.status != 1 || !data.open)) open = false;
 		return (
 			<div className='data'>
 				<Row className="shop_detail">
@@ -111,7 +116,7 @@ export default class Shop extends React.Component{
 					<Row className='shop_detail_col'>
 						<span className='shop_detail_label'>状态：</span>
 						<span className='shop_detail_content'>
-							{data.status == 1 && data.open ?
+							{open ?
 								<span className='common_cell_green'>营业中</span>
 								:
 								<span className='common_cell_red'>暂停营业</span>
