@@ -47,12 +47,12 @@ class Order extends React.Component{
 		// 查询商店订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
-		// if(!window.location.href.includes('localhost')) {
-		window.goodsTimer = setInterval(async () => {
-			await this.getAllOrderNum();
-			await this.goodsSearchBtnClick();
-		}, 1000 * 15);
-		// }
+		if(!window.location.href.includes('localhost')) {
+			window.goodsTimer = setInterval(async () => {
+				await this.getAllOrderNum();
+				await this.goodsSearchBtnClick();
+			}, 1000 * 15);
+		}
 	}
 
 	componentWillUnmount() {

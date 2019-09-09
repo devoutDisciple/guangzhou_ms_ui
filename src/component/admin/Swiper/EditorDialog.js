@@ -148,7 +148,7 @@ class EditorDialog extends React.Component {
 			<div>
 				<Modal
 					className='common_dialog'
-					title="新增校区"
+					title="编辑轮播图"
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
