@@ -146,6 +146,7 @@ class AddDialog extends React.Component {
 
 	addCampus() {
 		let zNodes = this.state.zNodes;
+		console.log(zNodes, 111);
 		zNodes.push({ id: new Date().getTime(), pId: newCount, name:'西校区', open:true});
 		this.setState({
 			zNodes: zNodes
