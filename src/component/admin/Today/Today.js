@@ -16,7 +16,7 @@ export default class Today extends React.Component{
 	}
 
 	async componentDidMount() {
-		// 查询所有商店名称
+		// 查询所有厨房名称
 		await this.onSearchTodayGoods();
 	}
 
@@ -64,7 +64,7 @@ export default class Today extends React.Component{
 				}
 			},
 			{
-				title: '所属商店',
+				title: '所属厨房',
 				dataIndex: 'shopName',
 				key: 'shopName',
 				align: 'center'

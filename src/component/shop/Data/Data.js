@@ -31,7 +31,7 @@ export default class Order extends React.Component{
 		// await this.globalStore.getLogin();
 		let shopid = this.globalStore.userinfo.shopid;
 		setTimeout(() => {
-			// 获取商店数据汇总
+			// 获取厨房数据汇总
 			this.getData(shopid);
 			// 获取销售量的数据汇总
 			this.getSalesByShopid(shopid);

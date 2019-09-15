@@ -121,9 +121,9 @@ class EditorDialog extends React.Component {
 		};
 	}
 
-	// 获取所有商店信息
+	// 获取所有厨房信息
 	async getAllShop() {
-		// 获取所有店铺信息
+		// 获取所有厨房信息
 		let res = await Request.get('/shop/getAllForSelect');
 		let data = res.data || [];
 		this.setState({
@@ -131,9 +131,9 @@ class EditorDialog extends React.Component {
 		});
 	}
 
-	// 商店选择获取食品信息
+	// 厨房选择获取食品信息
 	async shopSelect(shopid) {
-		// 获取所有店铺信息
+		// 获取所有厨房信息
 		let res = await Request.get('/goods/getDescGoodsByShopId', {shopid: shopid});
 		let data = res.data || [];
 		this.setState({
@@ -175,7 +175,7 @@ class EditorDialog extends React.Component {
 								}],
 							})(
 								<Select placeholder="请选择" onSelect={this.typeSelect.bind(this)}>
-									<Option value="1">关联商店</Option>
+									<Option value="1">关联厨房</Option>
 									<Option value="2">关联食品</Option>
 									<Option value="3">无</Option>
 								</Select>
@@ -184,7 +184,7 @@ class EditorDialog extends React.Component {
 						{
 							type == '1' || type == '2'?
 								<FormItem
-									label="关联店铺">
+									label="关联厨房">
 									{getFieldDecorator('shop', {
 										rules: [{
 											required: true,

@@ -96,7 +96,7 @@ class Goods extends React.Component{
 		}
 	}
 
-	// 商店选择的时候
+	// 厨房选择的时候
 	selectChange(id) {
 		this.setState({
 			shopid: id

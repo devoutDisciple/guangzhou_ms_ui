@@ -53,7 +53,7 @@ export default class Adver extends React.Component{
 				}
 			},
 			{
-				title: '关联店铺',
+				title: '关联厨房',
 				dataIndex: 'shopName',
 				key: 'shopName',
 				align: 'center'

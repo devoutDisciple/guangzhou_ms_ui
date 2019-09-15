@@ -22,7 +22,7 @@ class AddDialog extends React.Component {
 		previewImage: '',
 		fileList: [
 		],
-		shopList: [], // 商店数据
+		shopList: [], // 厨房数据
 	};
 
 	async componentDidMount() {
@@ -32,7 +32,7 @@ class AddDialog extends React.Component {
 		this.getAllShop();
 	}
 
-	// 获取商店信息
+	// 获取厨房信息
 	async getAllShop() {
 		let res = await request.get('/shop/getAllForSelect');
 		let data = res.data || [];
@@ -112,7 +112,7 @@ class AddDialog extends React.Component {
 					desc =  JSON.stringify(desc);
 					const formData = new FormData();
 					formData.append('name', values.name);
-					formData.append('title', values.title);
+					values.title ? formData.append('title', values.title) : null;
 					formData.append('sales', values.sales);
 					formData.append('desc', desc);
 					formData.append('price', values.price);
@@ -265,7 +265,7 @@ class AddDialog extends React.Component {
 					onCancel={this.handleDialogCancel.bind(this)}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit}>
 						<FormItem
-							label="商店名称">
+							label="厨房名称">
 							{getFieldDecorator('shopid', {
 								rules: [{
 									required: true,

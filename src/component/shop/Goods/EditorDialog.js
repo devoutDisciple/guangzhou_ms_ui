@@ -128,7 +128,7 @@ class EditorDialog extends React.Component {
 				formData.append('desc', desc);
 				formData.append('id', this.props.data.id);
 				formData.append('name', values.name);
-				formData.append('title', values.title);
+				values.title ? formData.append('title', values.title) : null;
 				formData.append('price', values.price);
 				formData.append('specification', JSON.stringify(specification));
 				formData.append('package_cost', values.package_cost);

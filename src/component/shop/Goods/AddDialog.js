@@ -94,7 +94,7 @@ class AddDialog extends React.Component {
 					desc =  JSON.stringify(desc);
 					const formData = new FormData();
 					formData.append('name', values.name);
-					formData.append('title', values.title);
+					values.title ? formData.append('title', values.title) : null;
 					formData.append('desc', desc);
 					formData.append('price', values.price);
 					formData.append('package_cost', values.package_cost);

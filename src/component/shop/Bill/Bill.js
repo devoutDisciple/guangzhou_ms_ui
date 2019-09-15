@@ -71,7 +71,7 @@ export default class Order extends React.Component{
 		let res = await Request.get('/bill/getBillMoneyReadyByShopid', {shopid: shopid});
 		let data = res.data;
 		this.setState({
-			allMoney: data.allMoney || 0, //商店销售总额
+			allMoney: data.allMoney || 0, //厨房销售总额
 			alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 			resMoney: data.resMoney || 0, // 可提现金额
 		});

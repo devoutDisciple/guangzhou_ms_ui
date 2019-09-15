@@ -42,9 +42,9 @@ class Order extends React.Component{
 	}
 
 	async componentDidMount() {
-		// 获取商店位置信息
+		// 获取厨房位置信息
 		await this.getShopDetail();
-		// 查询商店订单信息
+		// 查询厨房订单信息
 		await this.goodsSearchBtnClick();
 		await this.getAllOrderNum();
 		if(!window.location.href.includes('localhost')) {
@@ -81,7 +81,7 @@ class Order extends React.Component{
 		});
 	}
 
-	// 获取商店订单数据
+	// 获取厨房订单数据
 	async getShopDetail() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let shop = await Request.get('/shop/getShopByShopid', {id: shopid});

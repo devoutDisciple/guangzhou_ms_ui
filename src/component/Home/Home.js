@@ -23,7 +23,7 @@ import Adver from '../admin/Adver/Adver';
 import Rate from '../admin/Rate/Rate';
 import Options from '../admin/Options/Options';
 
-// 商店
+// 厨房
 import MyShop from '../shop/MyShop/MyShop';
 import ShopGoods from '../shop/Goods/Goods';
 import ShopOrder from '../shop/Order/Order';
@@ -89,7 +89,7 @@ export default class MyLayout extends React.Component{
 				</Layout>
 				<Footer className="root_layout_footer">
 					<img src={logo}/>
-					<span>贝沃思美食</span>
+					<span>贝沃思私厨</span>
 				</Footer>
 			</React.Fragment>
 		);

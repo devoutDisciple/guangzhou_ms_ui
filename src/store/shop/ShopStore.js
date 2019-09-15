@@ -26,7 +26,7 @@ class ShopStore {
     	this.list = data;
 	 }
 
-	// 获取所有店铺信息
+	// 获取所有厨房信息
 	@action
 	 async getAll(value) {
 	 	try {
@@ -54,7 +54,7 @@ class ShopStore {
 		}
 	}
 
-	// 修改店铺
+	// 修改厨房
 	@action
 	async updateShop(data) {
 		try {

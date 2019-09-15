@@ -24,7 +24,7 @@ export default class Order extends React.Component{
 	async componentDidMount() {
 		let shopid = this.props.shopid;
 		setTimeout(() => {
-			// 获取商店数据汇总
+			// 获取厨房数据汇总
 			this.getData(shopid);
 			// 获取销售量的数据汇总
 			this.getSalesByShopid(shopid);
@@ -177,7 +177,7 @@ export default class Order extends React.Component{
 		return (
 			<Modal
 				className='common_dialog common_max_dialog_max'
-				title="商店数据汇总"
+				title="厨房数据汇总"
 				visible={true}
 				onOk={this.handleCancel.bind(this)}
 				onCancel={this.handleCancel.bind(this)}>

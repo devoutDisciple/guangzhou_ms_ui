@@ -71,7 +71,7 @@ export default class Shop extends React.Component{
 		});
 	}
 
-	// 获取商店二维码
+	// 获取厨房二维码
 	async onGetCode() {
 		let shopid = this.globalStore.userinfo.shopid;
 		let res = await Request.get('/shop/getAccessCode', {id: shopid});
@@ -148,7 +148,7 @@ export default class Shop extends React.Component{
 						<span className='shop_detail_content'>{`${data.start_time} - ${data.end_time}`}</span>
 					</Row>
 					<Row className='shop_detail_col'>
-						<span className='shop_detail_label'>商店描述：</span>
+						<span className='shop_detail_label'>厨房描述：</span>
 						<span className='shop_detail_content'>{data.desc}</span>
 					</Row>
 					<Row className='shop_detail_col'>
@@ -160,11 +160,11 @@ export default class Shop extends React.Component{
 						<span className='shop_detail_content'>{data.key}</span>
 					</Row>
 					<Row>
-						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改商店信息</Button>
+						<Button type="primary" onClick={this.controllerEditorDialog.bind(this)}>修改厨房信息</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerPrintDialog.bind(this)}>打印机录入</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerAutoPrint.bind(this)}>{data.auto_print == 1 ? '取消自动打印' : '开启自动打印'}</Button>
 						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.controllerUserDialog.bind(this)}>修改密码</Button>
-						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取商店二维码</Button>
+						<Button style={{marginLeft: '10px'}} type="primary" onClick={this.onGetCode.bind(this)}>获取厨房二维码</Button>
 					</Row>
 				</Row>
 				{

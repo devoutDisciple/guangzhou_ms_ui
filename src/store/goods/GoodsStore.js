@@ -7,7 +7,7 @@ import request from '../../request/AxiosRequest';
 
 class GoodsStore {
 
-    // 商店列表
+    // 厨房列表
     @observable
 	shopList = [];
 
@@ -15,7 +15,7 @@ class GoodsStore {
 	@observable
 	goodsList = [];
 
-	 // 设置商店列表
+	 // 设置厨房列表
 	 @action
 	 setShopList(data) {
 		 this.shopList = data;
@@ -27,7 +27,7 @@ class GoodsStore {
 	 	this.goodsList = data;
 	 }
 
-	// 获取所有店铺信息
+	// 获取所有厨房信息
 	@action
 	 async getAllShop() {
 	 	try {

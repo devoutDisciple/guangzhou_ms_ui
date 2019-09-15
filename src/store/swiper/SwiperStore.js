@@ -12,7 +12,7 @@ class SwiperStore {
 	swiperList = [];
 
 
-	// 所有店铺信息
+	// 所有厨房信息
 	@observable
 	allShopDetail = [];
 
@@ -22,7 +22,7 @@ class SwiperStore {
     	this.swiperList = data;
 	}
 
-	// 设置店铺
+	// 设置厨房
 	@action
 	setAllShopDetail(data) {
 		this.allShopDetail = data;
@@ -67,7 +67,7 @@ class SwiperStore {
 		 }
 	 }
 
-	// 获取所有店铺信息
+	// 获取所有厨房信息
 	@action
 	 async getAllShop() {
 	 	try {

@@ -28,7 +28,7 @@ export default class Order extends React.Component{
 
 	async componentDidMount() {
 		setTimeout(() => {
-			// 获取商店数据汇总
+			// 获取厨房数据汇总
 			this.getData();
 			// 获取销售量的数据汇总
 			this.getSales(1);

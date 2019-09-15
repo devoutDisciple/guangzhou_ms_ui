@@ -26,7 +26,7 @@ class Goods extends React.Component{
 	}
 
 	async componentDidMount() {
-		// 查询商店
+		// 查询厨房
 		await this.onSearchGoods();
 	}
 
@@ -105,7 +105,7 @@ class Goods extends React.Component{
 				}
 			},
 			{
-				title: '商店名称',
+				title: '厨房名称',
 				dataIndex: 'shopName',
 				key: 'shopName',
 				align: 'center'
@@ -198,9 +198,9 @@ class Goods extends React.Component{
 					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="商店名称">
+								label="厨房名称">
 								{getFieldDecorator('name')(
-									<Input placeholder="请输入商店名称" />
+									<Input placeholder="请输入厨房名称" />
 								)}
 							</FormItem>
 						</Col>

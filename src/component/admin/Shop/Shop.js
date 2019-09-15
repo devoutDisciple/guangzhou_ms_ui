@@ -89,7 +89,7 @@ class Shop extends React.Component{
 		});
 	}
 
-	// 查看更多 查看商店报表数据
+	// 查看更多 查看厨房报表数据
 	onControllerDataVisible() {
 		this.setState({
 			dataDialogVisible: !this.state.dataDialogVisible
@@ -176,7 +176,7 @@ class Shop extends React.Component{
 				}
 			},
 			{
-				title: '店铺状态',
+				title: '厨房状态',
 				dataIndex: 'status',
 				key: 'status',
 				align: 'center',
@@ -231,9 +231,9 @@ class Shop extends React.Component{
 					<Form className="common_search_form" {...formItemLayout}>
 						<Col span={6}>
 							<FormItem
-								label="商店名称">
+								label="厨房名称">
 								{getFieldDecorator('name')(
-									<Input placeholder="请输入商店名称" />
+									<Input placeholder="请输入厨房名称" />
 								)}
 							</FormItem>
 						</Col>

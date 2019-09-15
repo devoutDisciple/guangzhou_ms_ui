@@ -58,7 +58,7 @@ class AddDialog extends React.Component {
 			<div>
 				<Modal
 					className='common_dialog common_max_dialog'
-					title="新增商店"
+					title="新增厨房"
 					visible={true}
 					onOk={this.handleOk.bind(this)}
 					onCancel={this.handleCancel.bind(this)}>
@@ -83,7 +83,7 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="店铺名称">
+							label="厨房名称">
 							{getFieldDecorator('name', {
 								rules: [{
 									required: true,
@@ -94,7 +94,7 @@ class AddDialog extends React.Component {
 							)}
 						</FormItem>
 						<FormItem
-							label="店铺地址">
+							label="厨房地址">
 							{getFieldDecorator('address', {
 								rules: [{
 									required: true,
@@ -175,7 +175,7 @@ class AddDialog extends React.Component {
 						<FormItem
 							label="描述">
 							{getFieldDecorator('desc')(
-								<Input placeholder="请输入店铺地址" />
+								<Input placeholder="请输入描述信息" />
 							)}
 						</FormItem>
 					</Form>

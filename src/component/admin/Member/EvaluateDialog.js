@@ -58,7 +58,7 @@ export default class EvaluateDialog extends React.Component {
 				align: 'center',
 			},
 			{
-				title: '商店评分',
+				title: '厨房评分',
 				dataIndex: 'shop_grade',
 				key: 'shop_grade',
 				align: 'center',
