@@ -185,9 +185,10 @@ class AddDialog extends React.Component {
 		this.props.form.validateFields(async (err, values) => {
 			try {
 				if (err) return;
+				console.log(this.props.editData, 999);
 				let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
 				let newNodes = this.getNodes(nodes, []);
-				let params = Object.assign(values, {floor: newNodes, id: this.props.editData.id});
+				let params = Object.assign(values, {floor: newNodes, originName: this.props.editData.name, id: this.props.editData.id});
 				let result = await Request.post('/position/update', params);
 				if(result.data == 'success') {
 					message.success('编辑成功');
