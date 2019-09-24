@@ -25,6 +25,7 @@ class AddDialog extends React.Component {
 		this.beforeRename = this.beforeRename.bind(this);
 		this.addHoverDom = this.addHoverDom.bind(this);
 		this.removeHoverDom = this.removeHoverDom.bind(this);
+		this.onRename = this.onRename.bind(this);
 		this.campusStore = props.CampusStore;
 	}
 
@@ -96,12 +97,21 @@ class AddDialog extends React.Component {
 	}
 
 	beforeEditName(treeId, treeNode) {
+		console.log(1111);
 		var zTree = $.fn.zTree.getZTreeObj('campus_tree');
 		zTree.selectNode(treeNode);
 		setTimeout(function() {
 			zTree.editName(treeNode);
 		}, 0);
 		return false;
+	}
+
+	onRename() {
+		let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
+		let newNodes = this.getNodes(nodes, []);
+		this.setState({
+			zNodes: newNodes
+		});
 	}
 
 	beforeRemove(treeId, treeNode) {
@@ -137,7 +147,7 @@ class AddDialog extends React.Component {
 		if (btn) btn.bind('click', function(){
 			var zTree = $.fn.zTree.getZTreeObj('campus_tree');
 			newCount++;
-			zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:'6号楼'});
+			zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:'三级菜单'});
 			return false;
 		});
 	}
@@ -157,7 +167,7 @@ class AddDialog extends React.Component {
 
 	addCampus() {
 		let zNodes = this.state.zNodes;
-		zNodes.push({ id: new Date().getTime(), pId: newCount, name:'西校区', open:true});
+		zNodes.push({ id: new Date().getTime(), pId: newCount, name:'二级菜单', open:true});
 		this.setState({
 			zNodes: zNodes
 		}, () => {

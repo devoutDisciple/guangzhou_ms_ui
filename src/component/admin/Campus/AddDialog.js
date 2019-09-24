@@ -25,6 +25,7 @@ class AddDialog extends React.Component {
 		this.beforeRename = this.beforeRename.bind(this);
 		this.addHoverDom = this.addHoverDom.bind(this);
 		this.removeHoverDom = this.removeHoverDom.bind(this);
+		this.onRename = this.onRename.bind(this);
 		this.campusStore = props.CampusStore;
 	}
 
@@ -98,6 +99,14 @@ class AddDialog extends React.Component {
 		zTree.selectNode(treeNode);
 		// return confirm('确认删除 节点 -- ' + treeNode.name + ' 吗？');
 		return true;
+	}
+
+	onRename() {
+		let nodes = $.fn.zTree.getZTreeObj('campus_tree').getNodes();
+		let newNodes = this.getNodes(nodes, []);
+		this.setState({
+			zNodes: newNodes
+		});
 	}
 
 	onRemove(e, treeId, treeNode) {
