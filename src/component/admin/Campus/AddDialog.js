@@ -135,7 +135,7 @@ class AddDialog extends React.Component {
 		if (btn) btn.bind('click', function(){
 			var zTree = $.fn.zTree.getZTreeObj('campus_tree');
 			newCount++;
-			zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:'6号楼'});
+			zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:'三级菜单'});
 			return false;
 		});
 	}
@@ -156,7 +156,7 @@ class AddDialog extends React.Component {
 	addCampus() {
 		let zNodes = this.state.zNodes;
 		console.log(zNodes, 111);
-		zNodes.push({ id: new Date().getTime(), pId: newCount, name:'西校区', open:true});
+		zNodes.push({ id: new Date().getTime(), pId: newCount, name:'二级菜单', open:true});
 		this.setState({
 			zNodes: zNodes
 		}, () => {
