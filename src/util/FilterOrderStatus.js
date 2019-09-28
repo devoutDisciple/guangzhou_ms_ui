@@ -79,4 +79,29 @@ export default {
 		}
 		return data;
 	},
+	// 商品评分
+	filterGoodsGrade: function(status) {
+		let data = '';
+		// 1-支付宝 2-银行卡
+		switch(Number(status)) {
+		case 1:
+			data = '很差';
+			break;
+		case 2:
+			data = '一般';
+			break;
+		case 3:
+			data = '满意';
+			break;
+		case 4:
+			data = '非常满意';
+			break;
+		case 5:
+			data = '无可挑剔';
+			break;
+		default :
+			data = '';
+		}
+		return data;
+	}
 };

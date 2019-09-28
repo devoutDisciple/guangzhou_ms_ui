@@ -3,6 +3,7 @@ import {
 	Modal, Table, Tooltip
 } from 'antd';
 import moment from 'moment';
+import filterUtil from '../../../util/FilterOrderStatus';
 
 export default class EvaluateDialog extends React.Component {
 
@@ -52,16 +53,13 @@ export default class EvaluateDialog extends React.Component {
 				}
 			},
 			{
-				title: '快递员评分',
-				dataIndex: 'sender_grade',
-				key: 'sender_grade',
+				title: '商品评分',
+				dataIndex: 'goods_grade',
+				key: 'goods_grade',
 				align: 'center',
-			},
-			{
-				title: '厨房评分',
-				dataIndex: 'shop_grade',
-				key: 'shop_grade',
-				align: 'center',
+				render:(text, record) => {
+					return <span>{filterUtil.filterGoodsGrade(record.goods_grade)}</span>;
+				}
 			},
 			{
 				title: '评价时间',

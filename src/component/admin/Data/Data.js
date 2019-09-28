@@ -24,6 +24,8 @@ export default class Order extends React.Component{
 		alreadyMoney: 0, //已经提现金额
 		resMoney: 0, // 可提现金额，
 		adminMoney: 0, // 平台营收
+		salesCharts: false, // 是否展示图表
+		moneyCharts: false, // 是否展示图表
 	}
 
 	async componentDidMount() {
@@ -71,7 +73,6 @@ export default class Order extends React.Component{
 		let res = await request.get('/order/getSales', {type: type});
 		let myChart = echarts.init(document.getElementById('data_member1'));
 		let data = res.data || [];
-		if(data.length == 0) return;
 		let echartsData = [];
 		data.map(item => {
 			echartsData.push({value: [item.days, item.count]});
@@ -117,7 +118,6 @@ export default class Order extends React.Component{
 		let res = await request.get('/order/getMoney', {type: type});
 		let myChart = echarts.init(document.getElementById('data_member2'));
 		let data = res.data || [];
-		if(data.length == 0) return;
 		let echartsData = [];
 		data.map(item => {
 			echartsData.push({value: [item.days, Number(item.money)]});
@@ -172,7 +172,17 @@ export default class Order extends React.Component{
 	render() {
 		// alreadyMoney: data.alreadyMoney || 0, //已经提现金额
 		// resMoney: data.resMoney || 0, // 可提现金额
-		let {orderNum, orderPrice, moneyType, salesType, todayNum, todayMoney, alreadyMoney, resMoney, adminMoney} = this.state;
+		let {
+			orderNum,
+			orderPrice,
+			moneyType,
+			salesType,
+			todayNum,
+			todayMoney,
+			alreadyMoney,
+			resMoney,
+			adminMoney,
+		} = this.state;
 		return (
 			<div className='data'>
 				<div className='data_little_charts'>
@@ -207,7 +217,9 @@ export default class Order extends React.Component{
 							<Button type={salesType == 3 ? 'primary' : null} onClick={this.onClickSalesBtn.bind(this, 3)}>本年</Button>
 						</div>
 					</Row>
-					<Row id="data_member1" className="data_common_detail_content"></Row>
+					<Row id="data_member1" className="data_common_detail_content">
+
+					</Row>
 				</Row>
 				<Row className="data_common_detail">
 					<Row className="data_common_detail_title">
