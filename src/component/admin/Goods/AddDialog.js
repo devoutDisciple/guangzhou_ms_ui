@@ -189,6 +189,19 @@ class AddDialog extends React.Component {
 		this.setState({ fileList });
 	}
 
+	// beforeUpload(file, fileList) {
+	// 	console.log(file, 11);
+	// 	console.log(fileList);
+	// }
+
+	// async customRequest(file) {
+	// 	console.log(333);
+	// 	const formData = new FormData();
+	// 	formData.append('file', file.file);
+	// 	await request.post('/goods/uploadDescImg', formData);
+	// 	return true;
+	// }
+
 	render() {
 		const { getFieldDecorator, getFieldValue } = this.props.form;
 		const formItemLayout = {
@@ -380,6 +393,8 @@ class AddDialog extends React.Component {
 									action={`${config.baseUrl}/goods/uploadDescImg`}
 									listType="picture-card"
 									withCredentials
+									// customRequest={this.customRequest.bind(this)}
+									// beforeUpload={this.beforeUpload.bind(this)}
 									fileList={fileList}
 									onPreview={this.handlePreview.bind(this)}
 									onChange={this.handleChange.bind(this)}>
